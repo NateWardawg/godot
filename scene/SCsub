@@ -13,6 +13,7 @@ SConscript('animation/SCsub');
 SConscript('audio/SCsub');
 SConscript('resources/SCsub');
 SConscript('io/SCsub');
+SConscript('ai/SCsub');
 
 
 lib = env.Library("scene",env.scene_sources)

@@ -182,6 +182,8 @@
 
 #include "scene/3d/visibility_notifier.h"
 
+#include "scene/ai/ai.h"
+
 #ifndef _3D_DISABLED
 #include "scene/3d/camera.h"
 
@@ -515,6 +517,8 @@ void register_scene_types() {
 	ObjectTypeDB::register_virtual_type<ShaderGraph>();
 	ObjectTypeDB::register_type<CanvasItemShader>();
 	ObjectTypeDB::register_type<CanvasItemShaderGraph>();
+
+	ObjectTypeDB::register_type<AI>();
 
 #ifndef _3D_DISABLED
 	ObjectTypeDB::register_type<Mesh>();
