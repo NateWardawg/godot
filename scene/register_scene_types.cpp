@@ -183,6 +183,9 @@
 #include "scene/3d/visibility_notifier.h"
 
 #include "scene/ai/ai.h"
+#include "scene/ai/behavior_tree/ai_composite_node.h"
+#include "scene/ai/behavior_tree/ai_decorator_node.h"
+#include "scene/ai/behavior_tree/ai_leaf_node.h"
 
 #ifndef _3D_DISABLED
 #include "scene/3d/camera.h"
@@ -518,7 +521,10 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<CanvasItemShader>();
 	ObjectTypeDB::register_type<CanvasItemShaderGraph>();
 
-	ObjectTypeDB::register_type<AI>();
+	ObjectTypeDB::register_type<AIBehaviorTree>();
+	ObjectTypeDB::register_type<AICompositeNode>();
+	ObjectTypeDB::register_type<AIDecoratorNode>();
+	ObjectTypeDB::register_type<AILeafNode>();
 
 #ifndef _3D_DISABLED
 	ObjectTypeDB::register_type<Mesh>();
