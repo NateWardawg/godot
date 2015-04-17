@@ -1,6 +1,6 @@
 
-#ifndef AI_BEHAVIOR_TREE_H
-#define AI_BEHAVIOR_TREE_H
+#ifndef BEHAVIOR_TREE_H
+#define BEHAVIOR_TREE_H
 
 #include "scene/main/node.h"
 #include "scene/ai/ai.h"
@@ -8,9 +8,9 @@
 #include "scene/3d/spatial.h"
 
 
-class AIBehaviorTree : public AI {
+class BehaviorTree : public AI {
 
-	OBJ_TYPE( AIBehaviorTree, AI )
+	OBJ_TYPE( BehaviorTree, AI )
 	OBJ_CATEGORY("AI")
 
 protected:
@@ -26,4 +26,4 @@ public:
 	void set_value(int newValue) { value = newValue; }
 };
 
-#endif // AI_BEHAVIOR_TREE_H
+#endif // BEHAVIOR_TREE_H

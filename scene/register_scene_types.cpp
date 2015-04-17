@@ -183,9 +183,9 @@
 #include "scene/3d/visibility_notifier.h"
 
 #include "scene/ai/ai.h"
-#include "scene/ai/behavior_tree/composites/ai_composite_node.h"
-#include "scene/ai/behavior_tree/decorators/ai_decorator_node.h"
-#include "scene/ai/behavior_tree/leaves/ai_leaf_node.h"
+#include "scene/ai/behavior_tree/composites/bt_sequence_node.h"
+#include "scene/ai/behavior_tree/decorators/bt_inverter_node.h"
+#include "scene/ai/behavior_tree/leaves/bt_move_node.h"
 
 #ifndef _3D_DISABLED
 #include "scene/3d/camera.h"
@@ -521,10 +521,9 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<CanvasItemShader>();
 	ObjectTypeDB::register_type<CanvasItemShaderGraph>();
 
-	ObjectTypeDB::register_type<AIBehaviorTree>();
-	ObjectTypeDB::register_type<AICompositeNode>();
-	ObjectTypeDB::register_type<AIDecoratorNode>();
-	ObjectTypeDB::register_type<AILeafNode>();
+	ObjectTypeDB::register_type<BTSequenceNode>();
+	ObjectTypeDB::register_type<BTInverterNode>();
+	ObjectTypeDB::register_type<BTMoveNode>();
 
 #ifndef _3D_DISABLED
 	ObjectTypeDB::register_type<Mesh>();
