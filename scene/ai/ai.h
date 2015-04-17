@@ -11,7 +11,6 @@ class AI : public Node {
 	OBJ_TYPE( AI, Node )
 	OBJ_CATEGORY("AI")
 
-
 };
 
 #endif
