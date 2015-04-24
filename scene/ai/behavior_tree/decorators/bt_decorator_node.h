@@ -2,17 +2,23 @@
 #ifndef BT_DECORATOR_NODE_H
 #define BT_DECORATOR_NODE_H
 
-#include "../behavior_tree.h"
+#include "../core/behavior_tree.h"
+#include "../leaves/bt_leaf_node.h"
+#include "../bt_node.h"
 
 
-class BTDecoratorNode : public BehaviorTree {
+class BTDecoratorNode : public BehaviorTreeNode {
 
-	OBJ_TYPE( BTDecoratorNode, BehaviorTree )
+	OBJ_TYPE( BTDecoratorNode, BehaviorTreeNode )
 	OBJ_CATEGORY("AI")
 
 protected:
 
+	BTLeafNode *leaf_node;
+
 	void _notification(int p_what);
+
+	void update_child_nodes();
 
 };
 

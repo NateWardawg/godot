@@ -183,6 +183,8 @@
 #include "scene/3d/visibility_notifier.h"
 
 #include "scene/ai/ai.h"
+#include "scene/ai/behavior_tree/agents/bt_agent_2d.h"
+#include "scene/ai/behavior_tree/agents/bt_agent_3d.h"
 #include "scene/ai/behavior_tree/composites/bt_sequence_node.h"
 #include "scene/ai/behavior_tree/decorators/bt_inverter_node.h"
 #include "scene/ai/behavior_tree/leaves/bt_move_node.h"
@@ -521,6 +523,8 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<CanvasItemShader>();
 	ObjectTypeDB::register_type<CanvasItemShaderGraph>();
 
+	ObjectTypeDB::register_type<BTAgent2D>();
+	ObjectTypeDB::register_type<BTAgent3D>();
 	ObjectTypeDB::register_type<BTSequenceNode>();
 	ObjectTypeDB::register_type<BTInverterNode>();
 	ObjectTypeDB::register_type<BTMoveNode>();

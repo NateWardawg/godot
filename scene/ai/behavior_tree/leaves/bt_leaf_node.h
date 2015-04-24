@@ -2,12 +2,13 @@
 #ifndef BT_LEAF_NODE_H
 #define BT_LEAF_NODE_H
 
-#include "../behavior_tree.h"
+#include "../core/behavior_tree.h"
+#include "../bt_node.h"
 
 
-class BTLeafNode : public BehaviorTree {
+class BTLeafNode : public BehaviorTreeNode {
 
-	OBJ_TYPE( BTLeafNode, BehaviorTree )
+	OBJ_TYPE( BTLeafNode, BehaviorTreeNode )
 	OBJ_CATEGORY("AI")
 
 protected:

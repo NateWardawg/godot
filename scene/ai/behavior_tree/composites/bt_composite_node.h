@@ -2,17 +2,24 @@
 #ifndef BT_COMPOSITE_NODE_H
 #define BT_COMPOSITE_NODE_H
 
-#include "../behavior_tree.h"
+#include "../bt_node.h"
 
 
-class BTCompositeNode : public BehaviorTree {
+class BTCompositeNode : public BehaviorTreeNode {
 
-	OBJ_TYPE( BTCompositeNode, BehaviorTree )
+	OBJ_TYPE( BTCompositeNode, BehaviorTreeNode )
 	OBJ_CATEGORY("AI")
 
 protected:
 
+	Vector<BehaviorTreeNode*> nodes;
+
 	void _notification(int p_what);
+
+public:
+
+	void update_child_nodes();
+
 };
 
 #endif // BT_COMPOSITE_NODE_H

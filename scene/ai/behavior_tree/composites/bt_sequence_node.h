@@ -1,7 +1,9 @@
+
 #ifndef BT_SEQUENCE_NODE_H
 #define BT_SEQUENCE_NODE_H
 
 #include "bt_composite_node.h"
+
 
 class BTSequenceNode : public BTCompositeNode
 {
@@ -11,6 +13,9 @@ class BTSequenceNode : public BTCompositeNode
 
 public:
 	BTSequenceNode();
+
+	virtual void update_composite_node() { print_line("BTSequenceNode"); }
+
 };
 
 #endif // BT_SEQUENCE_NODE_H
