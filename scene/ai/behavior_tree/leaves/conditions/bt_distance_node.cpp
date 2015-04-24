@@ -10,11 +10,14 @@ BTDistanceNode::BTDistanceNode() {
 void BTDistanceNode::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("get_distance"),&BTDistanceNode::get_distance);
 	ObjectTypeDB::bind_method(_MD("set_distance"),&BTDistanceNode::set_distance);
+	ObjectTypeDB::bind_method(_MD("get_target_group"),&BTDistanceNode::get_target_group);
+	ObjectTypeDB::bind_method(_MD("set_target_group"),&BTDistanceNode::set_target_group);
 	ObjectTypeDB::bind_method(_MD("add_target"),&BTDistanceNode::_add_target);
 	ObjectTypeDB::bind_method(_MD("remove_target"),&BTDistanceNode::_remove_target);
 	ObjectTypeDB::bind_method(_MD("find_target"),&BTDistanceNode::_find_target);
 
 	ADD_PROPERTY( PropertyInfo(Variant::REAL,"distance"), _SCS("set_distance"), _SCS("get_distance") );
+	ADD_PROPERTY( PropertyInfo(Variant::STRING,"target_group"), _SCS("set_target_group"), _SCS("get_target_group") );
 }
 
 
