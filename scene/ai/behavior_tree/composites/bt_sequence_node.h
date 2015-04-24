@@ -12,9 +12,8 @@ class BTSequenceNode : public BTCompositeNode
 	OBJ_CATEGORY("AI")
 
 public:
-	BTSequenceNode();
 
-	virtual void update_composite_node() { print_line("BTSequenceNode"); }
+	virtual bool get_result();
 
 };
 

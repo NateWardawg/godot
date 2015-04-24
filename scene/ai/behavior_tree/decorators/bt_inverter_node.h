@@ -10,7 +10,9 @@ class BTInverterNode : public BTDecoratorNode
 	OBJ_CATEGORY("AI")
 
 public:
-	BTInverterNode();
+
+	bool get_result() { return true; }
+
 };
 
 #endif // BT_INVERTER_NODE_H

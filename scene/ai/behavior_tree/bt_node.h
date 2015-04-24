@@ -11,9 +11,11 @@ class BehaviorTreeNode : public AI {
 
 public:
 
+	static void _bind_methods();
 
 	virtual void update_child_nodes() {}
 
+	virtual bool get_result() = 0;
 
 	template<class T>
 	Vector<BehaviorTreeNode*> get_child_nodes_by_type() {

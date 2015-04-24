@@ -3,6 +3,3 @@ Import('env')
 env.add_source_files(env.scene_sources,"*.cpp")
 
 Export('env')
-
-SConscript('actions/SCsub');
-SConscript('conditions/SCsub');

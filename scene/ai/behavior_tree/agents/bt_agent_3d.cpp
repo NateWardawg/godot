@@ -5,6 +5,7 @@
 
 void BTAgent3D::_notification(int p_what) {
 	switch(p_what) {
+		// Would like to have something like a NOTIFICATION_PRE_SCRIPT_INIT enumeration here instead
 		case NOTIFICATION_ENTER_TREE: {
 			update_behavior_tree();
 		} break;

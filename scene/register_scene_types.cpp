@@ -187,7 +187,9 @@
 #include "scene/ai/behavior_tree/agents/bt_agent_3d.h"
 #include "scene/ai/behavior_tree/composites/bt_sequence_node.h"
 #include "scene/ai/behavior_tree/decorators/bt_inverter_node.h"
-#include "scene/ai/behavior_tree/leaves/bt_move_node.h"
+#include "scene/ai/behavior_tree/leaves/actions/bt_move_node.h"
+#include "scene/ai/behavior_tree/leaves/conditions/bt_withindistance_node.h"
+#include "scene/ai/behavior_tree/leaves/conditions/bt_beyonddistance_node.h"
 
 #ifndef _3D_DISABLED
 #include "scene/3d/camera.h"
@@ -528,6 +530,8 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<BTSequenceNode>();
 	ObjectTypeDB::register_type<BTInverterNode>();
 	ObjectTypeDB::register_type<BTMoveNode>();
+	ObjectTypeDB::register_type<BTWithinDistanceNode>();
+	ObjectTypeDB::register_type<BTBeyondDistanceNode>();
 
 #ifndef _3D_DISABLED
 	ObjectTypeDB::register_type<Mesh>();
