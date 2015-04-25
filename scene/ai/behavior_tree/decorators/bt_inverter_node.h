@@ -9,9 +9,9 @@ class BTInverterNode : public BTDecoratorNode
 	OBJ_TYPE( BTInverterNode, BTDecoratorNode )
 	OBJ_CATEGORY("AI")
 
-public:
+protected:
 
-	bool get_result() { return true; }
+	virtual bool get_result() { return !leaf_node->process_logic(); }
 
 };
 
