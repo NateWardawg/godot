@@ -14,6 +14,7 @@ private:
 
 public:
 	void set_root_node(BTCompositeNode *p_root_node) { root_node = p_root_node; }
+	BTCompositeNode *get_root_node() { return root_node; }
 	void update_behavior_tree();
 };
 

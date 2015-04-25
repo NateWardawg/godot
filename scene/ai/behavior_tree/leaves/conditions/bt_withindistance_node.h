@@ -13,7 +13,7 @@ class BTWithinDistanceNode : public BTDistanceNode
 
 protected:
 
-	virtual bool check_distance(real_t check_distance, real_t target_distance) { return check_distance <= target_distance; }
+	virtual bool _check_distance(real_t check_distance, real_t target_distance) { return check_distance <= target_distance; }
 
 };
 

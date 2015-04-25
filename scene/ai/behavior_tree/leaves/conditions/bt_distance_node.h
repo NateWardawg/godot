@@ -19,7 +19,7 @@ protected:
 	real_t distance;
 	String target_group;
 
-	virtual bool check_distance(real_t check_distance, real_t target_distance) = 0;
+	virtual bool _check_distance(real_t check_distance, real_t target_distance) = 0;
 
 public:
 
@@ -30,13 +30,12 @@ public:
 	real_t get_distance() { return distance; }
 	void set_distance(real_t p_distance) { distance = p_distance; }
 
-
-	String get_target_group() { return target_group; }
+	const String get_target_group() { return target_group; }
 	void set_target_group(String p_group) { target_group = p_group; }
 
-	void _add_target(Node* target);
-	void _remove_target(Node* target);
-	int _find_target(Node* target);
+	void add_target(Node* target);
+	void remove_target(Node* target);
+	int find_target(Node* target);
 
 	Vector<Spatial*> targets;
 
