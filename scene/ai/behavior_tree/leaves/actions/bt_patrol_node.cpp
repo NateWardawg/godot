@@ -45,7 +45,7 @@ bool BTPatrolNode::_check_points() {
 	real_t sqr_distance = distance * distance;
 
 	if ( patrol_targets.size() > 0 ) {
-		real_t check_dist = navigator->get_translation().distance_squared_to(patrol_targets[current_patrol_index]->get_translation());
+		real_t check_dist = _get_distance_to_node(patrol_targets[current_patrol_index]);
 
 		if ( check_dist < sqr_distance ) {
 			current_patrol_index++;
@@ -57,19 +57,6 @@ bool BTPatrolNode::_check_points() {
 
 	print_line("Patrol: False");
 	return false;
-}
-
-
-void BTPatrolNode::add_target(Node* target) {
-	int target_index = find_target(target);
-
-	if ( target_index == -1 ) {
-		Spatial* spatial = dynamic_cast<Spatial*>(target);
-
-		if ( spatial != NULL ) {
-			patrol_targets.insert(patrol_targets.size(), spatial);
-		}
-	}
 }
 
 
