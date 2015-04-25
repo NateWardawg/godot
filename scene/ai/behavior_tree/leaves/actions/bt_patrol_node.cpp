@@ -44,10 +44,14 @@ void BTPatrolNode::_correct_patrol_index() {
 bool BTPatrolNode::_check_points() {
 	real_t sqr_distance = distance * distance;
 
+	if ( navigator == NULL ) {
+		return true;
+	}
+
 	if ( patrol_targets.size() > 0 ) {
 		real_t check_dist = _get_distance_to_node(patrol_targets[current_patrol_index]);
 
-		if ( check_dist < sqr_distance ) {
+		if ( check_dist <= sqr_distance ) {
 			current_patrol_index++;
 			_correct_patrol_index();
 			print_line("Patrol: True");
