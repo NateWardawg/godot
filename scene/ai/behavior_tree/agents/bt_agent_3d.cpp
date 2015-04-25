@@ -17,6 +17,8 @@ void BTAgent3D::_notification(int p_what) {
 
 void BTAgent3D::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("update_behavior_tree"),&BTAgent3D::update_behavior_tree);
+
+	BIND_VMETHOD( MethodInfo("_test_func") );
 }
 
 
@@ -34,5 +36,9 @@ void BTAgent3D::update_behavior_tree() {
 			data.behavior_tree.update_behavior_tree();
 			break;
 		}
+	}
+
+	if (get_script_instance()) {
+		get_script_instance()->call_multilevel_reversed("_test_func",NULL,0);
 	}
 }
