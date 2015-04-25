@@ -54,12 +54,10 @@ bool BTPatrolNode::_check_points() {
 		if ( check_dist <= sqr_distance ) {
 			current_patrol_index++;
 			_correct_patrol_index();
-			print_line("Patrol: True");
 			return true;
 		}
 	}
 
-	print_line("Patrol: False");
 	return false;
 }
 

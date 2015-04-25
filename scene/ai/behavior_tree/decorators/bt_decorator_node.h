@@ -18,7 +18,9 @@ protected:
 
 	void _notification(int p_what);
 
-	void update_child_nodes();
+public:
+
+	virtual void update_child_nodes();
 
 };
 
