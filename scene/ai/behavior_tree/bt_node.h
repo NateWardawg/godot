@@ -9,13 +9,30 @@ class BehaviorTreeNode : public AI {
 	OBJ_TYPE( BehaviorTreeNode, AI )
 	OBJ_CATEGORY("AI")
 
+protected:
+
+	virtual bool get_result() = 0;
+
 public:
+
+	bool process_logic() {
+		bool result = get_result();
+
+		if (get_script_instance()) {
+			if ( result ) {
+				get_script_instance()->call_multilevel_reversed("_success",NULL,0);
+			}
+			else {
+				get_script_instance()->call_multilevel_reversed("_running",NULL,0);
+			}
+		}
+
+		return result;
+	}
 
 	static void _bind_methods();
 
 	virtual void update_child_nodes() {}
-
-	virtual bool get_result() = 0;
 
 	template<class T>
 	Vector<BehaviorTreeNode*> get_child_nodes_by_type() {

@@ -9,7 +9,7 @@ void BTAgent3D::_notification(int p_what) {
 			update_behavior_tree();
 		} break;
 		case NOTIFICATION_PROCESS: {
-			data.behavior_tree.get_root_node()->get_result();
+			data.behavior_tree.get_root_node()->process_logic();
 		} break;
 	}
 }
@@ -17,8 +17,6 @@ void BTAgent3D::_notification(int p_what) {
 
 void BTAgent3D::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("update_behavior_tree"),&BTAgent3D::update_behavior_tree);
-
-	BIND_VMETHOD( MethodInfo("_test_func") );
 }
 
 
