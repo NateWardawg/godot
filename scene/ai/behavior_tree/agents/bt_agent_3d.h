@@ -22,6 +22,7 @@ public:
 	void _notification(int p_what);
 	void set_behavior_tree(const BehaviorTree& p_behavior_tree);
 	void update_behavior_tree();
+	void notify_target_changed(Node* target);
 
 };
 

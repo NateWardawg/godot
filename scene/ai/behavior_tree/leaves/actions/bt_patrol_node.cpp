@@ -17,6 +17,12 @@ void BTPatrolNode::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("add_target"),&BTPatrolNode::add_target);
 	ObjectTypeDB::bind_method(_MD("remove_target"),&BTPatrolNode::remove_target);
 	ObjectTypeDB::bind_method(_MD("find_target"),&BTPatrolNode::find_target);
+	ObjectTypeDB::bind_method(_MD("get_target_count"),&BTPatrolNode::get_target_count);
+	ObjectTypeDB::bind_method(_MD("get_targets"),&BTPatrolNode::get_targets);
+	ObjectTypeDB::bind_method(_MD("get_target", "idx"),&BTPatrolNode::get_target);
+	ObjectTypeDB::bind_method(_MD("get_current_target"),&BTPatrolNode::get_current_target);
+	ObjectTypeDB::bind_method(_MD("get_current_target_index"),&BTPatrolNode::get_current_target_index);
+	ObjectTypeDB::bind_method(_MD("set_current_target_index", "index"),&BTPatrolNode::set_current_target_index);
 
 	ADD_PROPERTY( PropertyInfo(Variant::STRING,"target_patrol_group"), _SCS("set_target_group"), _SCS("get_target_group") );
 	ADD_PROPERTY( PropertyInfo(Variant::REAL,"distance"), _SCS("set_distance"), _SCS("get_distance") );
@@ -36,7 +42,7 @@ void BTPatrolNode::_init_patrol_points() {
 }
 
 
-void BTPatrolNode::_correct_patrol_index() {
+inline void BTPatrolNode::_correct_patrol_index() {
 	current_patrol_index = current_patrol_index % patrol_targets.size();
 }
 
@@ -52,8 +58,17 @@ bool BTPatrolNode::_check_points() {
 		real_t check_dist = _get_distance_to_node(patrol_targets[current_patrol_index]);
 
 		if ( check_dist <= sqr_distance ) {
+			Node* current_target = get_current_target();
+			Node* new_target;
+
 			current_patrol_index++;
 			_correct_patrol_index();
+			new_target = get_current_target();
+
+			if ( current_target != new_target ) {
+				notify_target_changed(new_target);
+			}
+
 			return true;
 		}
 	}
@@ -80,3 +95,49 @@ int BTPatrolNode::find_target(Node* target) {
 
 	return -1;
 }
+
+
+int BTPatrolNode::get_target_count() const {
+	return patrol_targets.size();
+}
+
+
+Array BTPatrolNode::get_targets() const {
+
+	Array arr;
+	int cc = get_target_count();
+	arr.resize(cc);
+	for(int i=0;i<cc;i++)
+		arr[i]=get_target(i);
+
+	return arr;
+}
+
+
+Node* BTPatrolNode::get_target(int p_index) const {
+
+	ERR_FAIL_INDEX_V( p_index, patrol_targets.size(), NULL );
+
+	return patrol_targets[p_index];
+}
+
+
+Node* BTPatrolNode::get_current_target() const {
+
+	return patrol_targets[current_patrol_index];
+}
+
+
+int BTPatrolNode::get_current_target_index() const {
+
+	return current_patrol_index;
+}
+
+
+void BTPatrolNode::set_current_target_index(int p_index) {
+
+	current_patrol_index = p_index;
+
+	_correct_patrol_index();
+}
+

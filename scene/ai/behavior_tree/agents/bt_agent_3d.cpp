@@ -17,6 +17,8 @@ void BTAgent3D::_notification(int p_what) {
 
 void BTAgent3D::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("update_behavior_tree"),&BTAgent3D::update_behavior_tree);
+
+	BIND_VMETHOD( MethodInfo("_target_changed", PropertyInfo(Variant::OBJECT,"target",PROPERTY_HINT_RESOURCE_TYPE,"Spatial")) )
 }
 
 
@@ -35,8 +37,11 @@ void BTAgent3D::update_behavior_tree() {
 			break;
 		}
 	}
+}
 
+
+void BTAgent3D::notify_target_changed(Node* target) {
 	if (get_script_instance()) {
-		get_script_instance()->call_multilevel_reversed("_test_func",NULL,0);
+		get_script_instance()->call("_target_changed", target);
 	}
 }

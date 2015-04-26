@@ -26,6 +26,8 @@ protected:
 
 	virtual const String _incorrect_node_type_warning() = 0;
 
+	virtual void notify_target_changed(Node* new_target) = 0;
+
 	const Node* _get_navigator() { return navigator; }
 
 	template<class T>
@@ -55,6 +57,8 @@ protected:
 
 	virtual float _get_distance_to_node(Node* p_patrol_node) = 0;
 
+	Vector<Node*> patrol_targets;
+
 public:
 
 	static void _bind_methods();
@@ -76,7 +80,12 @@ public:
 	void remove_target(Node* target);
 	int find_target(Node* target);
 
-	Vector<Node*> patrol_targets;
+	int get_target_count() const;
+	Array get_targets() const;
+	Node *get_target(int p_index) const;
+	Node* get_current_target() const;
+	int get_current_target_index() const;
+	void set_current_target_index(int p_index);
 
 	BTPatrolNode();
 

@@ -29,6 +29,13 @@ public:
 	virtual const Node* get_navigator() { return _get_navigator(); }
 	virtual void set_navigator(Node* p_navigator) { _set_navigator<BTAgent3D>(p_navigator); }
 
+	virtual void notify_target_changed(Node* new_target) {
+		if ( navigator != NULL ) {
+			BTAgent3D* navigator3D = dynamic_cast<BTAgent3D*>(navigator);
+			navigator3D->notify_target_changed(new_target);
+		}
+	}
+
 	virtual void add_target(Node* target) { _add_target<Spatial>(target); }
 
 	BTPatrolNode3D();
