@@ -25,7 +25,7 @@ public:
 
 	static void _bind_methods();
 
-	virtual int get_result() { return check_distances(); }
+	virtual int check_state() { return check_distances(); }
 
 	real_t get_distance() { return distance; }
 	void set_distance(real_t p_distance) { distance = p_distance; }

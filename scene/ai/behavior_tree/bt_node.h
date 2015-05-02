@@ -11,7 +11,7 @@ class BehaviorTreeNode : public AI {
 
 protected:
 
-	virtual int get_result() = 0;
+	virtual int check_state() = 0;
 
 public:
 

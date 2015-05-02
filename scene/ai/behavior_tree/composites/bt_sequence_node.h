@@ -15,7 +15,7 @@ class BTSequenceNode : public BTCompositeNode
 
 public:
 
-	virtual int get_result();
+	virtual int check_state();
 
 	virtual void init_composite() { current_node = 0; }
 

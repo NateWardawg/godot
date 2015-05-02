@@ -14,6 +14,7 @@ class BTLeafNode : public BehaviorTreeNode {
 protected:
 
 	void _notification(int p_what);
+
 };
 
 #endif // BT_LEAF_NODE_H

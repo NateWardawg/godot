@@ -59,7 +59,7 @@ protected:
 
 	Vector<Node*> patrol_targets;
 
-	int get_result() { return _check_points(); }
+	int check_state() { return _check_points(); }
 
 public:
 

@@ -10,7 +10,7 @@ class BTCustomLeafNode : public BTLeafNode
 	OBJ_TYPE( BTCustomLeafNode, BTLeafNode )
 	OBJ_CATEGORY("AI")
 
-	virtual int get_result() { return state; }
+	virtual int check_state() { return state; }
 	bool get_state() const { return state; }
 	void set_state(const int p_state) { state = p_state; }
 

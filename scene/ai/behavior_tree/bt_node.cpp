@@ -1,7 +1,7 @@
 #include "bt_node.h"
 
 void BehaviorTreeNode::_bind_methods() {
-	ObjectTypeDB::bind_method(_MD("get_result"),&BehaviorTreeNode::get_result);
+	ObjectTypeDB::bind_method(_MD("check_result"),&BehaviorTreeNode::check_state);
 	BIND_VMETHOD( MethodInfo("_success") );
 	BIND_VMETHOD( MethodInfo("_running") );
 	BIND_VMETHOD( MethodInfo("_failed") );
@@ -9,7 +9,7 @@ void BehaviorTreeNode::_bind_methods() {
 
 
 int BehaviorTreeNode::process_logic() {
-	int result = get_result();
+	int result = check_state();
 
 	if (get_script_instance()) {
 		if ( result == SUCCESS ) {
