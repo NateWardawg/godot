@@ -21,6 +21,11 @@ protected:
 public:
 
 	virtual void update_child_nodes();
+	virtual void reset_node() {
+		if ( leaf_node != NULL ) {
+			leaf_node->reset_node();
+		}
+	}
 
 };
 

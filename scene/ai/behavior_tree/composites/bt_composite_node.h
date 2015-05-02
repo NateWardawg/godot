@@ -20,6 +20,7 @@ public:
 
 	void update_child_nodes();
 
+	virtual void reset_node();
 	virtual void init_composite() {}
 
 	BTCompositeNode();

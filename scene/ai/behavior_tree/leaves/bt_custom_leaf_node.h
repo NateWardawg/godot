@@ -18,6 +18,10 @@ class BTCustomLeafNode : public BTLeafNode
 
 public:
 
+	virtual void reset_node() {
+		state = RUNNING;
+	}
+
 	BTCustomLeafNode();
 
 };

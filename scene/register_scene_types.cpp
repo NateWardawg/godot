@@ -191,6 +191,7 @@
 #include "scene/ai/behavior_tree/leaves/actions/bt_patrol_node_3d.h"
 #include "scene/ai/behavior_tree/leaves/conditions/bt_withindistance_node.h"
 #include "scene/ai/behavior_tree/leaves/conditions/bt_beyonddistance_node.h"
+#include "scene/ai/behavior_tree/leaves/actions/bt_wait_node.h"
 
 #ifndef _3D_DISABLED
 #include "scene/3d/camera.h"
@@ -534,6 +535,7 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<BTPatrolNode3D>();
 	ObjectTypeDB::register_type<BTWithinDistanceNode>();
 	ObjectTypeDB::register_type<BTBeyondDistanceNode>();
+	ObjectTypeDB::register_type<BTWaitNode>();
 
 #ifndef _3D_DISABLED
 	ObjectTypeDB::register_type<Mesh>();

@@ -9,7 +9,7 @@ void BTDecoratorNode::update_child_nodes() {
 	int node_count = nodes.size();
 
 	if ( node_count == 0 ) {
-		print_line("Warning: a Decorator node needs one (and only one) Leaf node. '" + get_name() + "' will automatically return true");
+		print_line("Warning: a Decorator node needs one (and only one) Leaf node. '" + get_name() + "' will automatically return SUCCESS");
 		leaf_node = NULL;
 	}
 	else {

@@ -27,6 +27,8 @@ public:
 
 	virtual int check_state() { return check_distances(); }
 
+	virtual void reset_node() {}
+
 	real_t get_distance() { return distance; }
 	void set_distance(real_t p_distance) { distance = p_distance; }
 

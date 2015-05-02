@@ -6,7 +6,6 @@
 
 BTCompositeNode::BTCompositeNode() {
 	init_composite();
-	print_line("BTCompositeNode");
 }
 
 
@@ -25,5 +24,15 @@ void BTCompositeNode::update_child_nodes() {
 
 	for ( int i = 0; i < node_count; i++ ) {
 		nodes[i]->update_child_nodes();
+	}
+}
+
+
+void BTCompositeNode::reset_node()
+{
+	init_composite();
+
+	for ( int i = 0; i < nodes.size(); i++ ) {
+		nodes[i]->reset_node();
 	}
 }

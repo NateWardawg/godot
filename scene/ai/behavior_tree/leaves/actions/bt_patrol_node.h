@@ -58,14 +58,17 @@ protected:
 	virtual float _get_distance_to_node(Node* p_patrol_node) = 0;
 
 	Vector<Node*> patrol_targets;
+	Node* current_target;
 
-	int check_state() { return _check_points(); }
+	int check_state();
 
 public:
 
 	static void _bind_methods();
 
 	virtual void update_child_nodes() { _init_patrol_points(); }
+
+	virtual void reset_node();
 
 	virtual const Node* get_navigator() = 0;
 	virtual void set_navigator(Node* p_navigator) = 0;

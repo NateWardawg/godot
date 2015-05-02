@@ -5,6 +5,10 @@ void BehaviorTreeNode::_bind_methods() {
 	BIND_VMETHOD( MethodInfo("_success") );
 	BIND_VMETHOD( MethodInfo("_running") );
 	BIND_VMETHOD( MethodInfo("_failed") );
+
+	BIND_CONSTANT( FAILED );
+	BIND_CONSTANT( RUNNING );
+	BIND_CONSTANT( SUCCESS );
 }
 
 

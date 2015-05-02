@@ -4,6 +4,7 @@
 
 BTPatrolNode::BTPatrolNode() {
 	distance = 1.0;
+	current_target = NULL;
 }
 
 
@@ -28,6 +29,11 @@ void BTPatrolNode::_bind_methods() {
 	ADD_PROPERTY( PropertyInfo(Variant::REAL,"distance"), _SCS("set_distance"), _SCS("get_distance") );
 }
 
+void BTPatrolNode::reset_node() {
+	current_patrol_index = 0;
+	current_target = NULL;
+}
+
 
 void BTPatrolNode::_init_patrol_points() {
 	if ( get_tree() != NULL ) {
@@ -48,6 +54,7 @@ inline void BTPatrolNode::_correct_patrol_index() {
 
 
 int BTPatrolNode::_check_points() {
+
 	if ( navigator == NULL ) {
 		return FAILED;
 	}
@@ -57,22 +64,43 @@ int BTPatrolNode::_check_points() {
 		real_t sqr_distance = distance * distance;
 
 		if ( check_dist <= sqr_distance ) {
-			Node* current_target = get_current_target();
 			Node* new_target;
 
 			current_patrol_index++;
+
+			if ( current_patrol_index >= patrol_targets.size() ) {
+
+				return SUCCESS;
+			}
+
 			_correct_patrol_index();
+
 			new_target = get_current_target();
 
 			if ( current_target != new_target ) {
+				current_target = new_target;
 				notify_target_changed(new_target);
 			}
-
-			return SUCCESS;
 		}
 	}
 
 	return RUNNING;
+}
+
+
+int BTPatrolNode::check_state() {
+	if ( patrol_targets.size() > 0 ) {
+		if ( current_target == NULL ) {
+			current_target = patrol_targets[0];
+			notify_target_changed(current_target);
+			return RUNNING;
+		}
+		else {
+			return _check_points();
+		}
+	}
+
+	return SUCCESS;
 }
 
 
@@ -139,4 +167,3 @@ void BTPatrolNode::set_current_target_index(int p_index) {
 
 	_correct_patrol_index();
 }
-

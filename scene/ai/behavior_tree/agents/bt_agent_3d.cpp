@@ -7,15 +7,12 @@ void BTAgent3D::_notification(int p_what) {
 	switch(p_what) {
 		case NOTIFICATION_READY: {
 			update_behavior_tree();
-			data.behavior_tree.get_root_node()->init_composite();
+			data.behavior_tree.get_root_node()->reset_node();
 		} break;
 		case NOTIFICATION_PROCESS: {
 			if ( data.behavior_tree.get_root_node()->process_logic() == BehaviorTreeNode::SUCCESS ) {
-				data.behavior_tree.get_root_node()->init_composite();
+				data.behavior_tree.get_root_node()->reset_node();
 			}
-			/*if ( data.behavior_tree.get_root_node()->process_logic() ) {
-				data.behavior_tree.get_root_node()->init_composite();
-			}*/
 		} break;
 	}
 }
