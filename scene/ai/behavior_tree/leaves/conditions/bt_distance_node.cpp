@@ -21,7 +21,7 @@ void BTDistanceNode::_bind_methods() {
 }
 
 
-bool BTDistanceNode::check_distances() {
+int BTDistanceNode::check_distances() {
 	real_t sqr_distance = distance * distance;
 	int target_count;
 	Vector3 zero;
@@ -39,11 +39,11 @@ bool BTDistanceNode::check_distances() {
 		real_t check_dist = zero.distance_squared_to(targets[i]->get_translation());
 
 		if ( _check_distance(check_dist, sqr_distance) ) {
-			return true;
+			return SUCCESS;
 		}
 	}
 
-	return false;
+	return FAILED;
 }
 
 

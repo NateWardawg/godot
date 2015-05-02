@@ -47,15 +47,14 @@ inline void BTPatrolNode::_correct_patrol_index() {
 }
 
 
-bool BTPatrolNode::_check_points() {
-	real_t sqr_distance = distance * distance;
-
+int BTPatrolNode::_check_points() {
 	if ( navigator == NULL ) {
-		return true;
+		return FAILED;
 	}
 
 	if ( patrol_targets.size() > 0 ) {
 		real_t check_dist = _get_distance_to_node(patrol_targets[current_patrol_index]);
+		real_t sqr_distance = distance * distance;
 
 		if ( check_dist <= sqr_distance ) {
 			Node* current_target = get_current_target();
@@ -69,11 +68,11 @@ bool BTPatrolNode::_check_points() {
 				notify_target_changed(new_target);
 			}
 
-			return true;
+			return SUCCESS;
 		}
 	}
 
-	return false;
+	return RUNNING;
 }
 
 

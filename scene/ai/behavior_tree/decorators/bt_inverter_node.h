@@ -11,7 +11,7 @@ class BTInverterNode : public BTDecoratorNode
 
 protected:
 
-	virtual bool get_result() { return !leaf_node->process_logic(); }
+	virtual int get_result() { return -leaf_node->process_logic(); }
 
 };
 

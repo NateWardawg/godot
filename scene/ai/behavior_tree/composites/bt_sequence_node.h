@@ -11,9 +11,13 @@ class BTSequenceNode : public BTCompositeNode
 	OBJ_TYPE( BTSequenceNode, BTCompositeNode )
 	OBJ_CATEGORY("AI")
 
+	int current_node;
+
 public:
 
-	virtual bool get_result();
+	virtual int get_result();
+
+	virtual void init_composite() { current_node = 0; }
 
 };
 

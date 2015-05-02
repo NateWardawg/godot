@@ -3,6 +3,13 @@
 #include "bt_composite_node.h"
 
 
+
+BTCompositeNode::BTCompositeNode() {
+	init_composite();
+	print_line("BTCompositeNode");
+}
+
+
 void BTCompositeNode::_notification(int p_what) {}
 
 

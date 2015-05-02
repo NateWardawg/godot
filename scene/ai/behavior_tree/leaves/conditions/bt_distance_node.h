@@ -12,7 +12,7 @@ class BTDistanceNode : public BTConditionNode
 	OBJ_TYPE( BTDistanceNode, BTConditionNode )
 	OBJ_CATEGORY("AI")
 
-	bool check_distances();
+	int check_distances();
 
 protected:
 
@@ -25,7 +25,7 @@ public:
 
 	static void _bind_methods();
 
-	virtual bool get_result() { return check_distances(); }
+	virtual int get_result() { return check_distances(); }
 
 	real_t get_distance() { return distance; }
 	void set_distance(real_t p_distance) { distance = p_distance; }

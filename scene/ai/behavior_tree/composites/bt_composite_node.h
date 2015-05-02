@@ -20,6 +20,10 @@ public:
 
 	void update_child_nodes();
 
+	virtual void init_composite() {}
+
+	BTCompositeNode();
+
 };
 
 #endif // BT_COMPOSITE_NODE_H

@@ -16,7 +16,7 @@ class BTPatrolNode : public BTActionNode
 
 	void _init_patrol_points();
 	void _correct_patrol_index();
-	bool _check_points();
+	int _check_points();
 
 protected:
 
@@ -59,13 +59,13 @@ protected:
 
 	Vector<Node*> patrol_targets;
 
+	int get_result() { return _check_points(); }
+
 public:
 
 	static void _bind_methods();
 
 	virtual void update_child_nodes() { _init_patrol_points(); }
-
-	bool get_result() { return _check_points(); }
 
 	virtual const Node* get_navigator() = 0;
 	virtual void set_navigator(Node* p_navigator) = 0;

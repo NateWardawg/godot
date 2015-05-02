@@ -1,7 +1,6 @@
 #include "bt_agent_2d.h"
 
-BTAgent2D::BTAgent2D()
-{
+BTAgent2D::BTAgent2D() {
 }
 
 

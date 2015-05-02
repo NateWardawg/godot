@@ -186,6 +186,7 @@
 #include "scene/ai/behavior_tree/agents/bt_agent_2d.h"
 #include "scene/ai/behavior_tree/agents/bt_agent_3d.h"
 #include "scene/ai/behavior_tree/composites/bt_sequence_node.h"
+#include "scene/ai/behavior_tree/leaves/bt_custom_leaf_node.h"
 #include "scene/ai/behavior_tree/decorators/bt_inverter_node.h"
 #include "scene/ai/behavior_tree/leaves/actions/bt_patrol_node_3d.h"
 #include "scene/ai/behavior_tree/leaves/conditions/bt_withindistance_node.h"
@@ -528,6 +529,7 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<BTAgent2D>();
 	ObjectTypeDB::register_type<BTAgent3D>();
 	ObjectTypeDB::register_type<BTSequenceNode>();
+	ObjectTypeDB::register_type<BTCustomLeafNode>();
 	ObjectTypeDB::register_type<BTInverterNode>();
 	ObjectTypeDB::register_type<BTPatrolNode3D>();
 	ObjectTypeDB::register_type<BTWithinDistanceNode>();

@@ -11,24 +11,17 @@ class BehaviorTreeNode : public AI {
 
 protected:
 
-	virtual bool get_result() = 0;
+	virtual int get_result() = 0;
 
 public:
 
-	bool process_logic() {
-		bool result = get_result();
+	enum {
+		FAILED = -1,
+		RUNNING = 0,
+		SUCCESS = 1
+	};
 
-		if (get_script_instance()) {
-			if ( result ) {
-				get_script_instance()->call_multilevel_reversed("_success",NULL,0);
-			}
-			else {
-				get_script_instance()->call_multilevel_reversed("_running",NULL,0);
-			}
-		}
-
-		return result;
-	}
+	int process_logic();
 
 	static void _bind_methods();
 
