@@ -14,8 +14,6 @@ class BTWaitNode : public BTActionNode
 	real_t wait_time;
 	real_t time_remaining;
 
-	float a_func() { return get_process_delta_time(); }
-
 protected:
 
 	virtual int check_state();
