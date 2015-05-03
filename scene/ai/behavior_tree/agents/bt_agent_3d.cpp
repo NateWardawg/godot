@@ -10,7 +10,7 @@ void BTAgent3D::_notification(int p_what) {
 			data.behavior_tree.get_root_node()->reset_node();
 		} break;
 		case NOTIFICATION_PROCESS: {
-			if ( data.behavior_tree.get_root_node()->process_logic() == BehaviorTreeNode::SUCCESS ) {
+			if ( data.behavior_tree.get_root_node()->process_logic() != BehaviorTreeNode::RUNNING ) {
 				data.behavior_tree.get_root_node()->reset_node();
 			}
 		} break;
