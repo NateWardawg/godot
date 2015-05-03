@@ -25,3 +25,13 @@ int BTSequenceNode::check_state() {
 
 	return RUNNING;
 }
+
+
+void BTSequenceNode::init_composite() {
+	current_node = 0;
+}
+
+
+int BTSequenceNode::get_current_leaf_index() {
+	return current_node;
+}

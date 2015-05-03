@@ -19,9 +19,9 @@ public:
 
 	virtual int check_state();
 
-	virtual void init_composite() { current_node = 0; }
+	virtual void init_composite();
 
-	int get_current_leaf_index() { return current_node; }
+	int get_current_leaf_index();
 
 };
 
