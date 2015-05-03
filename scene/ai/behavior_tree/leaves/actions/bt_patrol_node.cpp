@@ -5,6 +5,7 @@
 BTPatrolNode::BTPatrolNode() {
 	distance = 1.0;
 	current_target = NULL;
+	navigator = NULL;
 }
 
 
