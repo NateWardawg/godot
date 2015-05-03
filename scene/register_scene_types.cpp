@@ -189,9 +189,10 @@
 #include "scene/ai/behavior_tree/leaves/bt_custom_leaf_node.h"
 #include "scene/ai/behavior_tree/decorators/bt_inverter_node.h"
 #include "scene/ai/behavior_tree/leaves/actions/bt_patrol_node_3d.h"
+#include "scene/ai/behavior_tree/leaves/actions/bt_wait_node.h"
+#include "scene/ai/behavior_tree/leaves/actions/bt_seek_node.h"
 #include "scene/ai/behavior_tree/leaves/conditions/bt_withindistance_node.h"
 #include "scene/ai/behavior_tree/leaves/conditions/bt_beyonddistance_node.h"
-#include "scene/ai/behavior_tree/leaves/actions/bt_wait_node.h"
 
 #ifndef _3D_DISABLED
 #include "scene/3d/camera.h"
@@ -302,7 +303,7 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<Popup>();
 	ObjectTypeDB::register_type<PopupPanel>();
 	ObjectTypeDB::register_type<MenuButton>();
-    ObjectTypeDB::register_type<CheckBox>();
+	ObjectTypeDB::register_type<CheckBox>();
 	ObjectTypeDB::register_type<CheckButton>();
 	ObjectTypeDB::register_type<ToolButton>();
 	ObjectTypeDB::register_type<Panel>();
@@ -398,6 +399,17 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<NavigationMesh>();
 	ObjectTypeDB::register_type<Navigation>();
 
+	ObjectTypeDB::register_type<BTAgent2D>();
+	ObjectTypeDB::register_type<BTAgent3D>();
+	ObjectTypeDB::register_type<BTSequenceNode>();
+	ObjectTypeDB::register_type<BTCustomLeafNode>();
+	ObjectTypeDB::register_type<BTInverterNode>();
+	ObjectTypeDB::register_type<BTWithinDistanceNode>();
+	ObjectTypeDB::register_type<BTBeyondDistanceNode>();
+	ObjectTypeDB::register_type<BTPatrolNode3D>();
+	ObjectTypeDB::register_type<BTWaitNode>();
+	ObjectTypeDB::register_type<BTSeekNode>();
+
 	OS::get_singleton()->yield(); //may take time to init
 
 	ObjectTypeDB::register_virtual_type<CollisionObject>();
@@ -431,7 +443,7 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<ConeTwistJoint>();
 	ObjectTypeDB::register_type<Generic6DOFJoint>();
 
-	//scenariofx	
+	//scenariofx
 
 	OS::get_singleton()->yield(); //may take time to init
 
@@ -527,16 +539,6 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<CanvasItemShader>();
 	ObjectTypeDB::register_type<CanvasItemShaderGraph>();
 
-	ObjectTypeDB::register_type<BTAgent2D>();
-	ObjectTypeDB::register_type<BTAgent3D>();
-	ObjectTypeDB::register_type<BTSequenceNode>();
-	ObjectTypeDB::register_type<BTCustomLeafNode>();
-	ObjectTypeDB::register_type<BTInverterNode>();
-	ObjectTypeDB::register_type<BTPatrolNode3D>();
-	ObjectTypeDB::register_type<BTWithinDistanceNode>();
-	ObjectTypeDB::register_type<BTBeyondDistanceNode>();
-	ObjectTypeDB::register_type<BTWaitNode>();
-
 #ifndef _3D_DISABLED
 	ObjectTypeDB::register_type<Mesh>();
 	ObjectTypeDB::register_virtual_type<Material>();
@@ -627,9 +629,9 @@ void register_scene_types() {
 }
 
 void unregister_scene_types() {
-	
+
 	clear_default_theme();
-	
+
 	memdelete( resource_loader_image );
 	memdelete( resource_loader_wav );
 	memdelete( resource_loader_bitmap );
