@@ -7,7 +7,10 @@ void BTAgent3D::_notification(int p_what) {
 	switch(p_what) {
 		case NOTIFICATION_READY: {
 			update_behavior_tree();
-			data.behavior_tree.get_root_node()->reset_node();
+
+			if ( data.behavior_tree.get_root_node() != NULL ) {
+				data.behavior_tree.get_root_node()->reset_node();
+			}
 		} break;
 		case NOTIFICATION_PROCESS: {
 			if ( data.behavior_tree.get_root_node()->process_logic() != BehaviorTreeNode::RUNNING ) {
@@ -32,7 +35,7 @@ void BTAgent3D::set_behavior_tree(const BehaviorTree& p_behavior_tree) {
 
 void BTAgent3D::update_behavior_tree() {
 	for ( int i = 0; i < get_child_count(); i++ ) {
-		BTCompositeNode* node = dynamic_cast<BTCompositeNode*>(get_child(i));
+		BehaviorTreeNode* node = dynamic_cast<BehaviorTreeNode*>(get_child(i));
 
 		if ( node != NULL ) {
 			data.behavior_tree.set_root_node(node);

@@ -14,18 +14,14 @@ class BTDecoratorNode : public BehaviorTreeNode {
 
 protected:
 
-	BTLeafNode *leaf_node;
+	BehaviorTreeNode *leaf_node;
 
 	void _notification(int p_what);
 
 public:
 
 	virtual void update_child_nodes();
-	virtual void reset_node() {
-		if ( leaf_node != NULL ) {
-			leaf_node->reset_node();
-		}
-	}
+	virtual void reset_node();
 
 };
 

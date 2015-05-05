@@ -4,18 +4,21 @@
 
 #include "scene/main/node.h"
 #include "scene/ai/ai.h"
-#include "../composites/bt_composite_node.h"
+#include "../bt_node.h"
 
 
 class BehaviorTree {
 
 private:
-	BTCompositeNode *root_node;
+	BehaviorTreeNode *root_node;
 
 public:
-	void set_root_node(BTCompositeNode *p_root_node) { root_node = p_root_node; }
-	BTCompositeNode *get_root_node() { return root_node; }
+	void set_root_node(BehaviorTreeNode *p_root_node) { root_node = p_root_node; }
+	BehaviorTreeNode *get_root_node() { return root_node; }
 	void update_behavior_tree();
+
+	BehaviorTree();
+
 };
 
 #endif // BEHAVIOR_TREE_H
