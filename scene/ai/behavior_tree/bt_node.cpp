@@ -1,8 +1,7 @@
 #include "bt_node.h"
 
 
-BehaviorTreeNode::BehaviorTreeNode()
-{
+BehaviorTreeNode::BehaviorTreeNode() {
 	state = RUNNING;
 }
 

@@ -13,7 +13,6 @@ protected:
 
 	int state;
 	virtual void execute() = 0;
-	virtual int get_result() { return state; }
 
 public:
 
@@ -29,6 +28,7 @@ public:
 
 	virtual void update_child_nodes() {}
 	virtual void reset_node();
+	virtual int get_result() { return state; }
 
 	BehaviorTreeNode();
 
