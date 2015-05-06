@@ -1,13 +1,13 @@
 #ifndef BT_PARALLEL_ALL_H
 #define BT_PARALLEL_ALL_H
 
-#include "bt_composite_node.h"
+#include "bt_composite.h"
 
 
-class BTParallelAll : public BTCompositeNode
+class BTParallelAll : public BTComposite
 {
 
-    OBJ_TYPE( BTParallelAll, BTCompositeNode )
+	OBJ_TYPE( BTParallelAll, BTComposite )
     OBJ_CATEGORY("AI")
 
 public:

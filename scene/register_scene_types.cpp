@@ -185,17 +185,17 @@
 #include "scene/ai/ai.h"
 #include "scene/ai/behavior_tree/agents/bt_agent_2d.h"
 #include "scene/ai/behavior_tree/agents/bt_agent_3d.h"
-#include "scene/ai/behavior_tree/composites/bt_sequence_node.h"
-#include "scene/ai/behavior_tree/composites/bt_selector_node.h"
+#include "scene/ai/behavior_tree/composites/bt_sequence.h"
+#include "scene/ai/behavior_tree/composites/bt_selector.h"
 #include "scene/ai/behavior_tree/composites/bt_parallel_all.h"
-#include "scene/ai/behavior_tree/leaves/bt_custom_leaf_node.h"
-#include "scene/ai/behavior_tree/decorators/bt_loop_node.h"
-#include "scene/ai/behavior_tree/decorators/bt_inverter_node.h"
-#include "scene/ai/behavior_tree/leaves/actions/bt_patrol_node_3d.h"
-#include "scene/ai/behavior_tree/leaves/actions/bt_wait_node.h"
-#include "scene/ai/behavior_tree/leaves/actions/bt_seek_node.h"
-#include "scene/ai/behavior_tree/leaves/conditions/bt_withindistance_node.h"
-#include "scene/ai/behavior_tree/leaves/conditions/bt_beyonddistance_node.h"
+#include "scene/ai/behavior_tree/leaves/bt_custom_leaf.h"
+#include "scene/ai/behavior_tree/decorators/bt_loop.h"
+#include "scene/ai/behavior_tree/decorators/bt_inverter.h"
+#include "scene/ai/behavior_tree/leaves/actions/bt_patrol_3d.h"
+#include "scene/ai/behavior_tree/leaves/actions/bt_wait.h"
+#include "scene/ai/behavior_tree/leaves/actions/bt_seek.h"
+#include "scene/ai/behavior_tree/leaves/conditions/bt_withindistance.h"
+#include "scene/ai/behavior_tree/leaves/conditions/bt_beyonddistance.h"
 
 #ifndef _3D_DISABLED
 #include "scene/3d/camera.h"
@@ -404,17 +404,17 @@ void register_scene_types() {
 
 	ObjectTypeDB::register_type<BTAgent2D>();
 	ObjectTypeDB::register_type<BTAgent3D>();
-	ObjectTypeDB::register_type<BTSequenceNode>();
-	ObjectTypeDB::register_type<BTSelectorNode>();
+	ObjectTypeDB::register_type<BTSequence>();
+	ObjectTypeDB::register_type<BTSelector>();
 	ObjectTypeDB::register_type<BTParallelAll>();
-	ObjectTypeDB::register_type<BTCustomLeafNode>();
-	ObjectTypeDB::register_type<BTLoopNode>();
-	ObjectTypeDB::register_type<BTInverterNode>();
-	ObjectTypeDB::register_type<BTWithinDistanceNode>();
-	ObjectTypeDB::register_type<BTBeyondDistanceNode>();
-	ObjectTypeDB::register_type<BTPatrolNode3D>();
-	ObjectTypeDB::register_type<BTWaitNode>();
-	ObjectTypeDB::register_type<BTSeekNode>();
+	ObjectTypeDB::register_type<BTCustomLeaf>();
+	ObjectTypeDB::register_type<BTLoop>();
+	ObjectTypeDB::register_type<BTInverter>();
+	ObjectTypeDB::register_type<BTWithinDistance>();
+	ObjectTypeDB::register_type<BTBeyondDistance>();
+	ObjectTypeDB::register_type<BTPatrol3D>();
+	ObjectTypeDB::register_type<BTWait>();
+	ObjectTypeDB::register_type<BTSeek>();
 
 	OS::get_singleton()->yield(); //may take time to init
 

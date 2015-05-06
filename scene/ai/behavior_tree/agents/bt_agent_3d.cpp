@@ -1,6 +1,5 @@
 #include "bt_agent_3d.h"
 #include "scene/main/node.h"
-#include "../composites/bt_composite_node.h"
 
 
 void BTAgent3D::_notification(int p_what) {
