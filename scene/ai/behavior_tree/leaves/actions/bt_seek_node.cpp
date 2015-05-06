@@ -18,7 +18,7 @@ void BTSeekNode::_bind_methods() {
 }
 
 
-int BTSeekNode::check_state()
+void BTSeekNode::execute()
 {
-	return RUNNING;
+	state = RUNNING;
 }

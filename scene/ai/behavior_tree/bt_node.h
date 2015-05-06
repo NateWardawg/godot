@@ -11,7 +11,9 @@ class BehaviorTreeNode : public AI {
 
 protected:
 
-	virtual int check_state() = 0;
+	int state;
+	virtual void execute() = 0;
+	virtual int get_result() { return state; }
 
 public:
 
@@ -26,7 +28,9 @@ public:
 	static void _bind_methods();
 
 	virtual void update_child_nodes() {}
-	virtual void reset_node() = 0;
+	virtual void reset_node();
+
+	BehaviorTreeNode();
 
 	template<class T>
 	Vector<BehaviorTreeNode*> get_child_nodes_by_type() {

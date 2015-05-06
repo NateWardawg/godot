@@ -6,23 +6,25 @@ void BTSelectorNode::_bind_methods() {
 }
 
 
-int BTSelectorNode::check_state() {
-	int state = nodes[current_node]->process_logic();
+void BTSelectorNode::execute() {
+	int node_state = nodes[current_node]->process_logic();
 
-	if ( state == SUCCESS ) {
+	if ( node_state == SUCCESS ) {
 		current_node = 0;
-		return SUCCESS;
+		state = SUCCESS;
+		return;
 	}
 
-	if ( state == FAILED ) {
+	if ( node_state == FAILED ) {
 		current_node++;
 
 		if ( current_node >= nodes.size() ) {
-			return FAILED;
+			state = FAILED;
+			return;
 		}
 	}
 
-	return RUNNING;
+	state = RUNNING;
 }
 
 

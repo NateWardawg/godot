@@ -12,13 +12,11 @@ class BTSeekNode : public BTActionNode
 
 protected:
 
-	virtual int check_state();
+	virtual void execute();
 
 public:
 
 	static void _bind_methods();
-
-	virtual void reset_node() {}
 
 	BTSeekNode();
 

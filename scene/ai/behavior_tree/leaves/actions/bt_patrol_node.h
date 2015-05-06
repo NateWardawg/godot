@@ -60,7 +60,7 @@ protected:
 	Vector<Node*> patrol_targets;
 	Node* current_target;
 
-	int check_state();
+	virtual void execute();
 
 public:
 

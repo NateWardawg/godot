@@ -7,23 +7,25 @@ void BTSequenceNode::_bind_methods() {
 }
 
 
-int BTSequenceNode::check_state() {
-	int state = nodes[current_node]->process_logic();
+void BTSequenceNode::execute() {
+	int node_state = nodes[current_node]->process_logic();
 
-	if ( state == FAILED ) {
+	if ( node_state == FAILED ) {
 		current_node = 0;
-		return FAILED;
+		state = FAILED;
+		return;
 	}
 
-	if ( state == SUCCESS ) {
+	if ( node_state == SUCCESS ) {
 		current_node++;
 
 		if ( current_node >= nodes.size() ) {
-			return SUCCESS;
+			state = SUCCESS;
+			return;
 		}
 	}
 
-	return RUNNING;
+	state = RUNNING;
 }
 
 

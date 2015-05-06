@@ -11,9 +11,7 @@ class BTInverterNode : public BTDecoratorNode
 
 protected:
 
-	virtual int check_state() {
-		return leaf_node != NULL ? -leaf_node->process_logic() : SUCCESS;
-	}
+	virtual void execute();
 
 };
 

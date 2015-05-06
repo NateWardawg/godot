@@ -15,17 +15,19 @@ void BTLoopNode::_bind_methods() {
 }
 
 
-int BTLoopNode::check_state() {
+void BTLoopNode::execute() {
 
 	if ( leaf_node == NULL ) {
-		return SUCCESS;
+		state = SUCCESS;
+		return;
 	}
 	else {
-		int state = leaf_node->process_logic();
+		int node_state = leaf_node->process_logic();
 
-		if ( state == SUCCESS || ( continue_on_fail && state == FAILED ) ) {
+		if ( node_state == SUCCESS || ( continue_on_fail && node_state == FAILED ) ) {
 			if ( current_iteration >= iterations && !infinite ) {
-				return SUCCESS;
+				state = SUCCESS;
+				return;
 			}
 
 			print_line(String::num_int64(current_iteration));
@@ -34,16 +36,18 @@ int BTLoopNode::check_state() {
 
 			leaf_node->reset_node();
 		}
-		else if ( state == FAILED ) {
-			return FAILED;
+		else if ( node_state == FAILED ) {
+			state = FAILED;
+			return;
 		}
 	}
 
-	return RUNNING;
+	state = RUNNING;
 }
 
 
 void BTLoopNode::reset_node()
 {
 	current_iteration = 0;
+	BehaviorTreeNode::reset_node();
 }

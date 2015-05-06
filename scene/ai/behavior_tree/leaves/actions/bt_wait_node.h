@@ -16,15 +16,13 @@ class BTWaitNode : public BTActionNode
 
 protected:
 
-	virtual int check_state();
+	virtual void execute();
 
 public:
 
 	static void _bind_methods();
 
-	virtual void reset_node() {
-		reset_timer();
-	}
+	virtual void reset_node();
 
 	void set_wait_time(float p_time) { wait_time = p_time; }
 	float get_wait_time() { return wait_time; }

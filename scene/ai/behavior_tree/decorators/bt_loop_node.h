@@ -17,7 +17,7 @@ protected:
 	bool infinite;
 	bool continue_on_fail;
 
-	virtual int check_state();
+	virtual void execute();
 
 public:
 

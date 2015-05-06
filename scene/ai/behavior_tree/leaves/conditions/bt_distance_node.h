@@ -25,9 +25,7 @@ public:
 
 	static void _bind_methods();
 
-	virtual int check_state() { return check_distances(); }
-
-	virtual void reset_node() {}
+	virtual void execute();
 
 	real_t get_distance() { return distance; }
 	void set_distance(real_t p_distance) { distance = p_distance; }

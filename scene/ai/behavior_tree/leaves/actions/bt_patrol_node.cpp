@@ -30,9 +30,11 @@ void BTPatrolNode::_bind_methods() {
 	ADD_PROPERTY( PropertyInfo(Variant::REAL,"distance"), _SCS("set_distance"), _SCS("get_distance") );
 }
 
+
 void BTPatrolNode::reset_node() {
 	current_patrol_index = 0;
 	current_target = NULL;
+	BehaviorTreeNode::reset_node();
 }
 
 
@@ -89,19 +91,21 @@ int BTPatrolNode::_check_points() {
 }
 
 
-int BTPatrolNode::check_state() {
+void BTPatrolNode::execute() {
 	if ( patrol_targets.size() > 0 ) {
 		if ( current_target == NULL ) {
 			current_target = patrol_targets[0];
 			notify_target_changed(current_target);
-			return RUNNING;
+			state = RUNNING;
+			return;
 		}
 		else {
-			return _check_points();
+			state = _check_points();
+			return;
 		}
 	}
 
-	return SUCCESS;
+	state = SUCCESS;
 }
 
 

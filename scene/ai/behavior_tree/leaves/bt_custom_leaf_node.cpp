@@ -1,6 +1,9 @@
 #include "bt_custom_leaf_node.h"
 
-BTCustomLeafNode::BTCustomLeafNode()
-{
+
+BTCustomLeafNode::BTCustomLeafNode() {
 	state = RUNNING;
 }
+
+
+void BTCustomLeafNode::execute() {}

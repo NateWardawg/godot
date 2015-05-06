@@ -19,9 +19,15 @@ void BTWaitNode::_bind_methods() {
 }
 
 
-int BTWaitNode::check_state()
+void BTWaitNode::reset_node() {
+	reset_timer();
+	BehaviorTreeNode::reset_node();
+}
+
+
+void BTWaitNode::execute()
 {
 	time_remaining -= get_process_delta_time();
 
-	return time_remaining <= 0 ? SUCCESS : RUNNING;
+	state = time_remaining <= 0 ? SUCCESS : RUNNING;
 }

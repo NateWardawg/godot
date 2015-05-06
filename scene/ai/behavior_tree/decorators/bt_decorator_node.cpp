@@ -30,4 +30,6 @@ void BTDecoratorNode::reset_node() {
 	if ( leaf_node != NULL ) {
 		leaf_node->reset_node();
 	}
+
+	BehaviorTreeNode::reset_node();
 }

@@ -21,6 +21,11 @@ void BTDistanceNode::_bind_methods() {
 }
 
 
+void BTDistanceNode::execute() {
+	state = check_distances();
+}
+
+
 int BTDistanceNode::check_distances() {
 	real_t sqr_distance = distance * distance;
 	int target_count;

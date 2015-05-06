@@ -1,7 +1,14 @@
 #include "bt_node.h"
 
+
+BehaviorTreeNode::BehaviorTreeNode()
+{
+	state = RUNNING;
+}
+
+
 void BehaviorTreeNode::_bind_methods() {
-	ObjectTypeDB::bind_method(_MD("check_result"),&BehaviorTreeNode::check_state);
+	ObjectTypeDB::bind_method(_MD("get_result"),&BehaviorTreeNode::get_result);
 	BIND_VMETHOD( MethodInfo("_success") );
 	BIND_VMETHOD( MethodInfo("_running") );
 	BIND_VMETHOD( MethodInfo("_failed") );
@@ -12,8 +19,17 @@ void BehaviorTreeNode::_bind_methods() {
 }
 
 
+void BehaviorTreeNode::reset_node() {
+	state = RUNNING;
+}
+
+
 int BehaviorTreeNode::process_logic() {
-	int result = check_state();
+	int result;
+
+	execute();
+
+	result = get_result();
 
 	if (get_script_instance()) {
 		if ( result == SUCCESS ) {
