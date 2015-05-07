@@ -16,6 +16,10 @@ void BehaviorTreeNode::_bind_methods() {
 	BIND_CONSTANT( FAILED );
 	BIND_CONSTANT( RUNNING );
 	BIND_CONSTANT( SUCCESS );
+
+	ADD_SIGNAL( MethodInfo("success") );
+	ADD_SIGNAL( MethodInfo("running") );
+	ADD_SIGNAL( MethodInfo("failed") );
 }
 
 
@@ -31,21 +35,28 @@ int BehaviorTreeNode::process_logic() {
 
 	result = get_result();
 
-	if (get_script_instance()) {
-		String call;
-
-		if ( result == SUCCESS ) {
-			call = "_success";
-		}
-		else if ( result == RUNNING ) {
-			call = "_running";
-		}
-		else /* FAILED */ {
-			call = "_failed";
-		}
-
-		get_script_instance()->call_multilevel_reversed(call,NULL,0);
-	}
+	_execute_calls(result);
 
 	return result;
+}
+
+
+void BehaviorTreeNode::_execute_calls(int result) {
+	String call;
+
+	if ( result == SUCCESS ) {
+		call = "success";
+	}
+	else if ( result == RUNNING ) {
+		call = "running";
+	}
+	else /* FAILED */ {
+		call = "failed";
+	}
+
+	emit_signal(call);
+
+	if (get_script_instance()) {
+		get_script_instance()->call_multilevel_reversed(String("_") + call,NULL,0);
+	}
 }

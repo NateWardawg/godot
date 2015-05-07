@@ -9,6 +9,8 @@ class BehaviorTreeNode : public AI {
 	OBJ_TYPE( BehaviorTreeNode, AI )
 	OBJ_CATEGORY("AI")
 
+	void _execute_calls(int result);
+
 protected:
 
 	int state;
