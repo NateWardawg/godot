@@ -1,4 +1,5 @@
 #include "bt_node.h"
+#include "composites/bt_parallel_any.h"
 
 
 BehaviorTreeNode::BehaviorTreeNode() {
@@ -31,15 +32,19 @@ int BehaviorTreeNode::process_logic() {
 	result = get_result();
 
 	if (get_script_instance()) {
+		String call;
+
 		if ( result == SUCCESS ) {
-			get_script_instance()->call_multilevel_reversed("_success",NULL,0);
+			call = "_success";
 		}
-		else if ( RUNNING ) {
-			get_script_instance()->call_multilevel_reversed("_running",NULL,0);
+		else if ( result == RUNNING ) {
+			call = "_running";
 		}
 		else /* FAILED */ {
-			get_script_instance()->call_multilevel_reversed("_failed",NULL,0);
+			call = "_failed";
 		}
+
+		get_script_instance()->call_multilevel_reversed(call,NULL,0);
 	}
 
 	return result;
