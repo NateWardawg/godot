@@ -188,6 +188,7 @@
 #include "scene/ai/behavior_tree/composites/bt_sequence.h"
 #include "scene/ai/behavior_tree/composites/bt_selector.h"
 #include "scene/ai/behavior_tree/composites/bt_parallel_all.h"
+#include "scene/ai/behavior_tree/composites/bt_parallel_any.h"
 #include "scene/ai/behavior_tree/leaves/bt_custom_leaf.h"
 #include "scene/ai/behavior_tree/decorators/bt_loop.h"
 #include "scene/ai/behavior_tree/decorators/bt_inverter.h"
@@ -402,11 +403,14 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<NavigationMesh>();
 	ObjectTypeDB::register_type<Navigation>();
 
+	/* Behavior Tree */
+
 	ObjectTypeDB::register_type<BTAgent2D>();
 	ObjectTypeDB::register_type<BTAgent3D>();
 	ObjectTypeDB::register_type<BTSequence>();
 	ObjectTypeDB::register_type<BTSelector>();
 	ObjectTypeDB::register_type<BTParallelAll>();
+	ObjectTypeDB::register_type<BTParallelAny>();
 	ObjectTypeDB::register_type<BTCustomLeaf>();
 	ObjectTypeDB::register_type<BTLoop>();
 	ObjectTypeDB::register_type<BTInverter>();
