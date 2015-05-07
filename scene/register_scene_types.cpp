@@ -194,8 +194,8 @@
 #include "scene/ai/behavior_tree/leaves/actions/bt_patrol_3d.h"
 #include "scene/ai/behavior_tree/leaves/actions/bt_wait.h"
 #include "scene/ai/behavior_tree/leaves/actions/bt_seek.h"
-#include "scene/ai/behavior_tree/leaves/conditions/bt_withindistance.h"
-#include "scene/ai/behavior_tree/leaves/conditions/bt_beyonddistance.h"
+#include "scene/ai/behavior_tree/leaves/conditions/bt_within_distance.h"
+#include "scene/ai/behavior_tree/leaves/conditions/bt_beyond_distance.h"
 
 #ifndef _3D_DISABLED
 #include "scene/3d/camera.h"
