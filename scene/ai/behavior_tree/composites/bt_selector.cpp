@@ -21,6 +21,9 @@ void BTSelector::execute() {
 			state = FAILED;
 			return;
 		}
+		else {
+			nodes[current_node]->reset_node();
+		}
 	}
 
 	state = RUNNING;
