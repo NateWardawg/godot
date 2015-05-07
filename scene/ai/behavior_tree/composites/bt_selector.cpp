@@ -10,7 +10,6 @@ void BTSelector::execute() {
 	int node_state = nodes[current_node]->process_logic();
 
 	if ( node_state == SUCCESS ) {
-		current_node = 0;
 		state = SUCCESS;
 		return;
 	}
