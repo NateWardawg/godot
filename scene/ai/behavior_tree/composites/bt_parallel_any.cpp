@@ -16,19 +16,19 @@ void BTParallelAny::execute() {
 	int failures = 0;
 
 	for ( int i = 0; i < nodes.size(); i++ ) {
-		int node_state = nodes[i]->get_result();
+		int node_state = nodes[i]->get_status();
 
 		if ( node_state == RUNNING ) {
 			nodes[i]->process_logic();
 		}
 		else {
 			if ( node_state == SUCCESS ) {
-				state = SUCCESS;
+				status = SUCCESS;
 				return;
 			}
 			else if ( node_state == FAILED ) {
 				if ( fail_on_child_failure ) {
-					state = FAILED;
+					status = FAILED;
 					return;
 				}
 				else {
@@ -38,10 +38,10 @@ void BTParallelAny::execute() {
 		}
 	}
 
-	state = (failures == nodes.size()) ? FAILED : RUNNING;
+	status = (failures == nodes.size()) ? FAILED : RUNNING;
 }
 
 
 void BTParallelAny::init_composite() {
-	state = RUNNING;
+	status = RUNNING;
 }

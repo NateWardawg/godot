@@ -96,16 +96,16 @@ void BTPatrol::execute() {
 		if ( current_target == NULL ) {
 			current_target = patrol_targets[0];
 			notify_target_changed(current_target);
-			state = RUNNING;
+			status = RUNNING;
 			return;
 		}
 		else {
-			state = _check_points();
+			status = _check_points();
 			return;
 		}
 	}
 
-	state = SUCCESS;
+	status = SUCCESS;
 }
 
 

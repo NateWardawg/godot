@@ -22,7 +22,7 @@ void BTDistance::_bind_methods() {
 
 
 void BTDistance::execute() {
-	state = check_distances();
+	status = check_distances();
 }
 
 

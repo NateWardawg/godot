@@ -11,7 +11,7 @@ void BTSequence::execute() {
 	int node_state = nodes[current_node]->process_logic();
 
 	if ( node_state == FAILED ) {
-		state = FAILED;
+		status = FAILED;
 		return;
 	}
 
@@ -19,17 +19,15 @@ void BTSequence::execute() {
 		current_node++;
 
 		if ( current_node >= nodes.size() ) {
-			state = SUCCESS;
+			status = SUCCESS;
 			return;
+		}
+		else {
+			nodes[current_node]->reset_node();
 		}
 	}
 
-	state = RUNNING;
-}
-
-
-void BTSequence::init_composite() {
-	current_node = 0;
+	status = RUNNING;
 }
 
 

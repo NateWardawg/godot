@@ -36,3 +36,12 @@ void BTComposite::reset_node()
 		nodes[i]->reset_node();
 	}
 }
+
+
+void BTComposite::init_composite() {
+	current_node = 0;
+
+	if ( nodes.size() > 0 ) {
+		nodes[0]->reset_node();
+	}
+}

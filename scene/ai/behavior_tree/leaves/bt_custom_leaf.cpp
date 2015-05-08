@@ -2,7 +2,7 @@
 
 
 BTCustomLeaf::BTCustomLeaf() {
-	state = RUNNING;
+	status = RUNNING;
 }
 
 

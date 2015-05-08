@@ -12,6 +12,8 @@ class BTComposite : public BehaviorTreeNode {
 
 protected:
 
+	int current_node;
+
 	Vector<BehaviorTreeNode*> nodes;
 
 	void _notification(int p_what);
@@ -21,7 +23,7 @@ public:
 	void update_child_nodes();
 
 	virtual void reset_node();
-	virtual void init_composite() {}
+	virtual void init_composite();
 
 	BTComposite();
 

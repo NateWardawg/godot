@@ -3,12 +3,14 @@
 
 
 BehaviorTreeNode::BehaviorTreeNode() {
-	state = RUNNING;
+	status = RUNNING;
 }
 
 
 void BehaviorTreeNode::_bind_methods() {
-	ObjectTypeDB::bind_method(_MD("get_result"),&BehaviorTreeNode::get_result);
+	ObjectTypeDB::bind_method(_MD("get_status"),&BehaviorTreeNode::get_status);
+	ObjectTypeDB::bind_method(_MD("set_status", "status"),&BehaviorTreeNode::set_status);
+
 	BIND_VMETHOD( MethodInfo("_success") );
 	BIND_VMETHOD( MethodInfo("_running") );
 	BIND_VMETHOD( MethodInfo("_failed") );
@@ -24,7 +26,14 @@ void BehaviorTreeNode::_bind_methods() {
 
 
 void BehaviorTreeNode::reset_node() {
-	state = RUNNING;
+	status = RUNNING;
+}
+
+
+void BehaviorTreeNode::set_status(int p_status) {
+	if ( p_status >= FAILED && p_status <= SUCCESS ) {
+		status = p_status;
+	}
 }
 
 
@@ -33,7 +42,7 @@ int BehaviorTreeNode::process_logic() {
 
 	execute();
 
-	result = get_result();
+	result = get_status();
 
 	_execute_calls(result);
 

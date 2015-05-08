@@ -11,8 +11,8 @@ class BTCustomLeaf : public BTLeaf
 	OBJ_CATEGORY("AI")
 
 	virtual void execute();
-	bool get_state() const { return state; }
-	void set_state(const int p_state) { state = p_state; }
+	bool get_state() const { return status; }
+	void set_state(const int p_state) { status = p_state; }
 
 public:
 

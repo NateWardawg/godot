@@ -13,7 +13,7 @@ class BehaviorTreeNode : public AI {
 
 protected:
 
-	int state;
+	int status;
 	virtual void execute() = 0;
 
 public:
@@ -30,7 +30,10 @@ public:
 
 	virtual void update_child_nodes() {}
 	virtual void reset_node();
-	virtual int get_result() { return state; }
+
+	int get_status() { return status; }
+	void set_status(int p_status);
+
 
 	BehaviorTreeNode();
 

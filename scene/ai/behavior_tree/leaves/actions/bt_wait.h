@@ -21,6 +21,7 @@ protected:
 public:
 
 	static void _bind_methods();
+	void _notification(int p_what);
 
 	virtual void reset_node();
 
@@ -28,9 +29,7 @@ public:
 	float get_wait_time() { return wait_time; }
 	void set_time_remaining(float p_duration) { time_remaining = p_duration; }
 	float get_time_remaining() { return time_remaining; }
-	void reset_timer() { time_remaining = wait_time; }
-
-	BTWait();
+	void reset_timer();
 
 };
 

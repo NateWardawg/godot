@@ -10,7 +10,7 @@ void BTSelector::execute() {
 	int node_state = nodes[current_node]->process_logic();
 
 	if ( node_state == SUCCESS ) {
-		state = SUCCESS;
+		status = SUCCESS;
 		return;
 	}
 
@@ -18,7 +18,7 @@ void BTSelector::execute() {
 		current_node++;
 
 		if ( current_node >= nodes.size() ) {
-			state = FAILED;
+			status = FAILED;
 			return;
 		}
 		else {
@@ -26,13 +26,9 @@ void BTSelector::execute() {
 		}
 	}
 
-	state = RUNNING;
+	status = RUNNING;
 }
 
-
-void BTSelector::init_composite() {
-	current_node = 0;
-}
 
 
 int BTSelector::get_current_leaf_index() {

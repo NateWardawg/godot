@@ -2,9 +2,12 @@
 #include "bt_wait.h"
 
 
-BTWait::BTWait()
-{
-	reset_timer();
+void BTWait::_notification(int p_what) {
+	switch(p_what) {
+		case NOTIFICATION_READY: {
+			reset_timer();
+		} break;
+	}
 }
 
 
@@ -25,9 +28,17 @@ void BTWait::reset_node() {
 }
 
 
+void BTWait::reset_timer() {
+	time_remaining = wait_time;
+}
+
+
 void BTWait::execute()
 {
+	print_line(String::num_real(time_remaining));
+	print_line(String::num_real(get_process_delta_time()));
+
 	time_remaining -= get_process_delta_time();
 
-	state = time_remaining <= 0 ? SUCCESS : RUNNING;
+	status = time_remaining <= 0 ? SUCCESS : RUNNING;
 }
