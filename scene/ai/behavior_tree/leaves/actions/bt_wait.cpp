@@ -35,9 +35,6 @@ void BTWait::reset_timer() {
 
 void BTWait::execute()
 {
-	print_line(String::num_real(time_remaining));
-	print_line(String::num_real(get_process_delta_time()));
-
 	time_remaining -= get_process_delta_time();
 
 	status = time_remaining <= 0 ? SUCCESS : RUNNING;
