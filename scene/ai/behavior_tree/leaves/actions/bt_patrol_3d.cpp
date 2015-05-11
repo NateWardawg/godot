@@ -1,11 +1,6 @@
 #include "bt_patrol_3d.h"
 
 
-BTPatrol3D::BTPatrol3D()
-{
-}
-
-
 float BTPatrol3D::_get_distance_to_node(Node *p_patrol_node) {
 	BTAgent3D* agent = (BTAgent3D*)navigator;
 	Spatial* spatial_target = (Spatial*)p_patrol_node;
@@ -14,8 +9,13 @@ float BTPatrol3D::_get_distance_to_node(Node *p_patrol_node) {
 }
 
 
-bool BTPatrol3D::is_node_valid_patrol_point(Node *node)
-{
+
+bool BTPatrol3D::is_correct_agent(Node *node) {
+	return dynamic_cast<BTAgent3D*>(node) != NULL;
+}
+
+
+bool BTPatrol3D::is_node_valid_patrol_point(Node *node) {
 	return dynamic_cast<Spatial*>(node) != NULL;
 }
 

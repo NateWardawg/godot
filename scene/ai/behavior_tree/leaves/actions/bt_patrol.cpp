@@ -28,6 +28,15 @@ void BTPatrol::_bind_methods() {
 }
 
 
+void BTPatrol::_notification(int p_what) {
+	switch(p_what) {
+		case NOTIFICATION_READY: {
+			_find_navigator();
+		} break;
+	}
+}
+
+
 void BTPatrol::reset_node() {
 	current_patrol_index = 0;
 	current_target = NULL;
@@ -43,6 +52,22 @@ void BTPatrol::_init_patrol_points() {
 			if ( is_node_valid_patrol_point(node) ) {
 				add_target(node);
 			}
+		}
+	}
+}
+
+
+void BTPatrol::_find_navigator()
+{
+	Node* parent = this;
+
+	while ( parent != NULL ) {
+		if ( !is_correct_agent(parent) ) {
+			parent = parent->get_parent();
+		}
+		else {
+			navigator = parent;
+			return;
 		}
 	}
 }

@@ -17,6 +17,7 @@ class BTPatrol : public BTAction
 	void _correct_patrol_index();
 	int _check_points();
 	void _init_patrol_points();
+	void _find_navigator();
 
 protected:
 
@@ -26,6 +27,7 @@ protected:
 	virtual const String _incorrect_node_type_warning() = 0;
 	virtual bool is_node_valid_patrol_point(Node* node) = 0;
 	virtual void notify_target_changed(Node* new_target) = 0;
+	virtual bool is_correct_agent(Node* node) = 0;
 
 	const Node* _get_navigator() { return navigator; }
 
@@ -64,6 +66,7 @@ protected:
 public:
 
 	static void _bind_methods();
+	void _notification(int p_what);
 
 	virtual void update_child_nodes() { _init_patrol_points(); }
 

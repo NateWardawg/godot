@@ -14,8 +14,8 @@ class BTPatrol3D : public BTPatrol {
 protected:
 
 	virtual const String _incorrect_node_type_warning() { return "Navigator must be a BTAgent3D node"; }
-
 	virtual float _get_distance_to_node(Node* p_patrol_node);
+	virtual bool is_correct_agent(Node *node);
 
 public:
 
@@ -25,8 +25,6 @@ public:
 	virtual void notify_target_changed(Node* new_target);
 
 	virtual void add_target(Node* target) { _add_target<Spatial>(target); }
-
-	BTPatrol3D();
 };
 
 #endif // BT_PATROL_NODE_3D_H
