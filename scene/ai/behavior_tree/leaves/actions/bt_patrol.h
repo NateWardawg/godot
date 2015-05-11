@@ -14,18 +14,17 @@ class BTPatrol : public BTAction
 
 	int current_patrol_index;
 
-	void _init_patrol_points();
 	void _correct_patrol_index();
 	int _check_points();
+	void _init_patrol_points();
 
 protected:
 
 	Node *navigator;
-	String target_patrol_group;
 	real_t distance;
 
 	virtual const String _incorrect_node_type_warning() = 0;
-
+	virtual bool is_node_valid_patrol_point(Node* node) = 0;
 	virtual void notify_target_changed(Node* new_target) = 0;
 
 	const Node* _get_navigator() { return navigator; }
@@ -72,9 +71,6 @@ public:
 
 	virtual const Node* get_navigator() = 0;
 	virtual void set_navigator(Node* p_navigator) = 0;
-
-	String get_target_group() const { return target_patrol_group; }
-	void set_target_group(const String& p_group) { target_patrol_group = p_group; }
 
 	real_t get_distance() { return distance; }
 	void set_distance(real_t p_distance) { distance = p_distance; }

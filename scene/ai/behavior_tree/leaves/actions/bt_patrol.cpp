@@ -12,8 +12,6 @@ BTPatrol::BTPatrol() {
 void BTPatrol::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("get_navigator"),&BTPatrol::get_navigator);
 	ObjectTypeDB::bind_method(_MD("set_navigator"),&BTPatrol::set_navigator);
-	ObjectTypeDB::bind_method(_MD("get_target_group"),&BTPatrol::get_target_group);
-	ObjectTypeDB::bind_method(_MD("set_target_group"),&BTPatrol::set_target_group);
 	ObjectTypeDB::bind_method(_MD("get_distance"),&BTPatrol::get_distance);
 	ObjectTypeDB::bind_method(_MD("set_distance"),&BTPatrol::set_distance);
 	ObjectTypeDB::bind_method(_MD("add_target"),&BTPatrol::add_target);
@@ -26,7 +24,6 @@ void BTPatrol::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("get_current_target_index"),&BTPatrol::get_current_target_index);
 	ObjectTypeDB::bind_method(_MD("set_current_target_index", "index"),&BTPatrol::set_current_target_index);
 
-	ADD_PROPERTY( PropertyInfo(Variant::STRING,"target_patrol_group"), _SCS("set_target_group"), _SCS("get_target_group") );
 	ADD_PROPERTY( PropertyInfo(Variant::REAL,"distance"), _SCS("set_distance"), _SCS("get_distance") );
 }
 
@@ -40,12 +37,12 @@ void BTPatrol::reset_node() {
 
 void BTPatrol::_init_patrol_points() {
 	if ( get_tree() != NULL ) {
-		List<Node*> target_nodes;
+		for ( int i = 0; i < get_child_count(); i++ ) {
+			Node* node = get_child(i);
 
-		get_tree()->get_nodes_in_group(target_patrol_group, &target_nodes);
-
-		for ( int i = 0; i < target_nodes.size(); i++ ) {
-			add_target(target_nodes[i]);
+			if ( is_node_valid_patrol_point(node) ) {
+				add_target(node);
+			}
 		}
 	}
 }
