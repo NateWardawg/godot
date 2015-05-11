@@ -30,8 +30,6 @@ void BTLoop::execute() {
 				return;
 			}
 
-			print_line(String::num_int64(current_iteration));
-
 			current_iteration++;
 
 			leaf_node->reset_node();

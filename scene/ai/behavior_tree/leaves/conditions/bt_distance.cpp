@@ -60,7 +60,6 @@ void BTDistance::add_target(Node* target) {
 
 		if ( spatial != NULL ) {
 			targets.insert(targets.size(), spatial);
-			print_line(String::num_int64(targets.size()));
 		}
 	}
 }
