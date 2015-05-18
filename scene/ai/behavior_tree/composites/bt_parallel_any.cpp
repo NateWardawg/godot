@@ -8,7 +8,10 @@ BTParallelAny::BTParallelAny() {
 
 
 void BTParallelAny::_bind_methods() {
-	//ObjectTypeDB::bind_method(_MD("get_current_leaf_index"),&BTSelectorNode::get_current_leaf_index);
+	ObjectTypeDB::bind_method(_MD("get_fail_on_child_failure"),&BTParallelAny::get_fail_on_child_failure);
+	ObjectTypeDB::bind_method(_MD("set_fail_on_child_failure"),&BTParallelAny::set_fail_on_child_failure);
+
+	ADD_PROPERTY( PropertyInfo(Variant::BOOL,"fail_on_child_failure"), _SCS("set_fail_on_child_failure"), _SCS("get_fail_on_child_failure") );
 }
 
 
