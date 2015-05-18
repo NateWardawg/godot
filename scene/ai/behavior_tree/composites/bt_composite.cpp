@@ -19,7 +19,7 @@ void BTComposite::update_child_nodes() {
 	node_count = nodes.size();
 
 	if ( node_count == 0 ) {
-		print_line("Warning: a Composite node needs at least one Composite, Decorator, or Leaf node. '" + get_name() + "' will automatically return true");
+		print_line("Warning: a Composite node needs at least one Composite, Decorator, or Leaf node. '" + get_name() + "' will automatically return success");
 	}
 
 	for ( int i = 0; i < node_count; i++ ) {
