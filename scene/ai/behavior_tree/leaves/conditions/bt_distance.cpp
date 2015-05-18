@@ -8,6 +8,8 @@ BTDistance::BTDistance() {
 
 
 void BTDistance::_bind_methods() {
+	ObjectTypeDB::bind_method(_MD("get_navigator"),&BTDistance::get_navigator);
+	ObjectTypeDB::bind_method(_MD("set_navigator"),&BTDistance::set_navigator);
 	ObjectTypeDB::bind_method(_MD("get_distance"),&BTDistance::get_distance);
 	ObjectTypeDB::bind_method(_MD("set_distance"),&BTDistance::set_distance);
 	ObjectTypeDB::bind_method(_MD("get_target_group"),&BTDistance::get_target_group);
@@ -29,7 +31,6 @@ void BTDistance::execute() {
 int BTDistance::check_distances() {
 	real_t sqr_distance = distance * distance;
 	int target_count;
-	Vector3 zero;
 	List<Node*> target_nodes;
 
 	get_tree()->get_nodes_in_group(target_group, &target_nodes);
@@ -41,7 +42,7 @@ int BTDistance::check_distances() {
 	target_count = targets.size();
 
 	for ( int i = 0; i < target_count; i++ ) {
-		real_t check_dist = zero.distance_squared_to(targets[i]->get_translation());
+		real_t check_dist = navigator->get_translation().distance_squared_to(targets[i]->get_translation());
 
 		if ( _check_distance(check_dist, sqr_distance) ) {
 			return SUCCESS;

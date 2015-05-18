@@ -4,6 +4,7 @@
 
 #include "scene/3d/spatial.h"
 #include "../bt_condition.h"
+#include "../../agents/bt_agent_3d.h"
 
 
 class BTDistance : public BTCondition
@@ -18,6 +19,7 @@ protected:
 
 	real_t distance;
 	String target_group;
+	BTAgent3D* navigator;
 
 	virtual bool _check_distance(real_t check_distance, real_t target_distance) = 0;
 
@@ -38,6 +40,19 @@ public:
 	int find_target(Node* target);
 
 	Vector<Spatial*> targets;
+
+	const Node* get_navigator() { return navigator; }
+
+	void set_navigator(Node* p_navigator) {
+		BTAgent3D* potential_navigator = dynamic_cast<BTAgent3D*>(p_navigator);
+
+		if ( potential_navigator != NULL ) {
+			navigator = potential_navigator;
+		}
+		else {
+			print_line("You need to provide a BTAgent3D");
+		}
+	}
 
 	BTDistance();
 
