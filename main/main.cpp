@@ -251,7 +251,14 @@ Error Main::setup(const char *execpath,int argc, char *argv[],bool p_second_phas
 		packed_data = memnew(PackedData);
 
 #ifdef MINIZIP_ENABLED
+	
+	//XXX: always get_singleton() == 0x0
 	zip_packed_data = ZipArchive::get_singleton();
+	//TODO: remove this temporary fix
+	if (!zip_packed_data) {
+		zip_packed_data = memnew(ZipArchive);
+	}
+
 	packed_data->add_pack_source(zip_packed_data);
 #endif
 
@@ -748,12 +755,12 @@ Error Main::setup(const char *execpath,int argc, char *argv[],bool p_second_phas
 	if (file_access_network_client)
 		memdelete(file_access_network_client);
 
-	if (packed_data)
-		memdelete( packed_data );
-#ifdef MINIZIP_ENABLED
-	if (zip_packed_data)
-		memdelete( zip_packed_data );
-#endif
+// Note 1: *zip_packed_data live into *packed_data
+// Note 2: PackedData::~PackedData destroy this.
+//#ifdef MINIZIP_ENABLED
+//	if (zip_packed_data)
+//		memdelete( zip_packed_data );
+//#endif
 
 
 	unregister_core_types();
@@ -1241,7 +1248,8 @@ bool Main::start() {
 
 				ERR_EXPLAIN("Failed loading scene: "+local_game_path);
 				ERR_FAIL_COND_V(!scene,false)
-				sml->get_root()->add_child(scene);
+				//sml->get_root()->add_child(scene);
+				sml->add_current_scene(scene);
 
 				String iconpath = GLOBAL_DEF("application/icon","Variant()""");
 				if (iconpath!="") {
