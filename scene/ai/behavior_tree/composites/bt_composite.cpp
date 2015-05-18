@@ -43,5 +43,7 @@ void BTComposite::init_composite() {
 
 	if ( nodes.size() > 0 ) {
 		nodes[0]->reset_node();
+	} else {
+		status = SUCCESS;
 	}
 }
