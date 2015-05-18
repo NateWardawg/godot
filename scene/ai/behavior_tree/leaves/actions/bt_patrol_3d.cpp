@@ -23,6 +23,6 @@ bool BTPatrol3D::is_node_valid_patrol_point(Node *node) {
 void BTPatrol3D::notify_target_changed(Node *new_target) {
 	if ( navigator != NULL ) {
 		BTAgent3D* navigator3D = dynamic_cast<BTAgent3D*>(navigator);
-		navigator3D->notify_target_changed(new_target);
+		navigator3D->set_target(new_target);
 	}
 }

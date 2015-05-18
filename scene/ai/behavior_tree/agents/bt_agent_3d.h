@@ -16,6 +16,10 @@ private:
 		BehaviorTree behavior_tree;
 	} data;
 
+	Spatial* target;
+
+	void _notify_target_changed();
+
 public:
 
 	static void _bind_methods();
@@ -23,7 +27,9 @@ public:
 
 	void set_behavior_tree(const BehaviorTree& p_behavior_tree);
 	void update_behavior_tree();
-	void notify_target_changed(Node* target);
+
+	void set_target(Node* p_target);
+	Node* get_target() const { return target; }
 
 };
 
