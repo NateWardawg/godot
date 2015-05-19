@@ -19,7 +19,7 @@ void BTParallelAll::_bind_methods() {
 }
 
 
-void BTParallelAll::execute() {
+void BTParallelAll::comp_execute() {
 	int successes = 0;
 
 	for ( int i = 0; i < nodes.size(); i++ ) {

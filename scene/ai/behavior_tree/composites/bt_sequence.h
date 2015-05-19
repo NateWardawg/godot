@@ -15,7 +15,7 @@ public:
 
 	static void _bind_methods();
 
-	virtual void execute();
+	virtual void comp_execute();
 
 	int get_current_leaf_index();
 

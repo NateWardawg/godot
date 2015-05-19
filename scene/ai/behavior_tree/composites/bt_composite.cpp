@@ -12,6 +12,15 @@ BTComposite::BTComposite() {
 void BTComposite::_notification(int p_what) {}
 
 
+void BTComposite::execute() {
+	if ( nodes.size() > 0 ) {
+		comp_execute();
+	} else {
+		status = SUCCESS;
+	}
+}
+
+
 void BTComposite::update_child_nodes() {
 	int node_count;
 

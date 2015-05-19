@@ -16,7 +16,7 @@ public:
 
 	static void _bind_methods();
 
-	virtual void execute();
+	virtual void comp_execute();
 
 	virtual void init_composite();
 

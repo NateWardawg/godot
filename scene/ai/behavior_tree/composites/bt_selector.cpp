@@ -1,3 +1,4 @@
+
 #include "bt_selector.h"
 
 
@@ -6,7 +7,7 @@ void BTSelector::_bind_methods() {
 }
 
 
-void BTSelector::execute() {
+void BTSelector::comp_execute() {
 	int node_state = nodes[current_node]->process_logic();
 
 	if ( node_state == SUCCESS ) {
@@ -20,8 +21,7 @@ void BTSelector::execute() {
 		if ( current_node >= nodes.size() ) {
 			status = FAILED;
 			return;
-		}
-		else {
+		} else {
 			nodes[current_node]->reset_node();
 		}
 	}

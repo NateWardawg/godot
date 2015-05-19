@@ -18,6 +18,9 @@ protected:
 
 	void _notification(int p_what);
 
+	virtual void execute();
+	virtual void comp_execute() = 0;
+
 public:
 
 	void update_child_nodes();

@@ -15,7 +15,7 @@ void BTParallelAny::_bind_methods() {
 }
 
 
-void BTParallelAny::execute() {
+void BTParallelAny::comp_execute() {
 	int failures = 0;
 
 	for ( int i = 0; i < nodes.size(); i++ ) {
