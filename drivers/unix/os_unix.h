@@ -88,10 +88,12 @@ public:
 
 	virtual String get_name();
 		
-	virtual Date get_date() const;
-	virtual Time get_time() const;
+	virtual Date get_date(bool utc) const;
+	virtual Time get_time(bool utc) const;
+	virtual TimeZoneInfo get_time_zone_info() const;
 
 	virtual uint64_t get_unix_time() const;
+	virtual uint64_t get_system_time_msec() const;
 
 	virtual void delay_usec(uint32_t p_usec) const; 
 	virtual uint64_t get_ticks_usec() const;

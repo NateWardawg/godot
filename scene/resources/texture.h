@@ -56,6 +56,7 @@ public:
 		FLAG_CONVERT_TO_LINEAR=VisualServer::TEXTURE_FLAG_CONVERT_TO_LINEAR,
 		FLAG_VIDEO_SURFACE=VisualServer::TEXTURE_FLAG_VIDEO_SURFACE,
 		FLAGS_DEFAULT=FLAG_MIPMAPS|FLAG_REPEAT|FLAG_FILTER,
+		FLAG_MIRRORED_REPEAT=VisualServer::TEXTURE_FLAG_MIRRORED_REPEAT
 	};
 
 
@@ -151,7 +152,8 @@ public:
 
 	void set_size_override(const Size2& p_size);
 
-	
+	virtual void set_path(const String& p_path,bool p_take_over=false);
+
 	ImageTexture();
 	~ImageTexture();
 
@@ -318,6 +320,8 @@ public:
 
 	void set_lossy_storage_quality(float p_lossy_storage_quality);
 	float get_lossy_storage_quality() const;
+
+	virtual void set_path(const String& p_path,bool p_take_over=false);
 
 	CubeMap();
 	~CubeMap();

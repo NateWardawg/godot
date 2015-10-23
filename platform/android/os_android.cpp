@@ -37,6 +37,8 @@
 #include "servers/visual/visual_server_wrap_mt.h"
 #include "main/main.h"
 
+#include "file_access_android.h"
+
 #include "core/globals.h"
 
 #ifdef ANDROID_NATIVE_ACTIVITY
@@ -89,8 +91,14 @@ void OS_Android::initialize_core() {
 
 	if (use_apk_expansion)
 		FileAccess::make_default<FileAccessUnix>(FileAccess::ACCESS_RESOURCES);
-	else
+	else {
+#ifdef USE_JAVA_FILE_ACCESS
 		FileAccess::make_default<FileAccessBufferedFA<FileAccessJAndroid> >(FileAccess::ACCESS_RESOURCES);
+#else
+		//FileAccess::make_default<FileAccessBufferedFA<FileAccessAndroid> >(FileAccess::ACCESS_RESOURCES);
+		FileAccess::make_default<FileAccessAndroid>(FileAccess::ACCESS_RESOURCES);
+#endif
+	}
 	FileAccess::make_default<FileAccessUnix>(FileAccess::ACCESS_USERDATA);
 	FileAccess::make_default<FileAccessUnix>(FileAccess::ACCESS_FILESYSTEM);
 	//FileAccessBufferedFA<FileAccessUnix>::make_default();
@@ -163,7 +171,8 @@ void OS_Android::initialize(const VideoMode& p_desired,int p_video_driver,int p_
 	//
 	physics_server = memnew( PhysicsServerSW );
 	physics_server->init();
-	physics_2d_server = memnew( Physics2DServerSW );
+	//physics_2d_server = memnew( Physics2DServerSW );
+	physics_2d_server = Physics2DServerWrapMT::init_server<Physics2DServerSW>();
 	physics_2d_server->init();
 
 	input = memnew( InputDefault );

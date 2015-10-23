@@ -37,7 +37,11 @@
 #include "servers/spatial_sound_2d/spatial_sound_2d_server_sw.h"
 #include "servers/audio/audio_server_sw.h"
 #include "servers/physics_2d/physics_2d_server_sw.h"
+#include "servers/physics_2d/physics_2d_server_wrap_mt.h"
 #include "servers/visual/rasterizer.h"
+#include "main/input_default.h"
+
+//#ifdef USE_JAVA_FILE_ACCESS
 
 
 #ifdef ANDROID_NATIVE_ACTIVITY

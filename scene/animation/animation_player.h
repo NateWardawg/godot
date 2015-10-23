@@ -258,9 +258,10 @@ public:
         float get_default_blend_time() const;
 	
 	void play(const StringName& p_name=StringName(),float p_custom_blend=-1,float p_custom_scale=1.0,bool p_from_end=false);
+	void play_backwards(const StringName& p_name=StringName(),float p_custom_blend=-1);
 	void queue(const StringName& p_name);
 	void clear_queue();
-	void stop();
+	void stop(bool p_reset=true);
 	bool is_playing() const;
 	String get_current_animation() const;
 	void set_current_animation(const String& p_anim);

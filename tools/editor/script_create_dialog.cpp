@@ -74,17 +74,17 @@ bool ScriptCreateDialog::_validate(const String& p_string) {
 void ScriptCreateDialog::_class_name_changed(const String& p_name) {
 
 	if (!_validate(parent_name->get_text())) {
-		error_label->set_text("INVALID PARENT CLASS NAME");
+		error_label->set_text("Invaild parent class name");
 		error_label->add_color_override("font_color",Color(1,0.4,0.0,0.8));
 	} else if (class_name->is_editable()) {
 		if (class_name->get_text()=="") {
 		error_label->set_text("Valid Chars: a-z A-Z 0-9 _");
 		error_label->add_color_override("font_color",Color(1,1,1,0.6));
 		} else if (!_validate(class_name->get_text())) {
-			error_label->set_text("INVALID CLASS NAME");
+			error_label->set_text("Invalid class name");
 			error_label->add_color_override("font_color",Color(1,0.2,0.2,0.8));
 		} else {
-			error_label->set_text("Name is Valid");
+			error_label->set_text("Valid Name");
 			error_label->add_color_override("font_color",Color(0,1.0,0.8,0.8));
 		}
 	} else {
@@ -184,7 +184,7 @@ void ScriptCreateDialog::_built_in_pressed() {
 
 void ScriptCreateDialog::_browse_path() {
 
-	file_browse->set_mode(FileDialog::MODE_SAVE_FILE);
+	file_browse->set_mode(EditorFileDialog::MODE_SAVE_FILE);
 	file_browse->clear_filters();
 	List<String> extensions;
 
@@ -363,9 +363,9 @@ ScriptCreateDialog::ScriptCreateDialog() {
 
 	set_size(Size2(200,150));
 	set_hide_on_ok(false);
-	set_title("Create Script for Node..");;
+	set_title("Create Script for Node");
 
-	file_browse = memnew( FileDialog );
+	file_browse = memnew( EditorFileDialog );
 	file_browse->connect("file_selected",this,"_file_selected");
 	add_child(file_browse);
 	get_ok()->set_text("Create");

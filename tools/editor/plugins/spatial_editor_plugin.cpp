@@ -677,7 +677,8 @@ bool SpatialEditorViewport::_gizmo_select(const Vector2& p_screenpos,bool p_hili
 
 void SpatialEditorViewport::_smouseenter() {
 
-	surface->grab_focus();
+    if (!surface->has_focus() && (!get_focus_owner() || !get_focus_owner()->is_text_field()))
+            surface->grab_focus();
 }
 
 void SpatialEditorViewport::_sinput(const InputEvent &p_event) {
@@ -2168,7 +2169,18 @@ void SpatialEditorViewport::set_state(const Dictionary& p_state) {
 		view_menu->get_popup()->set_item_checked( idx, listener );
 	}
 
-
+	if (p_state.has("previewing")) {
+		Node *pv = EditorNode::get_singleton()->get_edited_scene()->get_node(p_state["previewing"]);
+		if (pv && pv->cast_to<Camera>()) {
+			previewing=pv->cast_to<Camera>();
+			previewing->connect("exit_tree",this,"_preview_exited_scene");
+			VS::get_singleton()->viewport_attach_camera( viewport->get_viewport(), previewing->get_camera() ); //replace
+			view_menu->hide();
+			surface->update();
+			preview_camera->set_pressed(true);
+			preview_camera->show();
+		}
+	}
 }
 
 Dictionary SpatialEditorViewport::get_state() const {
@@ -2181,6 +2193,10 @@ Dictionary SpatialEditorViewport::get_state() const {
 	d["use_environment"]=camera->get_environment().is_valid();
 	d["use_orthogonal"]=camera->get_projection()==Camera::PROJECTION_ORTHOGONAL;
 	d["listener"]=viewport->is_audio_listener();
+	if (previewing) {
+		d["previewing"]=EditorNode::get_singleton()->get_edited_scene()->get_path_to(previewing);
+	}
+
 	return d;
 }
 
@@ -2215,6 +2231,14 @@ void SpatialEditorViewport::reset() {
 }
 
 SpatialEditorViewport::SpatialEditorViewport(SpatialEditor *p_spatial_editor, EditorNode *p_editor, int p_index) {
+
+	_edit.mode=TRANSFORM_NONE;
+	_edit.plane=TRANSFORM_VIEW;
+	_edit.edited_gizmo=0;
+	_edit.snap=1;
+	_edit.gizmo_handle=0;
+
+
 
 	index=p_index;
 	editor=p_editor;
@@ -3615,6 +3639,8 @@ void SpatialEditor::_default_light_angle_input(const InputEvent& p_event) {
 
 SpatialEditor::SpatialEditor(EditorNode *p_editor) {
 
+	gizmo.visible=true;
+	gizmo.scale=1.0;
 
 	viewport_environment = Ref<Environment>( memnew( Environment ) );
 	undo_redo=p_editor->get_undo_redo();

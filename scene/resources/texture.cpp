@@ -81,6 +81,7 @@ void Texture::_bind_methods() {
 	BIND_CONSTANT( FLAGS_DEFAULT );
 	BIND_CONSTANT( FLAG_ANISOTROPIC_FILTER );
 	BIND_CONSTANT( FLAG_CONVERT_TO_LINEAR );
+	BIND_CONSTANT( FLAG_MIRRORED_REPEAT );
 
 }
 
@@ -181,7 +182,7 @@ void ImageTexture::_get_property_list( List<PropertyInfo> *p_list) const {
 
 
 
-	p_list->push_back( PropertyInfo( Variant::INT, "flags", PROPERTY_HINT_FLAGS,"Mipmaps,Repeat,Filter,Anisotropic,sRGB") );
+	p_list->push_back( PropertyInfo( Variant::INT, "flags", PROPERTY_HINT_FLAGS,"Mipmaps,Repeat,Filter,Anisotropic,sRGB,Mirrored Repeat") );
 	p_list->push_back( PropertyInfo( Variant::IMAGE, "image", img_hint,String::num(lossy_storage_quality)) );
 	p_list->push_back( PropertyInfo( Variant::VECTOR2, "size",PROPERTY_HINT_NONE, ""));
 	p_list->push_back( PropertyInfo( Variant::INT, "storage", PROPERTY_HINT_ENUM,"Uncompressed,Compress Lossy,Compress Lossless"));
@@ -364,6 +365,16 @@ void ImageTexture::set_size_override(const Size2& p_size) {
 		h=s.y;
 	VisualServer::get_singleton()->texture_set_size_override(texture,w,h);
 }
+
+void ImageTexture::set_path(const String& p_path,bool p_take_over) {
+
+	if (texture.is_valid()) {
+		VisualServer::get_singleton()->texture_set_path(texture,p_path);
+	}
+
+	Resource::set_path(p_path,p_take_over);
+}
+
 
 void ImageTexture::set_storage(Storage p_storage) {
 
@@ -942,6 +953,16 @@ float CubeMap::get_lossy_storage_quality() const {
 
 	return lossy_storage_quality;
 }
+
+void CubeMap::set_path(const String& p_path,bool p_take_over) {
+
+	if (cubemap.is_valid()) {
+		VisualServer::get_singleton()->texture_set_path(cubemap,p_path);
+	}
+
+	Resource::set_path(p_path,p_take_over);
+}
+
 
 bool CubeMap::_set(const StringName& p_name, const Variant& p_value) {
 

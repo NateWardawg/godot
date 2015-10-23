@@ -33,13 +33,14 @@
 #include "main/main.h"
 #include <unistd.h>
 #include "file_access_jandroid.h"
+#include "file_access_android.h"
 #include "dir_access_jandroid.h"
 #include "audio_driver_jandroid.h"
 #include "globals.h"
 #include "thread_jandroid.h"
 #include "core/os/keyboard.h"
 #include "java_class_wrapper.h"
-
+#include "android/asset_manager_jni.h"
 
 static JavaClassWrapper *java_class_wrapper=NULL;
 static OS_Android *os_android=NULL;
@@ -437,6 +438,7 @@ public:
 		}
 
 
+
 		int ac = E->get().argtypes.size();
 		if (ac<p_argcount) {
 
@@ -453,7 +455,6 @@ public:
 			r_error.argument=ac;
 			return Variant();
 		}
-
 
 
 		for(int i=0;i<p_argcount;i++) {
@@ -475,6 +476,10 @@ public:
 		}
 
 		JNIEnv *env = ThreadAndroid::get_env();
+
+		int res = env->PushLocalFrame(16);
+
+		ERR_FAIL_COND_V(res!=0,Variant());
 
 		//print_line("argcount "+String::num(p_argcount));
 		List<jobject> to_erase;
@@ -568,6 +573,7 @@ public:
 
 
 				print_line("failure..");
+				env->PopLocalFrame(NULL);
 				ERR_FAIL_V(Variant());
 			} break;
 		}
@@ -576,6 +582,8 @@ public:
 			env->DeleteLocalRef(to_erase.front()->get());
 			to_erase.pop_front();
 		}
+
+		env->PopLocalFrame(NULL);
 		//print_line("success");
 
 		return ret;
@@ -757,7 +765,7 @@ static void _stop_video() {
 	env->CallVoidMethod(godot_io, _stopVideo);
 }
 
-JNIEXPORT void JNICALL Java_com_android_godot_GodotLib_initialize(JNIEnv * env, jobject obj, jobject activity,jboolean p_need_reload_hook, jobjectArray p_cmdline) {
+JNIEXPORT void JNICALL Java_com_android_godot_GodotLib_initialize(JNIEnv * env, jobject obj, jobject activity,jboolean p_need_reload_hook, jobjectArray p_cmdline,jobject p_asset_manager) {
 
 	__android_log_print(ANDROID_LOG_INFO,"godot","**INIT EVENT! - %p\n",env);
 
@@ -813,7 +821,14 @@ JNIEXPORT void JNICALL Java_com_android_godot_GodotLib_initialize(JNIEnv * env, 
 		}
 
 		ThreadAndroid::make_default(jvm);
+#ifdef USE_JAVA_FILE_ACCESS
 		FileAccessJAndroid::setup(gob);
+#else
+
+		jobject amgr = env->NewGlobalRef(p_asset_manager);
+
+		FileAccessAndroid::asset_manager=AAssetManager_fromJava(env,amgr);
+#endif
 		DirAccessJAndroid::setup(gob);
 		AudioDriverAndroid::setup(gob);
 	}
@@ -1613,10 +1628,14 @@ JNIEXPORT void JNICALL Java_com_android_godot_GodotLib_method(JNIEnv * env, jobj
 
 JNIEXPORT void JNICALL Java_com_android_godot_GodotLib_callobject(JNIEnv * env, jobject p_obj, jint ID, jstring method, jobjectArray params) {
 
-	String str_method = env->GetStringUTFChars( method, NULL );
-
 	Object* obj = ObjectDB::get_instance(ID);
 	ERR_FAIL_COND(!obj);
+
+	int res = env->PushLocalFrame(16);
+	ERR_FAIL_COND(res!=0);
+
+	String str_method = env->GetStringUTFChars( method, NULL );
+
 
 	int count = env->GetArrayLength(params);
 	Variant* vlist = (Variant*)alloca(sizeof(Variant) * count);
@@ -1637,14 +1656,21 @@ JNIEXPORT void JNICALL Java_com_android_godot_GodotLib_callobject(JNIEnv * env, 
 	Variant::CallError err;
 	obj->call(str_method, (const Variant**)vptr, count, err);
 	// something
+
+	env->PopLocalFrame(NULL);
+
 };
 
 JNIEXPORT void JNICALL Java_com_android_godot_GodotLib_calldeferred(JNIEnv * env, jobject p_obj, jint ID, jstring method, jobjectArray params) {
 
-	String str_method = env->GetStringUTFChars( method, NULL );
 
 	Object* obj = ObjectDB::get_instance(ID);
 	ERR_FAIL_COND(!obj);
+
+	int res = env->PushLocalFrame(16);
+	ERR_FAIL_COND(res!=0);
+
+	String str_method = env->GetStringUTFChars( method, NULL );
 
 	int count = env->GetArrayLength(params);
 	Variant args[VARIANT_ARG_MAX];
@@ -1666,6 +1692,8 @@ JNIEXPORT void JNICALL Java_com_android_godot_GodotLib_calldeferred(JNIEnv * env
 
 	obj->call_deferred(str_method, args[0],args[1],args[2],args[3],args[4]);
 	// something
+	env->PopLocalFrame(NULL);
+
 };
 
 //Main::cleanup();

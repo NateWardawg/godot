@@ -190,8 +190,11 @@ public:
 	virtual bool texture_has_alpha(RID p_texture) const=0;
 	virtual void texture_set_size_override(RID p_texture,int p_width, int p_height)=0;
 
-
 	virtual void texture_set_reload_hook(RID p_texture,ObjectID p_owner,const StringName& p_function) const=0;
+
+	virtual void texture_set_path(RID p_texture,const String& p_path)=0;
+	virtual String texture_get_path(RID p_texture) const=0;
+	virtual void texture_debug_usage(List<VS::TextureInfo> *r_info)=0;
 
 	/* SHADER API */
 
@@ -502,7 +505,7 @@ public:
 	virtual void begin_scene(RID p_viewport_data,RID p_env,VS::ScenarioDebugMode p_debug)=0;
 	virtual void begin_shadow_map( RID p_light_instance, int p_shadow_pass )=0;
 
-	virtual void set_camera(const Transform& p_world,const CameraMatrix& p_projection)=0;
+	virtual void set_camera(const Transform& p_world,const CameraMatrix& p_projection,bool p_ortho_hint)=0;
 	
 	virtual void add_light( RID p_light_instance )=0; ///< all "add_light" calls happen before add_geometry calls
 	
@@ -592,6 +595,7 @@ public:
 		RID shadow_buffer;
 		int shadow_buffer_size;
 		float shadow_esm_mult;
+		Color shadow_color;
 
 
 		void *texture_cache; // implementation dependent
@@ -610,6 +614,7 @@ public:
 		CanvasLight() {
 			enabled=true;			
 			color=Color(1,1,1);
+			shadow_color=Color(0,0,0,0);
 			height=0;
 			z_min=-1024;
 			z_max=1024;
@@ -1020,6 +1025,7 @@ public:
 
 	virtual bool has_feature(VS::Features p_feature) const=0;
 
+	virtual void restore_framebuffer()=0;
 
 	virtual int get_render_info(VS::RenderInfo p_info)=0;
 

@@ -1497,7 +1497,7 @@ void RasterizerDummy::begin_shadow_map( RID p_light_instance, int p_shadow_pass 
 
 }
 
-void RasterizerDummy::set_camera(const Transform& p_world,const CameraMatrix& p_projection) {
+void RasterizerDummy::set_camera(const Transform& p_world, const CameraMatrix& p_projection, bool p_ortho_hint) {
 
 
 }
@@ -1948,6 +1948,9 @@ bool RasterizerDummy::has_feature(VS::Features p_feature) const {
 
 }
 
+void RasterizerDummy::restore_framebuffer() {
+
+}
 
 RasterizerDummy::RasterizerDummy() {
 

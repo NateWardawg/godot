@@ -415,6 +415,10 @@ public:
 	virtual void texture_set_size_override(RID p_texture,int p_width, int p_height);
 	virtual void texture_set_reload_hook(RID p_texture,ObjectID p_owner,const StringName& p_function) const;
 
+	virtual void texture_set_path(RID p_texture,const String& p_path) {}
+	virtual String texture_get_path(RID p_texture) const { return String(); }
+	virtual void texture_debug_usage(List<VS::TextureInfo> *r_info) {}
+
 	/* SHADER API */
 
 	virtual RID shader_create(VS::ShaderMode p_mode=VS::SHADER_MATERIAL);
@@ -679,7 +683,7 @@ public:
 	virtual void begin_scene(RID p_viewport_data,RID p_env,VS::ScenarioDebugMode p_debug);
 	virtual void begin_shadow_map( RID p_light_instance, int p_shadow_pass );
 
-	virtual void set_camera(const Transform& p_world,const CameraMatrix& p_projection);
+	virtual void set_camera(const Transform& p_world,const CameraMatrix& p_projection,bool p_ortho_hint);
 
 	virtual void add_light( RID p_light_instance ); ///< all "add_light" calls happen before add_geometry calls
 
@@ -779,6 +783,7 @@ public:
 
 	virtual bool has_feature(VS::Features p_feature) const;
 
+	virtual void restore_framebuffer();
 
 	RasterizerDummy();
 	virtual ~RasterizerDummy();

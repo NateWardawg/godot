@@ -51,6 +51,8 @@ friend class Physics2DDirectSpaceStateSW;
 	int active_objects;
 	int collision_pairs;
 
+	bool using_threads;
+
 
 	Step2DSW *stepper;
 	Set<const Space2DSW*> active_spaces;
@@ -99,6 +101,11 @@ public:
 
 	virtual void space_set_param(RID p_space,SpaceParameter p_param, real_t p_value);
 	virtual real_t space_get_param(RID p_space,SpaceParameter p_param) const;
+
+	virtual void space_set_debug_contacts(RID p_space,int p_max_contacts);
+	virtual Vector<Vector2> space_get_contacts(RID p_space) const;
+	virtual int space_get_contact_count(RID p_space) const;
+
 
 	// this function only works on fixed process, errors and returns null otherwise
 	virtual Physics2DDirectSpaceState* space_get_direct_state(RID p_space);
@@ -179,10 +186,10 @@ public:
 	virtual CCDMode body_get_continuous_collision_detection_mode(RID p_body) const;
 
 	virtual void body_set_layer_mask(RID p_body, uint32_t p_mask);
-	virtual uint32_t body_get_layer_mask(RID p_body, uint32_t p_mask) const;
+	virtual uint32_t body_get_layer_mask(RID p_body) const;
 
 	virtual void body_set_collision_mask(RID p_body, uint32_t p_mask);
-	virtual uint32_t body_get_collision_mask(RID p_body, uint32_t p_mask) const;
+	virtual uint32_t body_get_collision_mask(RID p_) const;
 
 	virtual void body_set_param(RID p_body, BodyParameter p_param, float p_value);
 	virtual float body_get_param(RID p_body, BodyParameter p_param) const;
@@ -236,6 +243,8 @@ public:
 	virtual RID pin_joint_create(const Vector2& p_pos,RID p_body_a,RID p_body_b=RID());
 	virtual RID groove_joint_create(const Vector2& p_a_groove1,const Vector2& p_a_groove2, const Vector2& p_b_anchor, RID p_body_a,RID p_body_b);
 	virtual RID damped_spring_joint_create(const Vector2& p_anchor_a,const Vector2& p_anchor_b,RID p_body_a,RID p_body_b=RID());
+	virtual void pin_joint_set_param(RID p_joint, PinJointParam p_param, real_t p_value);
+	virtual real_t pin_joint_get_param(RID p_joint, PinJointParam p_param) const;
 	virtual void damped_string_joint_set_param(RID p_joint, DampedStringParam p_param, real_t p_value);
 	virtual real_t damped_string_joint_get_param(RID p_joint, DampedStringParam p_param) const;
 
@@ -248,8 +257,9 @@ public:
 	virtual void set_active(bool p_active);
 	virtual void init();
 	virtual void step(float p_step);
-	virtual void sync();
+	virtual void sync();	
 	virtual void flush_queries();
+	virtual void end_sync();
 	virtual void finish();
 
 	int get_process_info(ProcessInfo p_info);

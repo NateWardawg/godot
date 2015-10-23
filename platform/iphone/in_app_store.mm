@@ -28,6 +28,10 @@
 /*************************************************************************/
 #ifdef STOREKIT_ENABLED
 
+#ifdef MODULE_FUSEBOXX_ENABLED
+#import "modules/fuseboxx/ios/FuseSDK.h"
+#endif
+
 #include "in_app_store.h"
 
 extern "C" {
@@ -210,7 +214,7 @@ Error InAppStore::request_product_info(Variant p_params) {
                 receipt_to_send = [receipt description];
             }
             Dictionary receipt_ret;
-            receipt_ret["receipt"] = String::utf8([receipt_to_send UTF8String]);
+            receipt_ret["receipt"] = String::utf8(receipt_to_send != nil ? [receipt_to_send UTF8String] : "");
             receipt_ret["sdk"] = sdk_version;
             ret["receipt"] = receipt_ret;
             
@@ -222,6 +226,11 @@ Error InAppStore::request_product_info(Variant p_params) {
             else{
                 [pending_transactions setObject:transaction forKey:transaction.payment.productIdentifier];
             }
+			
+			#ifdef MODULE_FUSEBOXX_ENABLED
+			printf("Registering transaction on Fuseboxx!\n");
+			[FuseSDK registerInAppPurchase: transaction];
+			#endif
 		} break;
 		case SKPaymentTransactionStateFailed: {
             printf("status transaction failed!\n");

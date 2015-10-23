@@ -38,12 +38,16 @@
 #include "servers/visual/rasterizer.h"
 #include "servers/physics/physics_server_sw.h"
 #include "servers/physics_2d/physics_2d_server_sw.h"
+#include "servers/physics_2d/physics_2d_server_wrap_mt.h"
 #include "servers/audio/audio_server_sw.h"
 #include "servers/audio/sample_manager_sw.h"
 #include "servers/spatial_sound/spatial_sound_server_sw.h"
 #include "servers/spatial_sound_2d/spatial_sound_2d_server_sw.h"
+#include "main/input_default.h"
 #include "game_center.h"
 #include "in_app_store.h"
+#include "icloud.h"
+
 
 class AudioDriverIphone;
 class RasterizerGLES2;
@@ -86,6 +90,9 @@ private:
 #endif
 #ifdef STOREKIT_ENABLED
 	InAppStore* store_kit;
+#endif
+#ifdef ICLOUD_ENABLED
+	ICloud* icloud;
 #endif
 
 	MainLoop *main_loop;

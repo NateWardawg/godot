@@ -57,7 +57,13 @@
 #include <errno.h>
 #include <assert.h>
 #include "globals.h"
+
+extern bool _print_error_enabled;
+
 void OS_Unix::print_error(const char* p_function,const char* p_file,int p_line,const char *p_code,const char*p_rationale,ErrorType p_type) {
+
+	if (!_print_error_enabled)
+		return;
 
 	if (p_rationale && p_rationale[0]) {
 
@@ -217,31 +223,74 @@ uint64_t OS_Unix::get_unix_time() const {
 	return time(NULL);
 };
 
+uint64_t OS_Unix::get_system_time_msec() const {
+	struct timeval tv_now;
+	gettimeofday(&tv_now, NULL);
+	//localtime(&tv_now.tv_usec);
+	//localtime((const long *)&tv_now.tv_usec);
+	uint64_t msec = uint64_t(tv_now.tv_sec)*1000+tv_now.tv_usec/1000;
+	return msec;
+}
 
-OS::Date OS_Unix::get_date() const {
+
+OS::Date OS_Unix::get_date(bool utc) const {
 
 	time_t t=time(NULL);
-	struct tm *lt=localtime(&t);
+	struct tm *lt;
+	if (utc)
+		lt=gmtime(&t);
+	else
+		lt=localtime(&t);
 	Date ret;
 	ret.year=1900+lt->tm_year;
-	ret.month=(Month)lt->tm_mon;
+	ret.month=(Month)(lt->tm_mon + 1);
 	ret.day=lt->tm_mday;
 	ret.weekday=(Weekday)lt->tm_wday;
 	ret.dst=lt->tm_isdst;
 	
 	return ret;
 }
-OS::Time OS_Unix::get_time() const {
-
+OS::Time OS_Unix::get_time(bool utc) const {
 	time_t t=time(NULL);
-	struct tm *lt=localtime(&t);
+	struct tm *lt;
+	if (utc)
+		lt=gmtime(&t);
+	else
+		lt=localtime(&t);
 	Time ret;
 	ret.hour=lt->tm_hour;
 	ret.min=lt->tm_min;
 	ret.sec=lt->tm_sec;
+	get_time_zone_info();
 	return ret;
 }
-	
+
+OS::TimeZoneInfo OS_Unix::get_time_zone_info() const {
+	time_t t = time(NULL);
+	struct tm *lt = localtime(&t);
+	char name[16];
+	strftime(name, 16, "%Z", lt);
+	name[15] = 0;
+	TimeZoneInfo ret;
+	ret.name = name;
+
+	char bias_buf[16];
+	strftime(bias_buf, 16, "%z", lt);
+	int bias;
+	bias_buf[15] = 0;
+	sscanf(bias_buf, "%d", &bias);
+
+	// convert from ISO 8601 (1 minute=1, 1 hour=100) to minutes
+	int hour = (int)bias / 100;
+	int minutes = bias % 100;
+	if (bias < 0)
+		ret.bias = hour * 60 - minutes;
+	else
+		ret.bias = hour * 60 + minutes;
+
+	return ret;
+}
+
 void OS_Unix::delay_usec(uint32_t p_usec) const {
 
 	usleep(p_usec);

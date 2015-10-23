@@ -37,8 +37,18 @@ class Shader : public Resource {
 	OBJ_TYPE(Shader,Resource);
 	OBJ_SAVE_TYPE( Shader );
 	RES_BASE_EXTENSION("shd");
-	RID shader;
 
+public:
+	enum Mode {
+
+		MODE_MATERIAL,
+		MODE_CANVAS_ITEM,
+		MODE_POST_PROCESS,
+		MODE_MAX
+	};
+private:
+	RID shader;
+	Mode mode;
 	Dictionary _get_code();
 	void _set_code(const Dictionary& p_string);
 
@@ -55,15 +65,10 @@ class Shader : public Resource {
 protected:
 
 
+
 	static void _bind_methods();
 public:
-	enum Mode {
 
-		MODE_MATERIAL,
-		MODE_CANVAS_ITEM,
-		MODE_POST_PROCESS,
-		MODE_MAX
-	};
 
 	//void set_mode(Mode p_mode);
 	Mode get_mode() const;
@@ -121,7 +126,7 @@ public:
 
 class ResourceFormatLoaderShader : public ResourceFormatLoader {
 public:
-	virtual RES load(const String &p_path,const String& p_original_path="");
+	virtual RES load(const String &p_path,const String& p_original_path="",Error *r_error=NULL);
 	virtual void get_recognized_extensions(List<String> *p_extensions) const;
 	virtual bool handles_type(const String& p_type) const;
 	virtual String get_resource_type(const String &p_path) const;

@@ -201,6 +201,30 @@ PhysicsDirectSpaceState* PhysicsServerSW::space_get_direct_state(RID p_space) {
 	return space->get_direct_state();
 }
 
+void PhysicsServerSW::space_set_debug_contacts(RID p_space,int p_max_contacts) {
+
+	SpaceSW *space = space_owner.get(p_space);
+	ERR_FAIL_COND(!space);
+	space->set_debug_contacts(p_max_contacts);
+
+}
+
+Vector<Vector3> PhysicsServerSW::space_get_contacts(RID p_space) const {
+
+	SpaceSW *space = space_owner.get(p_space);
+	ERR_FAIL_COND_V(!space,Vector<Vector3>());
+	return space->get_debug_contacts();
+
+}
+
+int PhysicsServerSW::space_get_contact_count(RID p_space) const {
+
+	SpaceSW *space = space_owner.get(p_space);
+	ERR_FAIL_COND_V(!space,0);
+	return space->get_debug_contact_count();
+
+}
+
 RID PhysicsServerSW::area_create() {
 
 	AreaSW *area = memnew( AreaSW );
@@ -394,6 +418,14 @@ Transform PhysicsServerSW::area_get_transform(RID p_area) const {
 	return area->get_transform();
 };
 
+void PhysicsServerSW::area_set_monitorable(RID p_area,bool p_monitorable) {
+
+	AreaSW *area = area_owner.get(p_area);
+	ERR_FAIL_COND(!area);
+
+	area->set_monitorable(p_monitorable);
+}
+
 void PhysicsServerSW::area_set_monitor_callback(RID p_area,Object *p_receiver,const StringName& p_method) {
 
 	AreaSW *area = area_owner.get(p_area);
@@ -423,6 +455,14 @@ bool PhysicsServerSW::area_is_ray_pickable(RID p_area) const{
 }
 
 
+void PhysicsServerSW::area_set_area_monitor_callback(RID p_area,Object *p_receiver,const StringName& p_method) {
+
+
+	AreaSW *area = area_owner.get(p_area);
+	ERR_FAIL_COND(!area);
+
+	area->set_area_monitor_callback(p_receiver?p_receiver->get_instance_ID():0,p_method);
+}
 
 /* BODY API */
 

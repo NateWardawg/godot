@@ -41,6 +41,11 @@ void ReparentDialog::_notification(int p_what) {
 		connect("confirmed", this,"_reparent");
 	}
 
+	if (p_what==NOTIFICATION_EXIT_TREE)	{
+
+		disconnect("confirmed", this,"_reparent");
+	}
+
 	if (p_what==NOTIFICATION_DRAW) {
 		
 		//RID ci = get_canvas_item();
@@ -98,6 +103,7 @@ ReparentDialog::ReparentDialog() {
 	add_child(node_only);
 	node_only->hide();
 
+	tree->set_show_enabled_subscene(true);
 	//vbc->add_margin_child("Options:",node_only);;
 	
 

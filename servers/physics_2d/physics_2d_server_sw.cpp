@@ -30,7 +30,7 @@
 #include "broad_phase_2d_basic.h"
 #include "broad_phase_2d_hash_grid.h"
 #include "collision_solver_2d_sw.h"
-
+#include "globals.h"
 RID Physics2DServerSW::shape_create(ShapeType p_shape) {
 
 	Shape2DSW *shape=NULL;
@@ -257,11 +257,35 @@ real_t Physics2DServerSW::space_get_param(RID p_space,SpaceParameter p_param) co
 	return space->get_param(p_param);
 }
 
+void Physics2DServerSW::space_set_debug_contacts(RID p_space,int p_max_contacts) {
+
+	Space2DSW *space = space_owner.get(p_space);
+	ERR_FAIL_COND(!space);
+	space->set_debug_contacts(p_max_contacts);
+
+}
+
+Vector<Vector2> Physics2DServerSW::space_get_contacts(RID p_space) const {
+
+	Space2DSW *space = space_owner.get(p_space);
+	ERR_FAIL_COND_V(!space,Vector<Vector2>());
+	return space->get_debug_contacts();
+
+}
+
+int Physics2DServerSW::space_get_contact_count(RID p_space) const {
+
+	Space2DSW *space = space_owner.get(p_space);
+	ERR_FAIL_COND_V(!space,0);
+	return space->get_debug_contact_count();
+
+}
+
 Physics2DDirectSpaceState* Physics2DServerSW::space_get_direct_state(RID p_space) {
 
 	Space2DSW *space = space_owner.get(p_space);
 	ERR_FAIL_COND_V(!space,NULL);
-	if (/*doing_sync ||*/ space->is_locked()) {
+	if ((using_threads && !doing_sync) || space->is_locked()) {
 
 		ERR_EXPLAIN("Space state is inaccesible right now, wait for iteration or fixed process notification.");
 		ERR_FAIL_V(NULL);
@@ -733,7 +757,7 @@ void Physics2DServerSW::body_set_layer_mask(RID p_body, uint32_t p_flags) {
 
 };
 
-uint32_t Physics2DServerSW::body_get_layer_mask(RID p_body, uint32_t p_flags) const {
+uint32_t Physics2DServerSW::body_get_layer_mask(RID p_body) const {
 
 	Body2DSW *body = body_owner.get(p_body);
 	ERR_FAIL_COND_V(!body,0);
@@ -750,7 +774,7 @@ void Physics2DServerSW::body_set_collision_mask(RID p_body, uint32_t p_flags) {
 
 };
 
-uint32_t Physics2DServerSW::body_get_collision_mask(RID p_body, uint32_t p_flags) const {
+uint32_t Physics2DServerSW::body_get_collision_mask(RID p_body) const {
 
 	Body2DSW *body = body_owner.get(p_body);
 	ERR_FAIL_COND_V(!body,0);
@@ -1072,6 +1096,25 @@ RID Physics2DServerSW::damped_spring_joint_create(const Vector2& p_anchor_a,cons
 
 }
 
+void Physics2DServerSW::pin_joint_set_param(RID p_joint, PinJointParam p_param, real_t p_value) {
+
+	Joint2DSW *j = joint_owner.get(p_joint);
+	ERR_FAIL_COND(!j);
+	ERR_FAIL_COND(j->get_type()!=JOINT_PIN);
+
+	PinJoint2DSW *pin_joint = static_cast<PinJoint2DSW*>(j);
+	pin_joint->set_param(p_param, p_value);
+}
+
+real_t Physics2DServerSW::pin_joint_get_param(RID p_joint, PinJointParam p_param) const {
+	Joint2DSW *j = joint_owner.get(p_joint);
+	ERR_FAIL_COND_V(!j,0);
+	ERR_FAIL_COND_V(j->get_type()!=JOINT_PIN,0);
+
+	PinJoint2DSW *pin_joint = static_cast<PinJoint2DSW*>(j);
+	return pin_joint->get_param(p_param);
+}
+
 void Physics2DServerSW::damped_string_joint_set_param(RID p_joint, DampedStringParam p_param, real_t p_value) {
 
 
@@ -1196,7 +1239,7 @@ void Physics2DServerSW::set_active(bool p_active) {
 
 void Physics2DServerSW::init() {
 
-	doing_sync=true;
+	doing_sync=false;
 	last_step=0.001;
 	iterations=8;// 8?
 	stepper = memnew( Step2DSW );
@@ -1228,6 +1271,7 @@ void Physics2DServerSW::step(float p_step) {
 
 void Physics2DServerSW::sync() {
 
+	doing_sync=true;
 };
 
 void Physics2DServerSW::flush_queries() {
@@ -1235,7 +1279,7 @@ void Physics2DServerSW::flush_queries() {
 	if (!active)
 		return;
 
-	doing_sync=true;
+
 	for( Set<const Space2DSW*>::Element *E=active_spaces.front();E;E=E->next()) {
 
 		Space2DSW *space=(Space2DSW *)E->get();
@@ -1243,6 +1287,10 @@ void Physics2DServerSW::flush_queries() {
 	}
 
 };
+
+void Physics2DServerSW::end_sync() {
+	doing_sync=false;
+}
 
 
 
@@ -1283,6 +1331,7 @@ Physics2DServerSW::Physics2DServerSW() {
 	island_count=0;
 	active_objects=0;
 	collision_pairs=0;
+	using_threads=int(Globals::get_singleton()->get("physics_2d/thread_model"))==2;
 
 };
 

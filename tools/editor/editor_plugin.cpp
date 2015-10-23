@@ -74,6 +74,7 @@ void EditorPlugin::add_custom_control(CustomControlContainer p_location,Control 
 		case CONTAINER_CANVAS_EDITOR_SIDE: {
 
 			CanvasItemEditor::get_singleton()->get_palette_split()->add_child(p_control);
+			CanvasItemEditor::get_singleton()->get_palette_split()->move_child(p_control,0);
 
 		} break;
 		case CONTAINER_CANVAS_EDITOR_BOTTOM: {
@@ -197,6 +198,13 @@ bool EditorPlugin::get_remove_list(List<Node*> *p_list) {
 void EditorPlugin::restore_global_state() {}
 void EditorPlugin::save_global_state() {}
 
+void EditorPlugin::set_window_layout(Ref<ConfigFile> p_layout) {
+
+}
+
+void EditorPlugin::get_window_layout(Ref<ConfigFile> p_layout){
+
+}
 
 void EditorPlugin::_bind_methods() {
 

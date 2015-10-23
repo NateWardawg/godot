@@ -8,8 +8,6 @@ void Navigation2D::_navpoly_link(int p_id) {
 	NavMesh &nm=navpoly_map[p_id];
 	ERR_FAIL_COND(nm.linked);
 
-	print_line("LINK");
-
 	DVector<Vector2> vertices=nm.navpoly->get_vertices();
 	int len = vertices.size();
 	if (len==0)
@@ -47,7 +45,6 @@ void Navigation2D::_navpoly_link(int p_id) {
 			center+=ep;
 			e.point=_get_point(ep);
 			p.edges[j]=e;
-
 
 			int idxn = indices[(j+1)%plen];
 			if (idxn<0 || idxn>=len) {
@@ -91,9 +88,13 @@ void Navigation2D::_navpoly_link(int p_id) {
 			} else {
 
 				if (C->get().B!=NULL) {
-					print_line(String()+_get_vertex(ek.a)+" -> "+_get_vertex(ek.b));
+					ConnectionPending pending;
+					pending.polygon=&p;
+					pending.edge=j;
+					p.edges[j].P=C->get().pending.push_back(pending);
+					continue;
+					//print_line(String()+_get_vertex(ek.a)+" -> "+_get_vertex(ek.b));
 				}
-				ERR_CONTINUE(C->get().B!=NULL); //wut
 
 				C->get().B=&p;
 				C->get().B_edge=j;
@@ -117,7 +118,7 @@ void Navigation2D::_navpoly_unlink(int p_id) {
 	NavMesh &nm=navpoly_map[p_id];
 	ERR_FAIL_COND(!nm.linked);
 
-	print_line("UNLINK");
+	//print_line("UNLINK");
 
 	for (List<Polygon>::Element *E=nm.polygons.front();E;E=E->next()) {
 
@@ -133,7 +134,12 @@ void Navigation2D::_navpoly_unlink(int p_id) {
 			EdgeKey ek(edges[i].point,edges[next].point);
 			Map<EdgeKey,Connection>::Element *C=connections.find(ek);
 			ERR_CONTINUE(!C);
-			if (C->get().B) {
+
+			if (edges[i].P) {
+				C->get().pending.erase(edges[i].P);
+				edges[i].P=NULL;
+
+			} else if (C->get().B) {
 				//disconnect
 
 				C->get().B->edges[C->get().B_edge].C=NULL;
@@ -148,6 +154,20 @@ void Navigation2D::_navpoly_unlink(int p_id) {
 				}
 				C->get().B=NULL;
 				C->get().B_edge=-1;
+
+				if (C->get().pending.size()) {
+					//reconnect if something is pending
+					ConnectionPending cp = C->get().pending.front()->get();
+					C->get().pending.pop_front();
+
+					C->get().B=cp.polygon;
+					C->get().B_edge=cp.edge;
+					C->get().A->edges[C->get().A_edge].C=cp.polygon;
+					C->get().A->edges[C->get().A_edge].C_edge=cp.edge;
+					cp.polygon->edges[cp.edge].C=C->get().A;
+					cp.polygon->edges[cp.edge].C_edge=C->get().A_edge;
+					cp.polygon->edges[cp.edge].P=NULL;
+				}
 
 			} else {
 				connections.erase(C);
@@ -335,7 +355,6 @@ Vector<Vector2> Navigation2D::get_simple_path(const Vector2& p_start, const Vect
 
 	if (!begin_poly || !end_poly) {
 
-		//print_line("No Path Path");
 		return Vector<Vector2>(); //no path
 	}
 

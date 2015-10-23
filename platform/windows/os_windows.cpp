@@ -323,11 +323,21 @@ LRESULT OS_Windows::WndProc(HWND hWnd,UINT uMsg, WPARAM	wParam,	LPARAM	lParam) {
 
 			old_invalid=true;
 			outside=true;
+			if (main_loop && mouse_mode!=MOUSE_MODE_CAPTURED)
+				main_loop->notification(MainLoop::NOTIFICATION_WM_MOUSE_EXIT);
+			if (input)
+				input->set_mouse_in_window(false);
 
 		} break;
 		case WM_MOUSEMOVE: {
 
 			if (outside) {
+				//mouse enter
+
+				if (main_loop && mouse_mode!=MOUSE_MODE_CAPTURED)
+					main_loop->notification(MainLoop::NOTIFICATION_WM_MOUSE_ENTER);
+				if (input)
+					input->set_mouse_in_window(true);
 
 				CursorShape c=cursor_shape;
 				cursor_shape=CURSOR_MAX;
@@ -1177,7 +1187,7 @@ void OS_Windows::initialize(const VideoMode& p_desired,int p_video_driver,int p_
 	physics_server = memnew( PhysicsServerSW );
 	physics_server->init();
 
-	physics_2d_server = memnew( Physics2DServerSW );
+	physics_2d_server = Physics2DServerWrapMT::init_server<Physics2DServerSW>();
 	physics_2d_server->init();
 
 	if (!is_no_window_mode_enabled()) {
@@ -1374,6 +1384,9 @@ void OS_Windows::finalize() {
 
 	physics_2d_server->finish();
 	memdelete(physics_2d_server);
+
+	joystick_change_queue.clear();
+	monitor_info.clear();
 
 }
 void OS_Windows::finalize_core() {
@@ -1826,10 +1839,14 @@ String OS_Windows::get_name() {
 	return "Windows";
 }
 
-OS::Date OS_Windows::get_date() const {
+OS::Date OS_Windows::get_date(bool utc) const {
 
 	SYSTEMTIME systemtime;
-	GetSystemTime(&systemtime);
+	if (utc)
+		GetSystemTime(&systemtime);
+	else
+		GetLocalTime(&systemtime);
+
 	Date date;
 	date.day=systemtime.wDay;
 	date.month=Month(systemtime.wMonth);
@@ -1838,16 +1855,36 @@ OS::Date OS_Windows::get_date() const {
 	date.dst=false;
 	return date;
 }
-OS::Time OS_Windows::get_time() const {
+OS::Time OS_Windows::get_time(bool utc) const {
 
 	SYSTEMTIME systemtime;
-	GetLocalTime(&systemtime);
+	if (utc)
+		GetSystemTime(&systemtime);
+	else
+		GetLocalTime(&systemtime);
 
 	Time time;
 	time.hour=systemtime.wHour;
 	time.min=systemtime.wMinute;
 	time.sec=systemtime.wSecond;
 	return time;
+}
+
+OS::TimeZoneInfo OS_Windows::get_time_zone_info() const {
+	TIME_ZONE_INFORMATION info;
+	bool daylight = false;
+	if (GetTimeZoneInformation(&info) == TIME_ZONE_ID_DAYLIGHT)
+		daylight = true;
+
+	TimeZoneInfo ret;
+	if (daylight) {
+		ret.name = info.DaylightName;
+	} else {
+		ret.name = info.StandardName;
+	}
+
+	ret.bias = info.Bias;
+	return ret;
 }
 
 uint64_t OS_Windows::get_unix_time() const {
@@ -1871,6 +1908,12 @@ uint64_t OS_Windows::get_unix_time() const {
 
 	return (*(uint64_t*)&ft - *(uint64_t*)&fep) / 10000000;
 };
+
+uint64_t OS_Windows::get_system_time_msec() const {
+	SYSTEMTIME st;
+	GetSystemTime(&st);
+	return st.wMilliseconds;
+}
 
 void OS_Windows::delay_usec(uint32_t p_usec) const {
 
@@ -2052,7 +2095,7 @@ String OS_Windows::get_executable_path() const {
 	wchar_t bufname[4096];
 	GetModuleFileNameW(NULL,bufname,4096);
 	String s= bufname;
-	print_line("EXEC PATHP¨®: "+s);
+	print_line("EXEC PATHP??: "+s);
 	return s;
 }
 

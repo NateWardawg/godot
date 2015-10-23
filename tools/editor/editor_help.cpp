@@ -79,7 +79,7 @@ void EditorHelpSearch::_update_search() {
 	_parse_fs(EditorFileSystem::get_singleton()->get_filesystem());
 */
 
-	List<String> type_list;
+	List<StringName> type_list;
 	ObjectTypeDB::get_type_list(&type_list);
 
 	DocData *doc=EditorHelp::get_doc_data();
@@ -547,6 +547,7 @@ Error EditorHelp::_goto_desc(const String& p_class,bool p_update_history,int p_v
 		class_desc->pop();
 		class_desc->add_newline();
 		class_desc->add_newline();
+		class_desc->add_newline();
 
 	}
 
@@ -561,6 +562,7 @@ Error EditorHelp::_goto_desc(const String& p_class,bool p_update_history,int p_v
 		//class_desc->add_newline();
 		class_desc->add_newline();
 		_add_text(cd.brief_description);
+		class_desc->add_newline();
 		class_desc->add_newline();
 		class_desc->add_newline();
 	}
@@ -636,7 +638,6 @@ Error EditorHelp::_goto_desc(const String& p_class,bool p_update_history,int p_v
 	}
 
 	if (cd.properties.size()) {
-
 
 		class_desc->push_color(EditorSettings::get_singleton()->get("text_editor/keyword_color"));
 		class_desc->push_font(doc_title_font);
@@ -715,9 +716,10 @@ Error EditorHelp::_goto_desc(const String& p_class,bool p_update_history,int p_v
 			class_desc->add_newline();
 		}
 
-		class_desc->add_newline();
 		class_desc->pop();
 
+		class_desc->add_newline();
+		class_desc->add_newline();
 
 	}
 	if (cd.signals.size()) {
@@ -779,6 +781,7 @@ Error EditorHelp::_goto_desc(const String& p_class,bool p_update_history,int p_v
 
 		class_desc->pop();
 		class_desc->add_newline();
+		class_desc->add_newline();
 
 	}
 
@@ -823,6 +826,7 @@ Error EditorHelp::_goto_desc(const String& p_class,bool p_update_history,int p_v
 
 		class_desc->pop();
 		class_desc->add_newline();
+		class_desc->add_newline();
 
 
 	}
@@ -830,6 +834,7 @@ Error EditorHelp::_goto_desc(const String& p_class,bool p_update_history,int p_v
 	if (cd.description!="") {
 
 		description_line=class_desc->get_line_count()-2;
+
 		class_desc->push_color(EditorSettings::get_singleton()->get("text_editor/keyword_color"));
 		class_desc->push_font(doc_title_font);
 		class_desc->add_text("Description:");
@@ -837,8 +842,8 @@ Error EditorHelp::_goto_desc(const String& p_class,bool p_update_history,int p_v
 		class_desc->pop();
 
 		class_desc->add_newline();
-		class_desc->add_newline();
 		_add_text(cd.description);
+		class_desc->add_newline();
 		class_desc->add_newline();
 		class_desc->add_newline();
 	}
@@ -853,12 +858,16 @@ Error EditorHelp::_goto_desc(const String& p_class,bool p_update_history,int p_v
 
 		class_desc->add_newline();
 		class_desc->add_newline();
+		class_desc->push_indent(1);
 
 
 		for(int i=0;i<cd.methods.size();i++) {
 
 			method_line[cd.methods[i].name]=class_desc->get_line_count()-2;
 
+			if( cd.methods[i].description != "") {
+				class_desc->add_newline();
+			}
 			class_desc->push_font(doc_code_font);
 			_add_type(cd.methods[i].return_type);
 
@@ -899,9 +908,12 @@ Error EditorHelp::_goto_desc(const String& p_class,bool p_update_history,int p_v
 
 			class_desc->pop();
 
-			class_desc->add_newline();
-			class_desc->add_newline();
-			_add_text(cd.methods[i].description);
+			if( cd.methods[i].description != "") {
+				class_desc->add_text("  ");
+				_add_text(cd.methods[i].description);
+				class_desc->add_newline();
+				class_desc->add_newline();
+			}
 			class_desc->add_newline();
 			class_desc->add_newline();
 
@@ -1241,13 +1253,13 @@ void EditorHelp::_update_doc() {
 
 	class_list->clear();
 
-	List<String> type_list;
+	List<StringName> type_list;
 
 	tree_item_map.clear();
 
 	TreeItem *root = class_list->create_item();
 	class_list->set_hide_root(true);
-	List<String>::Element *I=type_list.front();
+	List<StringName>::Element *I=type_list.front();
 
 	for(Map<String,DocData::ClassDoc>::Element *E=doc->class_list.front();E;E=E->next()) {
 
@@ -1392,6 +1404,8 @@ EditorHelp::EditorHelp(EditorNode *p_editor) {
 		PanelContainer *pc = memnew( PanelContainer );
 		Ref<StyleBoxFlat> style( memnew( StyleBoxFlat ) );
 		style->set_bg_color( EditorSettings::get_singleton()->get("text_editor/background_color") );	
+		style->set_default_margin(MARGIN_LEFT,20);
+		style->set_default_margin(MARGIN_TOP,20);
 		pc->add_style_override("panel", style); //get_stylebox("normal","TextEdit"));
 		h_split->add_child(pc);
 		class_desc = memnew( RichTextLabel );

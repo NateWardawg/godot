@@ -144,14 +144,65 @@ void CanvasItemEditor::_unhandled_key_input(const InputEvent& p_ev) {
 
 	if (!is_visible())
 		return;
+	if (p_ev.key.mod.control)
+		// prevent to change tool mode when control key is pressed
+		return;
 	if (p_ev.key.pressed && !p_ev.key.echo && p_ev.key.scancode==KEY_Q)
 		_tool_select(TOOL_SELECT);
 	if (p_ev.key.pressed && !p_ev.key.echo && p_ev.key.scancode==KEY_W)
 		_tool_select(TOOL_MOVE);
 	if (p_ev.key.pressed && !p_ev.key.echo && p_ev.key.scancode==KEY_E)
 		_tool_select(TOOL_ROTATE);
-	if (p_ev.key.pressed && !p_ev.key.echo && p_ev.key.scancode==KEY_V && drag==DRAG_ALL && can_move_pivot)
-		drag=DRAG_PIVOT;
+	if (p_ev.key.pressed && !p_ev.key.echo && p_ev.key.scancode==KEY_V && drag==DRAG_NONE && can_move_pivot) {
+		if (p_ev.key.mod.shift) {
+			//move drag pivot
+			drag=DRAG_PIVOT;
+		} else if (!Input::get_singleton()->is_mouse_button_pressed(0)) {
+
+			List<Node*> &selection = editor_selection->get_selected_node_list();
+
+			Vector2 mouse_pos = viewport->get_local_mouse_pos();
+			if (selection.size() && viewport->get_rect().has_point(mouse_pos)) {
+				//just in case, make it work if over viewport
+				mouse_pos=transform.affine_inverse().xform(mouse_pos);
+				mouse_pos=snap_point(mouse_pos);
+
+				undo_redo->create_action("Move Pivot");
+
+				for(List<Node*>::Element *E=selection.front();E;E=E->next()) {
+
+					Node2D *n2d = E->get()->cast_to<Node2D>();
+
+					if (n2d && n2d->edit_has_pivot()) {
+
+						Vector2 offset = n2d->edit_get_pivot();
+						Vector2 gpos = n2d->get_global_pos();
+
+						Vector2 motion_ofs = gpos-mouse_pos;
+
+						undo_redo->add_do_method(n2d,"set_global_pos",mouse_pos);
+						undo_redo->add_do_method(n2d,"edit_set_pivot",offset+n2d->get_global_transform().affine_inverse().basis_xform(motion_ofs));
+						undo_redo->add_undo_method(n2d,"set_global_pos",gpos);
+						undo_redo->add_undo_method(n2d,"edit_set_pivot",offset);
+						for(int i=0;i<n2d->get_child_count();i++) {
+							Node2D *n2dc = n2d->get_child(i)->cast_to<Node2D>();
+							if (!n2dc)
+								continue;
+
+							undo_redo->add_do_method(n2dc,"set_global_pos",n2dc->get_global_pos());
+							undo_redo->add_undo_method(n2dc,"set_global_pos",n2dc->get_global_pos());
+
+						}
+
+					}
+
+				}
+
+				undo_redo->commit_action();
+			}
+
+		}
+	}
 
 }
 
@@ -1233,7 +1284,7 @@ void CanvasItemEditor::_viewport_input_event(const InputEvent& p_event) {
 
 	if (p_event.type==InputEvent::MOUSE_MOTION) {
 
-		if (!viewport->has_focus())
+        if (!viewport->has_focus() && (!get_focus_owner() || !get_focus_owner()->is_text_field()))
 			viewport->call_deferred("grab_focus");
 
 		const InputEventMouseMotion &m=p_event.mouse_motion;
@@ -1685,7 +1736,7 @@ void CanvasItemEditor::_viewport_draw() {
 			viewport->draw_line(endpoints[i],endpoints[(i+1)%4],c,2);
 		}
 
-		if (single && (tool==TOOL_SELECT || tool == TOOL_MOVE)) { //kind of sucks
+		if (single && (tool==TOOL_SELECT || tool == TOOL_MOVE || tool == TOOL_ROTATE)) { //kind of sucks
 
 			if (canvas_item->cast_to<Node2D>()) {
 
@@ -1862,11 +1913,19 @@ void CanvasItemEditor::_notification(int p_what) {
 
 		List<Node*> &selection = editor_selection->get_selected_node_list();
 
+		bool all_control=true;
+		bool has_control=false;
+
 		for(List<Node*>::Element *E=selection.front();E;E=E->next()) {
 
 			CanvasItem *canvas_item = E->get()->cast_to<CanvasItem>();
 			if (!canvas_item || !canvas_item->is_visible())
 				continue;
+
+			if (canvas_item->cast_to<Control>())
+				has_control=true;
+			else
+				all_control=false;
 
 			CanvasItemEditorSelectedItem *se=editor_selection->get_node_editor_data<CanvasItemEditorSelectedItem>(canvas_item);
 			if (!se)
@@ -1884,6 +1943,13 @@ void CanvasItemEditor::_notification(int p_what) {
 
 		}
 
+		bool show_anchor = all_control && has_control;
+		if (show_anchor != !anchor_menu->is_hidden()) {
+			if (show_anchor)
+				anchor_menu->show();
+			else
+				anchor_menu->hide();
+		}
 
 		for(Map<ObjectID,BoneList>::Element *E=bone_list.front();E;E=E->next()) {
 
@@ -1925,6 +1991,32 @@ void CanvasItemEditor::_notification(int p_what) {
 		group_button->set_icon(get_icon("Group","EditorIcons"));
 		ungroup_button->set_icon(get_icon("Ungroup","EditorIcons"));
 		key_insert_button->set_icon(get_icon("Key","EditorIcons"));
+
+
+		//anchor_menu->add_icon_override("Align Top Left");
+		anchor_menu->set_icon(get_icon("Anchor","EditorIcons"));
+		PopupMenu *p=anchor_menu->get_popup();
+
+		p->add_icon_item(get_icon("ControlAlignTopLeft","EditorIcons"),"Top Left",ANCHOR_ALIGN_TOP_LEFT);
+		p->add_icon_item(get_icon("ControlAlignTopRight","EditorIcons"),"Top Right",ANCHOR_ALIGN_TOP_RIGHT);
+		p->add_icon_item(get_icon("ControlAlignBottomRight","EditorIcons"),"Bottom Right",ANCHOR_ALIGN_BOTTOM_RIGHT);
+		p->add_icon_item(get_icon("ControlAlignBottomLeft","EditorIcons"),"Bottom Left",ANCHOR_ALIGN_BOTTOM_LEFT);
+		p->add_separator();
+		p->add_icon_item(get_icon("ControlAlignLeftCenter","EditorIcons"),"Center Left",ANCHOR_ALIGN_CENTER_LEFT);
+		p->add_icon_item(get_icon("ControlAlignTopCenter","EditorIcons"),"Center Top",ANCHOR_ALIGN_CENTER_TOP);
+		p->add_icon_item(get_icon("ControlAlignRightCenter","EditorIcons"),"Center Right",ANCHOR_ALIGN_CENTER_RIGHT);
+		p->add_icon_item(get_icon("ControlAlignBottomCenter","EditorIcons"),"Center Bottom",ANCHOR_ALIGN_CENTER_BOTTOM);
+		p->add_icon_item(get_icon("ControlAlignCenter","EditorIcons"),"Center",ANCHOR_ALIGN_CENTER);
+		p->add_separator();
+		p->add_icon_item(get_icon("ControlAlignLeftWide","EditorIcons"),"Left Wide",ANCHOR_ALIGN_LEFT_WIDE);
+		p->add_icon_item(get_icon("ControlAlignTopWide","EditorIcons"),"Top Wide",ANCHOR_ALIGN_TOP_WIDE);
+		p->add_icon_item(get_icon("ControlAlignRightWide","EditorIcons"),"Right Wide",ANCHOR_ALIGN_RIGHT_WIDE);
+		p->add_icon_item(get_icon("ControlAlignBottomWide","EditorIcons"),"Bottom Wide",ANCHOR_ALIGN_BOTTOM_WIDE);
+		p->add_icon_item(get_icon("ControlVcenterWide","EditorIcons"),"VCenter Wide ",ANCHOR_ALIGN_VCENTER_WIDE);
+		p->add_icon_item(get_icon("ControlHcenterWide","EditorIcons"),"HCenter Wide ",ANCHOR_ALIGN_HCENTER_WIDE);
+		p->add_separator();
+		p->add_icon_item(get_icon("ControlAlignWide","EditorIcons"),"Full Rect",ANCHOR_ALIGN_WIDE);
+
 
 	}
 
@@ -2131,6 +2223,27 @@ void CanvasItemEditor::_update_scroll(float) {
 
 }
 
+void CanvasItemEditor::_set_anchor(Control::AnchorType p_left,Control::AnchorType p_top,Control::AnchorType p_right,Control::AnchorType p_bottom) {
+	List<Node*> &selection = editor_selection->get_selected_node_list();
+
+	undo_redo->create_action("Change Anchors");
+	for(List<Node*>::Element *E=selection.front();E;E=E->next()) {
+
+		Control *c = E->get()->cast_to<Control>();
+
+		undo_redo->add_do_method(c,"set_anchor",MARGIN_LEFT,p_left);
+		undo_redo->add_do_method(c,"set_anchor",MARGIN_TOP,p_top);
+		undo_redo->add_do_method(c,"set_anchor",MARGIN_RIGHT,p_right);
+		undo_redo->add_do_method(c,"set_anchor",MARGIN_BOTTOM,p_bottom);
+		undo_redo->add_undo_method(c,"set_anchor",MARGIN_LEFT,c->get_anchor(MARGIN_LEFT));
+		undo_redo->add_undo_method(c,"set_anchor",MARGIN_TOP,c->get_anchor(MARGIN_TOP));
+		undo_redo->add_undo_method(c,"set_anchor",MARGIN_RIGHT,c->get_anchor(MARGIN_RIGHT));
+		undo_redo->add_undo_method(c,"set_anchor",MARGIN_BOTTOM,c->get_anchor(MARGIN_BOTTOM));
+	}
+
+	undo_redo->commit_action();
+
+}
 
 void CanvasItemEditor::_popup_callback(int p_op) {
 
@@ -2333,6 +2446,56 @@ void CanvasItemEditor::_popup_callback(int p_op) {
 		case SPACE_VERTICAL: {
 			//space_selected_items< proj_vector2_y, compare_items_y >();
 		} break;
+		case ANCHOR_ALIGN_TOP_LEFT: {
+			_set_anchor(ANCHOR_BEGIN,ANCHOR_BEGIN,ANCHOR_BEGIN,ANCHOR_BEGIN);
+		} break;
+		case ANCHOR_ALIGN_TOP_RIGHT: {
+			_set_anchor(ANCHOR_END,ANCHOR_BEGIN,ANCHOR_END,ANCHOR_BEGIN);
+		} break;
+		case ANCHOR_ALIGN_BOTTOM_LEFT: {
+			_set_anchor(ANCHOR_BEGIN,ANCHOR_END,ANCHOR_BEGIN,ANCHOR_END);
+		} break;
+		case ANCHOR_ALIGN_BOTTOM_RIGHT: {
+			_set_anchor(ANCHOR_END,ANCHOR_END,ANCHOR_END,ANCHOR_END);
+		} break;
+		case ANCHOR_ALIGN_CENTER_LEFT: {
+			_set_anchor(ANCHOR_BEGIN,ANCHOR_CENTER,ANCHOR_BEGIN,ANCHOR_CENTER);
+		} break;
+		case ANCHOR_ALIGN_CENTER_RIGHT: {
+
+			_set_anchor(ANCHOR_END,ANCHOR_CENTER,ANCHOR_END,ANCHOR_CENTER);
+		} break;
+		case ANCHOR_ALIGN_CENTER_TOP: {
+			_set_anchor(ANCHOR_CENTER,ANCHOR_BEGIN,ANCHOR_CENTER,ANCHOR_BEGIN);
+		} break;
+		case ANCHOR_ALIGN_CENTER_BOTTOM: {
+			_set_anchor(ANCHOR_CENTER,ANCHOR_END,ANCHOR_CENTER,ANCHOR_END);
+		} break;
+		case ANCHOR_ALIGN_CENTER: {
+			_set_anchor(ANCHOR_CENTER,ANCHOR_CENTER,ANCHOR_CENTER,ANCHOR_CENTER);
+		} break;
+		case ANCHOR_ALIGN_TOP_WIDE: {
+			_set_anchor(ANCHOR_BEGIN,ANCHOR_BEGIN,ANCHOR_END,ANCHOR_BEGIN);
+		} break;
+		case ANCHOR_ALIGN_LEFT_WIDE: {
+			_set_anchor(ANCHOR_BEGIN,ANCHOR_BEGIN,ANCHOR_BEGIN,ANCHOR_END);
+		} break;
+		case ANCHOR_ALIGN_RIGHT_WIDE: {
+			_set_anchor(ANCHOR_END,ANCHOR_BEGIN,ANCHOR_END,ANCHOR_END);
+		} break;
+		case ANCHOR_ALIGN_BOTTOM_WIDE: {
+			_set_anchor(ANCHOR_BEGIN,ANCHOR_END,ANCHOR_END,ANCHOR_END);
+		} break;
+		case ANCHOR_ALIGN_VCENTER_WIDE: {
+			_set_anchor(ANCHOR_CENTER,ANCHOR_BEGIN,ANCHOR_CENTER,ANCHOR_END);
+		} break;
+		case ANCHOR_ALIGN_HCENTER_WIDE: {
+			_set_anchor(ANCHOR_BEGIN,ANCHOR_CENTER,ANCHOR_END,ANCHOR_CENTER);
+		} break;
+		case ANCHOR_ALIGN_WIDE: {
+			_set_anchor(ANCHOR_BEGIN,ANCHOR_BEGIN,ANCHOR_END,ANCHOR_END);
+		} break;
+
 		case ANIM_INSERT_KEY:
 		case ANIM_INSERT_KEY_EXISTING: {
 
@@ -2854,7 +3017,7 @@ CanvasItemEditor::CanvasItemEditor(EditorNode *p_editor) {
 	hb->add_child(select_button);
 	select_button->connect("pressed",this,"_tool_select",make_binds(TOOL_SELECT));
 	select_button->set_pressed(true);
-	select_button->set_tooltip("Select Mode (Q)\n"+keycode_get_string(KEY_MASK_CMD)+"Drag: Rotate\nAlt+Drag: Move\nPress 'v' to Move Pivot (while moving)");
+	select_button->set_tooltip("Select Mode (Q)\n"+keycode_get_string(KEY_MASK_CMD)+"Drag: Rotate\nAlt+Drag: Move\nPress 'v' to Change Pivot, 'Shift+v' to Drag Pivot (while moving).");
 
 	move_button = memnew( ToolButton );
 	move_button->set_toggle_mode(true);
@@ -2950,6 +3113,14 @@ CanvasItemEditor::CanvasItemEditor(EditorNode *p_editor) {
 	p->add_separator();
 	p->add_item("Center Selection", VIEW_CENTER_TO_SELECTION, KEY_F);
 	p->add_item("Frame Selection", VIEW_FRAME_TO_SELECTION, KEY_MASK_CMD|KEY_F);
+
+	anchor_menu = memnew( MenuButton );
+	anchor_menu->set_text("Anchor");
+	hb->add_child(anchor_menu);
+	anchor_menu->get_popup()->connect("item_pressed", this,"_popup_callback");
+	anchor_menu->hide();
+
+	//p = anchor_menu->get_popup();
 
 
 

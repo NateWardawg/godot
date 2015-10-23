@@ -512,12 +512,26 @@ static int button_mask=0;
 
 - (void)mouseExited:(NSEvent *)event
 {
+	if (!OS_OSX::singleton)
+		return;
+
+	if (OS_OSX::singleton->main_loop && OS_OSX::singleton->mouse_mode!=OS::MOUSE_MODE_CAPTURED)
+		OS_OSX::singleton->main_loop->notification(MainLoop::NOTIFICATION_WM_MOUSE_EXIT);
+	if (OS_OSX::singleton->input)
+		OS_OSX::singleton->input->set_mouse_in_window(false);
    // _glfwInputCursorEnter(window, GL_FALSE);
 }
 
 - (void)mouseEntered:(NSEvent *)event
 {
   //  _glfwInputCursorEnter(window, GL_TRUE);
+	if (!OS_OSX::singleton)
+		return;
+	if (OS_OSX::singleton->main_loop && OS_OSX::singleton->mouse_mode!=OS::MOUSE_MODE_CAPTURED)
+		OS_OSX::singleton->main_loop->notification(MainLoop::NOTIFICATION_WM_MOUSE_ENTER);
+	if (OS_OSX::singleton->input)
+		OS_OSX::singleton->input->set_mouse_in_window(true);
+
 }
 
 - (void)viewDidChangeBackingProperties
@@ -1015,7 +1029,8 @@ void OS_OSX::initialize(const VideoMode& p_desired,int p_video_driver,int p_audi
 	//
 	physics_server = memnew( PhysicsServerSW );
 	physics_server->init();
-	physics_2d_server = memnew( Physics2DServerSW );
+	//physics_2d_server = memnew( Physics2DServerSW );
+	physics_2d_server = Physics2DServerWrapMT::init_server<Physics2DServerSW>();
 	physics_2d_server->init();
 
 	input = memnew( InputDefault );
@@ -1112,7 +1127,9 @@ void OS_OSX::warp_mouse_pos(const Point2& p_to) {
 	NSPoint localPoint = { p_to.x, p_to.y };
 
 	NSPoint pointInWindow = [window_view convertPoint:localPoint toView:nil];
-	NSPoint pointOnScreen = [[window_view window] convertRectToScreen:(NSRect){.origin=pointInWindow}].origin;
+	NSRect pointInWindowRect;
+	pointInWindowRect.origin = pointInWindow;
+	NSPoint pointOnScreen = [[window_view window] convertRectToScreen:pointInWindowRect].origin;
 
 	//point in scren coords
 	CGPoint lMouseWarpPos = { pointOnScreen.x, pointOnScreen.y};
@@ -1237,6 +1254,11 @@ Error OS_OSX::shell_open(String p_uri) {
 	return OK;
 }
 
+String OS_OSX::get_locale() const {
+  NSString* preferredLang = [[NSLocale preferredLanguages] objectAtIndex:0];
+	return [preferredLang UTF8String];
+}
+
 void OS_OSX::swap_buffers() {
 
 	[context flushBuffer];
@@ -1276,7 +1298,7 @@ void OS_OSX::set_current_screen(int p_screen) {
 	current_screen = p_screen;
 };
 
-Point2 OS_OSX::get_screen_position(int p_screen) {
+Point2 OS_OSX::get_screen_position(int p_screen) const {
 
 	ERR_FAIL_INDEX_V(p_screen, screens.size(), Point2());
 	return screens[p_screen].pos;
