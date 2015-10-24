@@ -7,8 +7,7 @@
 #include "../../agents/bt_agent_3d.h"
 
 
-class BTDistance : public BTCondition
-{
+class BTDistance : public BTCondition {
 
 	OBJ_TYPE( BTDistance, BTCondition )
 	OBJ_CATEGORY("AI")
