@@ -1,12 +1,12 @@
-#ifndef BT_PARALLEL_ALL_H
-#define BT_PARALLEL_ALL_H
+#ifndef BT_PARALLEL_H
+#define BT_PARALLEL_H
 
 #include "bt_composite.h"
 
 
-class BTParallelAll : public BTComposite {
+class BTParallel : public BTComposite {
 
-	OBJ_TYPE( BTParallelAll, BTComposite )
+	OBJ_TYPE( BTParallel, BTComposite )
 	OBJ_CATEGORY("AI")
 
 public:
@@ -34,8 +34,8 @@ public:
 	ExitCondition get_failure_condition() const;
 	void set_failure_condition(ExitCondition p_failure_condition);
 
-	BTParallelAll();
+	BTParallel();
 
 };
 
-#endif // BT_PARALLEL_ALL_H
+#endif // BT_PARALLEL_H

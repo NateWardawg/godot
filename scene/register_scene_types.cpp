@@ -191,8 +191,7 @@
 #include "scene/ai/behavior_tree/agents/bt_agent_3d.h"
 #include "scene/ai/behavior_tree/composites/bt_sequence.h"
 #include "scene/ai/behavior_tree/composites/bt_selector.h"
-#include "scene/ai/behavior_tree/composites/bt_parallel_all.h"
-#include "scene/ai/behavior_tree/composites/bt_parallel_any.h"
+#include "scene/ai/behavior_tree/composites/bt_parallel.h"
 #include "scene/ai/behavior_tree/bt_custom.h"
 #include "scene/ai/behavior_tree/decorators/bt_loop.h"
 #include "scene/ai/behavior_tree/decorators/bt_inverter.h"
@@ -418,8 +417,7 @@ void register_scene_types() {
 	ObjectTypeDB::register_type<BTAgent3D>();
 	ObjectTypeDB::register_type<BTSequence>();
 	ObjectTypeDB::register_type<BTSelector>();
-	ObjectTypeDB::register_type<BTParallelAll>();
-	ObjectTypeDB::register_type<BTParallelAny>();
+	ObjectTypeDB::register_type<BTParallel>();
 	ObjectTypeDB::register_type<BTCustom>();
 	ObjectTypeDB::register_type<BTLoop>();
 	ObjectTypeDB::register_type<BTInverter>();
