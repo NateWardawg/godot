@@ -4,16 +4,23 @@
 #include "bt_composite.h"
 
 
-class BTParallelAll : public BTComposite
-{
+class BTParallelAll : public BTComposite {
 
 	OBJ_TYPE( BTParallelAll, BTComposite )
-    OBJ_CATEGORY("AI")
+	OBJ_CATEGORY("AI")
 
 public:
 
-	bool fail_on_child_failure;
-	bool use_master_node;
+	enum ExitCondition {
+
+		FIRST_CHILD,
+		ANY_CHILD,
+		ALL_CHILDREN
+	};
+
+
+	ExitCondition success_condition;
+	ExitCondition failure_condition;
 
 	static void _bind_methods();
 
@@ -21,11 +28,11 @@ public:
 
 	virtual void init_composite();
 
-	bool get_fail_on_child_failure() { return fail_on_child_failure; }
-	void set_fail_on_child_failure(bool p_fail_on_child_failure) { fail_on_child_failure = p_fail_on_child_failure; }
+	ExitCondition get_success_condition() const;
+	void set_success_condition(ExitCondition p_success_condition);
 
-	bool get_use_master_node() { return use_master_node; }
-	void set_use_master_node(bool p_use_master_node) { use_master_node = p_use_master_node; }
+	ExitCondition get_failure_condition() const;
+	void set_failure_condition(ExitCondition p_failure_condition);
 
 	BTParallelAll();
 
