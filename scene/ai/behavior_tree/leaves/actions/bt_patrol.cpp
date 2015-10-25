@@ -2,8 +2,13 @@
 #include "bt_patrol.h"
 
 
+VARIANT_ENUM_CAST(BTPatrol::LoopEndMode)
+
+
 BTPatrol::BTPatrol() {
-	distance = 1.0;
+	waypoint_threshold = 1.0;
+	patrol_direction = 1;
+	patrol_end_mode = LOOP;
 	current_target = NULL;
 	navigator = NULL;
 }
@@ -11,20 +16,26 @@ BTPatrol::BTPatrol() {
 
 void BTPatrol::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("get_navigator"),&BTPatrol::get_navigator);
-	ObjectTypeDB::bind_method(_MD("set_navigator"),&BTPatrol::set_navigator);
-	ObjectTypeDB::bind_method(_MD("get_distance"),&BTPatrol::get_distance);
-	ObjectTypeDB::bind_method(_MD("set_distance"),&BTPatrol::set_distance);
-	ObjectTypeDB::bind_method(_MD("add_target"),&BTPatrol::add_target);
+	ObjectTypeDB::bind_method(_MD("set_navigator","agent"),&BTPatrol::set_navigator);
+	ObjectTypeDB::bind_method(_MD("get_waypoint_threshold"),&BTPatrol::get_waypoint_threshold);
+	ObjectTypeDB::bind_method(_MD("set_waypoint_threshold","distance"),&BTPatrol::set_waypoint_threshold);
+	ObjectTypeDB::bind_method(_MD("add_target", "node"),&BTPatrol::add_target);
 	ObjectTypeDB::bind_method(_MD("remove_target"),&BTPatrol::remove_target);
 	ObjectTypeDB::bind_method(_MD("find_target"),&BTPatrol::find_target);
 	ObjectTypeDB::bind_method(_MD("get_target_count"),&BTPatrol::get_target_count);
 	ObjectTypeDB::bind_method(_MD("get_targets"),&BTPatrol::get_targets);
-	ObjectTypeDB::bind_method(_MD("get_target", "idx"),&BTPatrol::get_target);
+	ObjectTypeDB::bind_method(_MD("get_target", "index"),&BTPatrol::get_target);
 	ObjectTypeDB::bind_method(_MD("get_current_target"),&BTPatrol::get_current_target);
 	ObjectTypeDB::bind_method(_MD("get_current_target_index"),&BTPatrol::get_current_target_index);
 	ObjectTypeDB::bind_method(_MD("set_current_target_index", "index"),&BTPatrol::set_current_target_index);
+	ObjectTypeDB::bind_method(_MD("get_patrol_end_mode"),&BTPatrol::get_patrol_end_mode);
+	ObjectTypeDB::bind_method(_MD("set_patrol_end_mode", "mode"),&BTPatrol::set_patrol_end_mode);
 
-	ADD_PROPERTY( PropertyInfo(Variant::REAL,"distance"), _SCS("set_distance"), _SCS("get_distance") );
+	BIND_CONSTANT( LOOP );
+	BIND_CONSTANT( PING_PONG );
+
+	ADD_PROPERTY( PropertyInfo(Variant::REAL,"waypoint_threshold"), _SCS("set_waypoint_threshold"), _SCS("get_waypoint_threshold") );
+	ADD_PROPERTYNZ( PropertyInfo(Variant::INT,"patrol_end_mode",PROPERTY_HINT_ENUM,"Loop,Ping Pong" ), _SCS("set_patrol_end_mode"),_SCS("get_patrol_end_mode" ) );
 }
 
 
@@ -86,16 +97,26 @@ int BTPatrol::_check_points() {
 
 	if ( patrol_targets.size() > 0 ) {
 		real_t check_dist = _get_distance_to_node(patrol_targets[current_patrol_index]);
-		real_t sqr_distance = distance * distance;
+		real_t sqr_distance = waypoint_threshold * waypoint_threshold;
 
 		if ( check_dist <= sqr_distance ) {
 			Node* new_target;
+			bool patrol_ended;
 
-			current_patrol_index++;
+			current_patrol_index += patrol_direction;
 
-			if ( current_patrol_index >= patrol_targets.size() ) {
+			if ( patrol_direction == 1 ) {
+				patrol_ended = current_patrol_index >= patrol_targets.size();
+			} else if ( patrol_direction == -1 ) {
+				patrol_ended = current_patrol_index < 0;
+			}
 
-				return SUCCESS;
+			if ( patrol_ended ) {
+				if ( patrol_end_mode == LOOP ) {
+				} else if ( patrol_end_mode == PING_PONG ) {
+					current_patrol_index -= patrol_direction;
+					patrol_direction*=-1;
+				}
 			}
 
 			_correct_patrol_index();

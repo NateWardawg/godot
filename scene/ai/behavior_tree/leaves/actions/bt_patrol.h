@@ -13,6 +13,7 @@ class BTPatrol : public BTAction
 	OBJ_CATEGORY("AI")
 
 	int current_patrol_index;
+	int patrol_direction;
 
 	void _correct_patrol_index();
 	int _check_points();
@@ -22,7 +23,7 @@ class BTPatrol : public BTAction
 protected:
 
 	Node *navigator;
-	real_t distance;
+	real_t waypoint_threshold;
 
 	virtual const String _incorrect_node_type_warning() = 0;
 	virtual bool is_node_valid_patrol_point(Node* node) = 0;
@@ -65,6 +66,13 @@ protected:
 
 public:
 
+	enum LoopEndMode {
+		LOOP,
+		PING_PONG
+	};
+
+	LoopEndMode patrol_end_mode;
+
 	static void _bind_methods();
 	void _notification(int p_what);
 
@@ -75,8 +83,11 @@ public:
 	virtual const Node* get_navigator() = 0;
 	virtual void set_navigator(Node* p_navigator) = 0;
 
-	real_t get_distance() { return distance; }
-	void set_distance(real_t p_distance) { distance = p_distance; }
+	real_t get_waypoint_threshold() { return waypoint_threshold; }
+	void set_waypoint_threshold(real_t p_waypoint_threshold) { waypoint_threshold = p_waypoint_threshold; }
+
+	LoopEndMode get_patrol_end_mode() { return patrol_end_mode; }
+	void set_patrol_end_mode(LoopEndMode p_get_patrol_end_mode) { patrol_end_mode = p_get_patrol_end_mode; }
 
 	virtual void add_target(Node* target) { _add_target<Node>(target); }
 	void remove_target(Node* target);
