@@ -13,9 +13,9 @@ BTParallel::BTParallel() {
 
 void BTParallel::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("get_success_condition"),&BTParallel::get_success_condition);
-	ObjectTypeDB::bind_method(_MD("set_success_condition","mode"),&BTParallel::set_success_condition);
+	ObjectTypeDB::bind_method(_MD("set_success_condition","condition"),&BTParallel::set_success_condition);
 	ObjectTypeDB::bind_method(_MD("get_failure_condition"),&BTParallel::get_failure_condition);
-	ObjectTypeDB::bind_method(_MD("set_failure_condition"),&BTParallel::set_failure_condition);
+	ObjectTypeDB::bind_method(_MD("set_failure_condition","condition"),&BTParallel::set_failure_condition);
 
 	BIND_CONSTANT( FIRST_CHILD );
 	BIND_CONSTANT( ANY_CHILD );
