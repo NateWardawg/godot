@@ -18,7 +18,7 @@ protected:
 
 public:
 
-	enum {
+	enum BehaviorStatus {
 		FAILURE = -1,
 		RUNNING = 0,
 		SUCCESS = 1
