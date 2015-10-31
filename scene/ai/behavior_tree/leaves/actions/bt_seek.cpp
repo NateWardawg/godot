@@ -20,5 +20,4 @@ void BTSeek::_bind_methods() {
 
 void BTSeek::execute()
 {
-	status = RUNNING;
 }

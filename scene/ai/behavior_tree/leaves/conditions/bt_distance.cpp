@@ -24,7 +24,12 @@ void BTDistance::_bind_methods() {
 
 
 void BTDistance::execute() {
-	status = check_distances();
+	if ( navigator != NULL ) {
+		status = check_distances();
+	} else {
+		print_line("Navigator on the distance node '" + get_name() + "' is null, set it using set_navigator(BTAgent3D)");
+		status = FAILURE;
+	}
 }
 
 
