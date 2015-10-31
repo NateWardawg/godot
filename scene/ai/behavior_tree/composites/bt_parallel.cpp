@@ -58,8 +58,8 @@ void BTParallel::comp_execute() {
 	}
 
 	if ( get_failure_condition() == FIRST_CHILD ) {
-		if ( nodes[0]->get_status() == FAILED ) {
-			status = FAILED;
+		if ( nodes[0]->get_status() == FAILURE ) {
+			status = FAILURE;
 			return;
 		}
 	}
@@ -77,9 +77,9 @@ void BTParallel::comp_execute() {
 				} else {
 					successes++;
 				}
-			} else if ( node_state == FAILED ) {
+			} else if ( node_state == FAILURE ) {
 				if ( get_failure_condition() == ANY_CHILD ) {
-					status = FAILED;
+					status = FAILURE;
 					return;
 				} else {
 					failures++;
@@ -93,7 +93,7 @@ void BTParallel::comp_execute() {
 	}
 
 	if ( get_failure_condition() == ALL_CHILDREN && failures == nodes.size() ) {
-		status = FAILED;
+		status = FAILURE;
 	}
 }
 

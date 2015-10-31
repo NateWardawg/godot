@@ -19,7 +19,7 @@ protected:
 public:
 
 	enum {
-		FAILED = -1,
+		FAILURE = -1,
 		RUNNING = 0,
 		SUCCESS = 1
 	};

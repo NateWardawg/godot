@@ -24,7 +24,7 @@ void BTLoop::execute() {
 	else {
 		int node_state = leaf_node->process_logic();
 
-		if ( node_state == SUCCESS || ( continue_on_fail && node_state == FAILED ) ) {
+		if ( node_state == SUCCESS || ( continue_on_fail && node_state == FAILURE ) ) {
 			if ( current_iteration >= iterations && !infinite ) {
 				status = SUCCESS;
 				return;
@@ -34,8 +34,8 @@ void BTLoop::execute() {
 
 			leaf_node->reset_node();
 		}
-		else if ( node_state == FAILED ) {
-			status = FAILED;
+		else if ( node_state == FAILURE ) {
+			status = FAILURE;
 			return;
 		}
 	}

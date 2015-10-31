@@ -12,15 +12,15 @@ void BehaviorTreeNode::_bind_methods() {
 
 	BIND_VMETHOD( MethodInfo("_success") );
 	BIND_VMETHOD( MethodInfo("_running") );
-	BIND_VMETHOD( MethodInfo("_failed") );
+	BIND_VMETHOD( MethodInfo("_failure") );
 
-	BIND_CONSTANT( FAILED );
+	BIND_CONSTANT( FAILURE );
 	BIND_CONSTANT( RUNNING );
 	BIND_CONSTANT( SUCCESS );
 
 	ADD_SIGNAL( MethodInfo("success") );
 	ADD_SIGNAL( MethodInfo("running") );
-	ADD_SIGNAL( MethodInfo("failed") );
+	ADD_SIGNAL( MethodInfo("failure") );
 }
 
 
@@ -30,7 +30,7 @@ void BehaviorTreeNode::reset_node() {
 
 
 void BehaviorTreeNode::set_status(int p_status) {
-	if ( p_status >= FAILED && p_status <= SUCCESS ) {
+	if ( p_status >= FAILURE && p_status <= SUCCESS ) {
 		status = p_status;
 	}
 }
@@ -59,7 +59,7 @@ void BehaviorTreeNode::_execute_calls(int result) {
 		call = "running";
 	}
 	else /* FAILED */ {
-		call = "failed";
+		call = "failure";
 	}
 
 	emit_signal(call);

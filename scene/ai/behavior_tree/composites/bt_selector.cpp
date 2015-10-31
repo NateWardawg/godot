@@ -15,11 +15,11 @@ void BTSelector::comp_execute() {
 		return;
 	}
 
-	if ( node_state == FAILED ) {
+	if ( node_state == FAILURE ) {
 		current_node++;
 
 		if ( current_node >= nodes.size() ) {
-			status = FAILED;
+			status = FAILURE;
 			return;
 		} else {
 			nodes[current_node]->reset_node();

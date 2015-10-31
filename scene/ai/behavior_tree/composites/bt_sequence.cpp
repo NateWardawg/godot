@@ -10,8 +10,8 @@ void BTSequence::_bind_methods() {
 void BTSequence::comp_execute() {
 	int node_state = nodes[current_node]->process_logic();
 
-	if ( node_state == FAILED ) {
-		status = FAILED;
+	if ( node_state == FAILURE ) {
+		status = FAILURE;
 		return;
 	}
 

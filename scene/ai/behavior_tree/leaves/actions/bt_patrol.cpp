@@ -92,7 +92,7 @@ inline void BTPatrol::_correct_patrol_index() {
 int BTPatrol::_check_points() {
 
 	if ( navigator == NULL ) {
-		return FAILED;
+		return FAILURE;
 	}
 
 	if ( patrol_targets.size() > 0 ) {
