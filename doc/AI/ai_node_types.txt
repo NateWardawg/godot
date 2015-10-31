@@ -1,4 +1,17 @@
-=== Sequence Nodes ===
+=== Composite Nodes ===
+
+All composite nodes are used to process multiple child nodes in some way
+
+
+- Sequence -
+
+Purpose: A sequence node runs each child node individually until each one succeeds. So, once the first node succeeds it will run the second. If ALL child nodes succeed, then this nodes succeeds. If ANY child node fails, then this node fails.
+
+
+- Selector -
+
+Purpose: A selector node is essentially the inverse of the sequence node. It runs each child node individually until each one fails. So, once the first node fails it will run the second. If ANY child node succeeds, then this nodes succeeds. If ALL child nodes fail, then this node fails.
+
 
 - Parrallel -
 
@@ -18,6 +31,7 @@ Success/Failure Conditions:
 
 
 === Leaf Nodes ===
+
 
 - Beyond Distance -
 
