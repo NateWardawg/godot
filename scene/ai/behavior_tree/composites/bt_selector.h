@@ -2,22 +2,19 @@
 #ifndef BTSELECTORNODE_H
 #define BTSELECTORNODE_H
 
-#include "bt_composite.h"
+#include "bt_sequence.h"
 
 
-class BTSelector : public BTComposite
+class BTSelector : public BTSequence
 {
 
-	OBJ_TYPE( BTSelector, BTComposite )
+	OBJ_TYPE( BTSelector, BTSequence )
 	OBJ_CATEGORY("AI")
 
-public:
+protected:
 
-	static void _bind_methods();
-
-	virtual void comp_execute();
-
-	int get_current_leaf_index();
+	virtual BehaviorStatus get_continue_status() { return FAILURE; }
+	virtual BehaviorStatus get_end_status() { return SUCCESS; }
 
 };
 

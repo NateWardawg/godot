@@ -10,24 +10,21 @@ void BTSequence::_bind_methods() {
 void BTSequence::comp_execute() {
 	int node_state = nodes[current_node]->process_logic();
 
-	if ( node_state == FAILURE ) {
-		status = FAILURE;
+	if ( node_state == get_end_status() ) {
+		status = get_end_status();
 		return;
 	}
 
-	if ( node_state == SUCCESS ) {
+	if ( node_state == get_continue_status() ) {
 		current_node++;
 
 		if ( current_node >= nodes.size() ) {
-			status = SUCCESS;
+			status = get_continue_status();
 			return;
-		}
-		else {
+		} else {
 			nodes[current_node]->reset_node();
 		}
 	}
-
-	status = RUNNING;
 }
 
 
