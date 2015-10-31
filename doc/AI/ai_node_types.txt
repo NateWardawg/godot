@@ -1,0 +1,54 @@
+=== Sequence Nodes ===
+
+- Parrallel -
+
+Purpose: This node runs all nodes under it until either the success or failure condition is met.
+- If the success condition is set to "First Child", then it will succeed when the first child succeeds
+- If the success condition is set to "Any Child", then it will succeed when the any child succeeds
+- If the success condition is set to "All Children", then it will only succeed when all children succeed
+- Failure conditions work the same respectively
+
+Properties:
+
+Success/Failure Conditions:
+
+- First Child
+- Any Child
+- All Children
+
+
+=== Leaf Nodes ===
+
+- Beyond Distance -
+
+Purpose: If any node within the "target group" is beyond the specified distance this node will succeed. This node cannot fail. If you want it to fail, place it within an inverter node.
+
+Properties:
+
+distance
+- The distance any node in the "target group" must be before this node succeeds
+
+target_group
+- The group in which nodes are checked for distance
+
+
+- Within Distance -
+
+Purpose: If any node within the "target group" is within the specified distance this node will succeed. This node cannot fail. If you want it to fail, place it within an inverter node.
+
+Properties:
+
+distance
+- The distance any node in the "target group" must be before this node succeeds
+
+target_group
+- The group in which nodes are checked for distance
+
+=== Decorator Nodes ===
+
+All decorator nodes contain exactly one other Selector, Leaf, or Decorator node
+
+- Inverter -
+
+Purpose: This node will invert the condition of it's child node. If the child's status is SUCCESS, then this node will fail. If the child's status is FAILURE, then this node will succeed. There is no inverse for running. So, if the child's status is RUNNING, then this node will continue to run.
+
