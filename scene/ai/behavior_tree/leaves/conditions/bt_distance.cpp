@@ -49,7 +49,7 @@ int BTDistance::check_distances() {
 		}
 	}
 
-	return FAILED;
+	return RUNNING;
 }
 
 

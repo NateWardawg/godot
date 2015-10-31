@@ -47,8 +47,7 @@ public:
 
 		if ( potential_navigator != NULL ) {
 			navigator = potential_navigator;
-		}
-		else {
+		} else {
 			print_line("You need to provide a BTAgent3D");
 		}
 	}
