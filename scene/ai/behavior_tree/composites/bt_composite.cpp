@@ -48,9 +48,8 @@ void BTComposite::reset_node()
 
 
 void BTComposite::init_composite() {
-	current_node = 0;
-
 	if ( nodes.size() > 0 ) {
+		status = RUNNING;
 		nodes[0]->reset_node();
 	} else {
 		status = SUCCESS;
