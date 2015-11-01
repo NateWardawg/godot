@@ -8,8 +8,6 @@ BTDistance::BTDistance() {
 
 
 void BTDistance::_bind_methods() {
-	ObjectTypeDB::bind_method(_MD("get_navigator"),&BTDistance::get_navigator);
-	ObjectTypeDB::bind_method(_MD("set_navigator"),&BTDistance::set_navigator);
 	ObjectTypeDB::bind_method(_MD("get_distance"),&BTDistance::get_distance);
 	ObjectTypeDB::bind_method(_MD("set_distance"),&BTDistance::set_distance);
 	ObjectTypeDB::bind_method(_MD("get_target_group"),&BTDistance::get_target_group);
@@ -24,12 +22,7 @@ void BTDistance::_bind_methods() {
 
 
 void BTDistance::execute() {
-	if ( navigator != NULL ) {
-		status = check_distances();
-	} else {
-		print_line("Navigator on the distance node '" + get_name() + "' is null, set it using set_navigator(BTAgent3D)");
-		status = FAILURE;
-	}
+	status = check_distances();
 }
 
 
@@ -47,7 +40,15 @@ int BTDistance::check_distances() {
 	target_count = targets.size();
 
 	for ( int i = 0; i < target_count; i++ ) {
-		real_t check_dist = navigator->get_translation().distance_squared_to(targets[i]->get_translation());
+		const BTAgent3D* agent = (const BTAgent3D*)(behavior_tree->get_agent_node());
+
+		if ( agent == NULL ) {
+			print_line("is NULL");
+		} else {
+			print_line("not NULL");
+		}
+
+		real_t check_dist = agent->get_translation().distance_squared_to(targets[i]->get_translation());
 
 		if ( _check_distance(check_dist, sqr_distance) ) {
 			return SUCCESS;

@@ -2,6 +2,10 @@
 #define BT_NODE_H
 
 #include "../ai.h"
+#include "core/behavior_tree.h"
+
+
+class BehaviorTree;
 
 
 class BehaviorTreeNode : public AI {
@@ -13,6 +17,7 @@ class BehaviorTreeNode : public AI {
 
 protected:
 
+	BehaviorTree *behavior_tree;
 	int status;
 	virtual void execute() = 0;
 
@@ -27,6 +32,11 @@ public:
 	int process_logic();
 
 	static void _bind_methods();
+
+	void set_behavior_tree(BehaviorTree *p_behavior_tree) { behavior_tree = p_behavior_tree; }
+	BehaviorTree* get_behavior_tree() { return behavior_tree; }
+
+	const Node* get_agent();
 
 	virtual void update_child_nodes() {}
 	virtual void reset_node();

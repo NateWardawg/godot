@@ -35,6 +35,8 @@ void BTAgent3D::set_behavior_tree(const BehaviorTree& p_behavior_tree) {
 
 
 void BTAgent3D::update_behavior_tree() {
+	data.behavior_tree.set_agent_node(this);
+
 	for ( int i = 0; i < get_child_count(); i++ ) {
 		BehaviorTreeNode* node = dynamic_cast<BehaviorTreeNode*>(get_child(i));
 

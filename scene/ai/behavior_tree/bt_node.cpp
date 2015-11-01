@@ -7,6 +7,7 @@ BehaviorTreeNode::BehaviorTreeNode() {
 
 
 void BehaviorTreeNode::_bind_methods() {
+	ObjectTypeDB::bind_method(_MD("get_agent"),&BehaviorTreeNode::get_agent);
 	ObjectTypeDB::bind_method(_MD("get_status"),&BehaviorTreeNode::get_status);
 	ObjectTypeDB::bind_method(_MD("set_status", "status"),&BehaviorTreeNode::set_status);
 
@@ -21,6 +22,11 @@ void BehaviorTreeNode::_bind_methods() {
 	ADD_SIGNAL( MethodInfo("success") );
 	ADD_SIGNAL( MethodInfo("running") );
 	ADD_SIGNAL( MethodInfo("failure") );
+}
+
+
+const Node* BehaviorTreeNode::get_agent() {
+	return behavior_tree->get_agent_node();
 }
 
 
