@@ -3,9 +3,10 @@
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
-/*                    http://www.godotengine.org                         */
+/*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2015 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2007-2017 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2017 Godot Engine contributors (cf. AUTHORS.md)    */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -32,10 +33,26 @@
 #include "script_language.h"
 
 class ScriptDebuggerLocal : public ScriptDebugger {
-public:
 
-	void debug(ScriptLanguage *p_script,bool p_can_continue);
-	virtual void send_message(const String& p_message, const Array& p_args);
+	bool profiling;
+	float frame_time, idle_time, physics_time, physics_frame_time;
+	uint64_t idle_accum;
+
+	Vector<ScriptLanguage::ProfilingInfo> pinfo;
+
+public:
+	void debug(ScriptLanguage *p_script, bool p_can_continue);
+	virtual void send_message(const String &p_message, const Array &p_args);
+
+	virtual bool is_profiling() const { return profiling; }
+	virtual void add_profiling_frame_data(const StringName &p_name, const Array &p_data) {}
+
+	virtual void idle_poll();
+
+	virtual void profiling_start();
+	virtual void profiling_end();
+	virtual void profiling_set_frame_times(float p_frame_time, float p_idle_time, float p_physics_time, float p_physics_frame_time);
+
 	ScriptDebuggerLocal();
 };
 

@@ -1,14 +1,93 @@
 language: cpp
-compiler: 
-  - gcc
-before_install:
-  
 
-before_script: 
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq scons pkg-config libx11-dev libxcursor-dev build-essential libasound2-dev libfreetype6-dev libgl1-mesa-dev libglu-dev  
-  - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
-  
-script: scons platform=x11
+dist: trusty
+
+sudo: false
+
+env:
+  global:
+    - SCONS_CACHE=$HOME/.scons_cache
+    - SCONS_CACHE_LIMIT=1024
+
+cache:
+  directories:
+    - $SCONS_CACHE
+
+matrix:
+  include:
+    - env: STATIC_CHECKS=yes
+      os: linux
+      compiler: clang
+    - env: GODOT_TARGET=x11 TOOLS=yes CACHE_NAME=${GODOT_TARGET}-gcc-tools
+      os: linux
+      compiler: gcc
+    - env: GODOT_TARGET=x11 TOOLS=no CACHE_NAME=${GODOT_TARGET}-clang
+      os: linux
+      compiler: clang
+    #- env: GODOT_TARGET=windows TOOLS=yes CACHE_NAME=${GODOT_TARGET}-gcc-tools
+    #  os: linux
+    #  compiler: gcc
+    - env: GODOT_TARGET=android TOOLS=no CACHE_NAME=${GODOT_TARGET}-gcc
+      os: linux
+      compiler: gcc
+    - env: GODOT_TARGET=osx TOOLS=yes CACHE_NAME=${GODOT_TARGET}-clang-tools
+      os: osx
+      compiler: clang
+    #- env: GODOT_TARGET=iphone TOOLS=no CACHE_NAME=${GODOT_TARGET}-clang
+    #  os: osx
+    #  compiler: clang
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+      - llvm-toolchain-trusty-3.9
+    packages:
+      - build-essential
+      - scons
+      - pkg-config
+      - libx11-dev
+      - libxcursor-dev
+      - libasound2-dev
+      - libfreetype6-dev
+      - libgl1-mesa-dev
+      - libglu1-mesa-dev
+      - libssl-dev
+      - libxinerama-dev
+      - libxrandr-dev
+
+      # For cross-compiling to Windows.
+      #- binutils-mingw-w64-i686
+      #- binutils-mingw-w64-x86-64
+      #- gcc-mingw-w64-i686
+      #- gcc-mingw-w64-x86-64
+      #- g++-mingw-w64-i686
+      #- g++-mingw-w64-x86-64
+      #- mingw-w64
+
+      # For style checks.
+      - clang-format-3.9
+
+install:
+  - if [ "$TRAVIS_OS_NAME" = "linux" ] && [ "$GODOT_TARGET" = "android" ]; then
+      misc/travis/android-tools-linux.sh;
+    fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then
+      misc/travis/scons-local-osx.sh;
+    fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ] && [ "$GODOT_TARGET" = "android" ]; then
+      misc/travis/android-tools-osx.sh;
+    fi
+
+before_script:
+  - if [ "$GODOT_TARGET" = "android" ]; then
+      export ANDROID_HOME=$TRAVIS_BUILD_DIR/godot-dev/build-tools/android-sdk;
+      export ANDROID_NDK_ROOT=$TRAVIS_BUILD_DIR/godot-dev/build-tools/android-ndk;
+    fi
+
+script:
+  - if [ "$STATIC_CHECKS" = "yes" ]; then
+      sh ./misc/travis/clang-format.sh;
+    else
+      scons -j2 CC=$CC CXX=$CXX platform=$GODOT_TARGET TOOLS=$TOOLS verbose=yes progress=no;
+    fi

@@ -3,9 +3,10 @@
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
-/*                    http://www.godotengine.org                         */
+/*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2015 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2007-2017 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2017 Godot Engine contributors (cf. AUTHORS.md)    */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -29,36 +30,33 @@
 #ifndef PATH_H
 #define PATH_H
 
-#include "scene/resources/curve.h"
 #include "scene/3d/spatial.h"
+#include "scene/resources/curve.h"
 
 class Path : public Spatial {
 
-	OBJ_TYPE( Path, Spatial );
+	GDCLASS(Path, Spatial);
 
 	Ref<Curve3D> curve;
 
 	void _curve_changed();
 
-
 protected:
-
 	void _notification(int p_what);
 	static void _bind_methods();
+
 public:
-
-	void set_curve(const Ref<Curve3D>& p_curve);
+	void set_curve(const Ref<Curve3D> &p_curve);
 	Ref<Curve3D> get_curve() const;
-
 
 	Path();
 };
 
 class PathFollow : public Spatial {
 
-	OBJ_TYPE(PathFollow,Spatial);
-public:
+	GDCLASS(PathFollow, Spatial);
 
+public:
 	enum RotationMode {
 
 		ROTATION_NONE,
@@ -69,27 +67,25 @@ public:
 
 private:
 	Path *path;
+	real_t delta_offset; // change in offset since last _update_transform
 	real_t offset;
 	real_t h_offset;
 	real_t v_offset;
-	real_t lookahead;
 	bool cubic;
 	bool loop;
 	RotationMode rotation_mode;
 
 	void _update_transform();
 
-
 protected:
-
-	bool _set(const StringName& p_name, const Variant& p_value);
-	bool _get(const StringName& p_name,Variant &r_ret) const;
-	void _get_property_list( List<PropertyInfo> *p_list) const;
+	bool _set(const StringName &p_name, const Variant &p_value);
+	bool _get(const StringName &p_name, Variant &r_ret) const;
+	void _get_property_list(List<PropertyInfo> *p_list) const;
 
 	void _notification(int p_what);
 	static void _bind_methods();
-public:
 
+public:
 	void set_offset(float p_offset);
 	float get_offset() const;
 
@@ -101,9 +97,6 @@ public:
 
 	void set_unit_offset(float p_unit_offset);
 	float get_unit_offset() const;
-
-	void set_lookahead(float p_lookahead);
-	float get_lookahead() const;
 
 	void set_loop(bool p_loop);
 	bool has_loop() const;

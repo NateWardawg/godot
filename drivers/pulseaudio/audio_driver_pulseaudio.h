@@ -3,9 +3,10 @@
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
-/*                    http://www.godotengine.org                         */
+/*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2007-2017 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2017 Godot Engine contributors (cf. AUTHORS.md)    */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -26,59 +27,55 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
-#include "servers/audio/audio_server_sw.h"
+#include "servers/audio_server.h"
 
 #ifdef PULSEAUDIO_ENABLED
 
-#include "core/os/thread.h"
 #include "core/os/mutex.h"
+#include "core/os/thread.h"
 
 #include <pulse/simple.h>
 
-class AudioDriverPulseAudio : public AudioDriverSW {
+class AudioDriverPulseAudio : public AudioDriver {
 
-	Thread* thread;
-	Mutex* mutex;
+	Thread *thread;
+	Mutex *mutex;
 
-    pa_simple* pulse;
+	pa_simple *pulse;
 
-	int32_t* samples_in;
-	int16_t* samples_out;
-
-	static void thread_func(void* p_udata);
+	Vector<int32_t> samples_in;
+	Vector<int16_t> samples_out;
 
 	unsigned int mix_rate;
-	OutputFormat output_format;
-
-    unsigned int buffer_size;
+	unsigned int buffer_frames;
+	unsigned int buffer_size;
 	int channels;
 
 	bool active;
 	bool thread_exited;
 	mutable bool exit_thread;
-	bool pcm_open;
 
 	float latency;
 
-public:
+	static void thread_func(void *p_udata);
 
-	const char* get_name() const {
-        return "PulseAudio";
+public:
+	const char *get_name() const {
+		return "PulseAudio";
 	};
 
 	virtual Error init();
 	virtual void start();
 	virtual int get_mix_rate() const;
-	virtual OutputFormat get_output_format() const;
+	virtual SpeakerMode get_speaker_mode() const;
 	virtual void lock();
 	virtual void unlock();
 	virtual void finish();
 
 	virtual float get_latency();
 
-
-    AudioDriverPulseAudio();
-    ~AudioDriverPulseAudio();
+	AudioDriverPulseAudio();
+	~AudioDriverPulseAudio();
 };
 
 #endif

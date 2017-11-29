@@ -3,9 +3,10 @@
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
-/*                    http://www.godotengine.org                         */
+/*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2015 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2007-2017 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2017 Godot Engine contributors (cf. AUTHORS.md)    */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -28,83 +29,74 @@
 /*************************************************************************/
 #include "shape.h"
 
-#include "servers/physics_server.h"
-#include "scene/resources/mesh.h"
 #include "os/os.h"
-#include "scene/main/scene_main_loop.h"
+#include "scene/main/scene_tree.h"
+#include "scene/resources/mesh.h"
+#include "servers/physics_server.h"
 
-
-void Shape::add_vertices_to_array(DVector<Vector3> &array, const Transform& p_xform) {
+void Shape::add_vertices_to_array(PoolVector<Vector3> &array, const Transform &p_xform) {
 
 	Vector<Vector3> toadd = _gen_debug_mesh_lines();
 
 	if (toadd.size()) {
 
-		int base=array.size();
-		array.resize(base+toadd.size());
-		DVector<Vector3>::Write w = array.write();
-		for(int i=0;i<toadd.size();i++) {
-			w[i+base]=p_xform.xform(toadd[i]);
+		int base = array.size();
+		array.resize(base + toadd.size());
+		PoolVector<Vector3>::Write w = array.write();
+		for (int i = 0; i < toadd.size(); i++) {
+			w[i + base] = p_xform.xform(toadd[i]);
 		}
-
 	}
 }
 
-Ref<Mesh> Shape::get_debug_mesh() {
+Ref<ArrayMesh> Shape::get_debug_mesh() {
 
 	if (debug_mesh_cache.is_valid())
 		return debug_mesh_cache;
 
 	Vector<Vector3> lines = _gen_debug_mesh_lines();
 
-	debug_mesh_cache = Ref<Mesh>(memnew(Mesh));
+	debug_mesh_cache = Ref<ArrayMesh>(memnew(ArrayMesh));
 
 	if (!lines.empty()) {
 		//make mesh
-		DVector<Vector3> array;
+		PoolVector<Vector3> array;
 		array.resize(lines.size());
 		{
 
-			DVector<Vector3>::Write w=array.write();
-			for(int i=0;i<lines.size();i++) {
-				w[i]=lines[i];
+			PoolVector<Vector3>::Write w = array.write();
+			for (int i = 0; i < lines.size(); i++) {
+				w[i] = lines[i];
 			}
 		}
 
 		Array arr;
 		arr.resize(Mesh::ARRAY_MAX);
-		arr[Mesh::ARRAY_VERTEX]=array;
+		arr[Mesh::ARRAY_VERTEX] = array;
 
-		SceneTree *st=OS::get_singleton()->get_main_loop()->cast_to<SceneTree>();
+		SceneTree *st = Object::cast_to<SceneTree>(OS::get_singleton()->get_main_loop());
 
-		debug_mesh_cache->add_surface(Mesh::PRIMITIVE_LINES,arr);
+		debug_mesh_cache->add_surface_from_arrays(Mesh::PRIMITIVE_LINES, arr);
 
 		if (st) {
-			debug_mesh_cache->surface_set_material(0,st->get_debug_collision_material());
+			debug_mesh_cache->surface_set_material(0, st->get_debug_collision_material());
 		}
-
 	}
 
-
-
 	return debug_mesh_cache;
-
 }
 
 Shape::Shape() {
 
 	ERR_PRINT("Constructor must not be called!");
-
 }
-
 
 Shape::Shape(RID p_shape) {
 
-	shape=p_shape;
+	shape = p_shape;
 }
 
 Shape::~Shape() {
 
 	PhysicsServer::get_singleton()->free(shape);
 }
-

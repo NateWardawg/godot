@@ -1,100 +1,115 @@
 import os
-import sys
 import string
+import sys
+
 
 def is_active():
-	return True
-	
+    return True
+
+
 def get_name():
-	return "JavaScript"
+    return "JavaScript"
+
 
 def can_build():
 
-	import os
-	if (not os.environ.has_key("EMSCRIPTEN_ROOT")):
-		return False
-	return True
+    return ("EMSCRIPTEN_ROOT" in os.environ or "EMSCRIPTEN" in os.environ)
+
 
 def get_opts():
+    from SCons.Variables import BoolVariable
+    return [
+        BoolVariable('javascript_eval', 'Enable JavaScript eval interface', True),
+    ]
 
-	return [
-		['compress','Compress JS Executable','no']
-	]
 
 def get_flags():
 
-	return [
-		('lua', 'no'),
-		('tools', 'no'),
-		('nedmalloc', 'no'),
-		('theora', 'no'),
-		('tools', 'no'),
-		('nedmalloc', 'no'),
-		('musepack', 'no'),
-		('squirrel', 'no'),
-		('squish', 'no'),
-		('speex', 'no'),
-		('old_scenes', 'no'),
-		('etc1', 'no'),
-#		('default_gui_theme', 'no'),
+    return [
+        ('tools', False),
+        ('module_theora_enabled', False),
+    ]
 
-		#('builtin_zlib', 'no'),
-	]
 
+def create(env):
+
+    # remove Windows' .exe suffix
+    return env.Clone(tools=['textfile', 'zip'], PROGSUFFIX='')
+
+
+def escape_sources_backslashes(target, source, env, for_signature):
+    return [path.replace('\\','\\\\') for path in env.GetBuildPath(source)]
+
+def escape_target_backslashes(target, source, env, for_signature):
+    return env.GetBuildPath(target[0]).replace('\\','\\\\')
 
 
 def configure(env):
-	env.Append(CPPPATH=['#platform/javascript'])
 
-	em_path=os.environ["EMSCRIPTEN_ROOT"]
+    ## Build type
 
-	env['ENV']['PATH'] = em_path+":"+env['ENV']['PATH']
+    if (env["target"] == "release"):
+        env.Append(CCFLAGS=['-O3'])
+        env.Append(LINKFLAGS=['-O3'])
 
-	env['CC'] = em_path+'/emcc'
-	env['CXX'] = em_path+'/emcc'
-	#env['AR'] = em_path+"/emar"
-	env['AR'] = em_path+"/emcc"
-	env['ARFLAGS'] = "-o"
+    elif (env["target"] == "release_debug"):
+        env.Append(CCFLAGS=['-O2', '-DDEBUG_ENABLED'])
+        env.Append(LINKFLAGS=['-O2', '-s', 'ASSERTIONS=1'])
+        # retain function names at the cost of file size, for backtraces and profiling
+        env.Append(LINKFLAGS=['--profiling-funcs'])
 
-#	env['RANLIB'] = em_path+"/emranlib"
-	env['RANLIB'] = em_path + "/emcc"
-	env['OBJSUFFIX'] = '.bc'
-	env['LIBSUFFIX'] = '.bc'
-	env['CCCOM'] = "$CC -o $TARGET $CFLAGS $CCFLAGS $_CCCOMCOM $SOURCES"
-	env['CXXCOM'] = "$CC -o $TARGET $CFLAGS $CCFLAGS $_CCCOMCOM $SOURCES"
+    elif (env["target"] == "debug"):
+        env.Append(CCFLAGS=['-O1', '-D_DEBUG', '-g', '-DDEBUG_ENABLED'])
+        env.Append(LINKFLAGS=['-O1', '-g'])
 
-#	env.Append(LIBS=['c','m','stdc++','log','GLESv1_CM','GLESv2'])
+    ## Compiler configuration
 
-#	env["LINKFLAGS"]= string.split(" -g --sysroot="+ld_sysroot+" -Wl,--no-undefined -Wl,-z,noexecstack ")
+    env['ENV'] = os.environ
+    if ("EMSCRIPTEN_ROOT" in os.environ):
+        env.PrependENVPath('PATH', os.environ['EMSCRIPTEN_ROOT'])
+    elif ("EMSCRIPTEN" in os.environ):
+        env.PrependENVPath('PATH', os.environ['EMSCRIPTEN'])
+    env['CC']      = 'emcc'
+    env['CXX']     = 'em++'
+    env['LINK']    = 'emcc'
+    env['RANLIB']  = 'emranlib'
+    # Emscripten's ar has issues with duplicate file names, so use cc
+    env['AR']      = 'emcc'
+    env['ARFLAGS'] = '-o'
 
-	if (env["target"]=="release"):
-		env.Append(CCFLAGS=['-O2'])
-	elif (env["target"]=="release_debug"):
-		env.Append(CCFLAGS=['-O2','-DDEBUG_ENABLED'])
-	elif (env["target"]=="debug"):
-		env.Append(CCFLAGS=['-D_DEBUG', '-Wall', '-O2', '-DDEBUG_ENABLED'])
-		#env.Append(CCFLAGS=['-D_DEBUG', '-Wall', '-g4', '-DDEBUG_ENABLED'])
-		env.Append(CPPFLAGS=['-DDEBUG_MEMORY_ALLOC'])
+    if (os.name == 'nt'):
+        # use TempFileMunge on Windows since some commands get too long for
+        # cmd.exe even with spawn_fix
+        # need to escape backslashes for this
+        env['ESCAPED_SOURCES'] = escape_sources_backslashes
+        env['ESCAPED_TARGET'] = escape_target_backslashes
+        env['ARCOM'] = '${TEMPFILE("%s")}' % env['ARCOM'].replace('$SOURCES', '$ESCAPED_SOURCES').replace('$TARGET', '$ESCAPED_TARGET')
 
-	if(env["opus"]=="yes"):
-		env.opus_fixed_point="yes"
+    env['OBJSUFFIX'] = '.bc'
+    env['LIBSUFFIX'] = '.bc'
 
-	env.Append(CPPFLAGS=["-fno-exceptions",'-DNO_SAFE_CAST','-fno-rtti'])
-	env.Append(CPPFLAGS=['-DJAVASCRIPT_ENABLED', '-DUNIX_ENABLED', '-DNO_FCNTL','-DMPC_FIXED_POINT','-DTYPED_METHOD_BIND','-DNO_THREADS'])
-	env.Append(CPPFLAGS=['-DGLES2_ENABLED'])
-	env.Append(CPPFLAGS=['-DGLES_NO_CLIENT_ARRAYS'])
-	env.Append(CPPFLAGS=['-s','ASM_JS=1'])
-	env.Append(CPPFLAGS=['-s','FULL_ES2=1'])
-#	env.Append(CPPFLAGS=['-DANDROID_ENABLED', '-DUNIX_ENABLED','-DMPC_FIXED_POINT'])
-	if (env["compress"]=="yes"):
-		lzma_binpath = em_path+"/third_party/lzma.js/lzma-native"
-		lzma_decoder = em_path+"/third_party/lzma.js/lzma-decoder.js"
-		lzma_dec = "LZMA.decompress"
-		env.Append(LINKFLAGS=['--compression',lzma_binpath+","+lzma_decoder+","+lzma_dec])
+    ## Compile flags
 
-	env.Append(LINKFLAGS=['-s','ASM_JS=1'])
-	env.Append(LINKFLAGS=['-O2'])
-	#env.Append(LINKFLAGS=['-g4'])
-	
-	#print "CCCOM is:", env.subst('$CCCOM')
-	#print "P: ", env['p'], " Platofrm: ", env['platform']
+    env.Append(CPPPATH=['#platform/javascript'])
+    env.Append(CPPFLAGS=['-DJAVASCRIPT_ENABLED', '-DUNIX_ENABLED', '-DPTHREAD_NO_RENAME', '-DTYPED_METHOD_BIND', '-DNO_THREADS'])
+    env.Append(CPPFLAGS=['-DGLES3_ENABLED'])
+
+    # These flags help keep the file size down
+    env.Append(CPPFLAGS=["-fno-exceptions", '-DNO_SAFE_CAST', '-fno-rtti'])
+
+    if env['javascript_eval']:
+        env.Append(CPPFLAGS=['-DJAVASCRIPT_EVAL_ENABLED'])
+
+    ## Link flags
+
+    env.Append(LINKFLAGS=['-s', 'BINARYEN=1'])
+    env.Append(LINKFLAGS=['-s', 'ALLOW_MEMORY_GROWTH=1'])
+    env.Append(LINKFLAGS=['-s', 'USE_WEBGL2=1'])
+    env.Append(LINKFLAGS=['-s', 'EXTRA_EXPORTED_RUNTIME_METHODS="[\'FS\']"'])
+
+    env.Append(LINKFLAGS=['-s', 'INVOKE_RUN=0'])
+    env.Append(LINKFLAGS=['-s', 'NO_EXIT_RUNTIME=1'])
+
+    # TODO: Move that to opus module's config
+    if 'module_opus_enabled' in env and env['module_opus_enabled']:
+        env.opus_fixed_point = "yes"

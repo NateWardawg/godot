@@ -1,20 +1,40 @@
-/*************************************************/
-/*  audio_driver_rtaudio.cpp                     */
-/*************************************************/
-/*            This file is part of:              */
-/*                GODOT ENGINE                   */
-/*************************************************/
-/*       Source code within this file is:        */
-/*  (c) 2007-2010 Juan Linietsky, Ariel Manzur   */
-/*             All Rights Reserved.              */
-/*************************************************/
-
+/*************************************************************************/
+/*  audio_driver_rtaudio.cpp                                             */
+/*************************************************************************/
+/*                       This file is part of:                           */
+/*                           GODOT ENGINE                                */
+/*                      https://godotengine.org                          */
+/*************************************************************************/
+/* Copyright (c) 2007-2017 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2017 Godot Engine contributors (cf. AUTHORS.md)    */
+/*                                                                       */
+/* Permission is hereby granted, free of charge, to any person obtaining */
+/* a copy of this software and associated documentation files (the       */
+/* "Software"), to deal in the Software without restriction, including   */
+/* without limitation the rights to use, copy, modify, merge, publish,   */
+/* distribute, sublicense, and/or sell copies of the Software, and to    */
+/* permit persons to whom the Software is furnished to do so, subject to */
+/* the following conditions:                                             */
+/*                                                                       */
+/* The above copyright notice and this permission notice shall be        */
+/* included in all copies or substantial portions of the Software.       */
+/*                                                                       */
+/* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,       */
+/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF    */
+/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.*/
+/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY  */
+/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,  */
+/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
+/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
+/*************************************************************************/
 #include "audio_driver_rtaudio.h"
-#include "globals.h"
+
 #include "os/os.h"
+#include "project_settings.h"
+
 #ifdef RTAUDIO_ENABLED
 
-const char* AudioDriverRtAudio::get_name() const {
+const char *AudioDriverRtAudio::get_name() const {
 
 #ifdef OSX_ENABLED
 	return "RtAudio-OSX";
@@ -25,45 +45,48 @@ const char* AudioDriverRtAudio::get_name() const {
 #else
 	return "RtAudio-None";
 #endif
-
 }
 
-// Two-channel sawtooth wave generator.
-int AudioDriverRtAudio::callback( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
-	double streamTime, RtAudioStreamStatus status, void *userData ) {
+int AudioDriverRtAudio::callback(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames, double streamTime, RtAudioStreamStatus status, void *userData) {
 
-	if (status)
-		print_line("lost?");
-	int32_t *buffer = (int32_t *) outputBuffer;
+	if (status) {
+		if (status & RTAUDIO_INPUT_OVERFLOW) {
+			WARN_PRINT("RtAudio input overflow!");
+		}
+		if (status & RTAUDIO_OUTPUT_UNDERFLOW) {
+			WARN_PRINT("RtAudio output underflow!");
+		}
+	}
+	int32_t *buffer = (int32_t *)outputBuffer;
 
-	AudioDriverRtAudio *self = (AudioDriverRtAudio*)userData;
+	AudioDriverRtAudio *self = (AudioDriverRtAudio *)userData;
 
-	if (self->mutex->try_lock()!=OK) {
-
-
+	if (self->mutex->try_lock() != OK) {
 		// what should i do..
-		for(unsigned int i=0;i<nBufferFrames;i++)
-			buffer[i]=0;
+		for (unsigned int i = 0; i < nBufferFrames; i++)
+			buffer[i] = 0;
 
 		return 0;
 	}
 
-	self->audio_server_process(nBufferFrames,buffer);
+	self->audio_server_process(nBufferFrames, buffer);
 
-	self->mutex->unlock();;
+	self->mutex->unlock();
 
 	return 0;
 }
 
 Error AudioDriverRtAudio::init() {
 
-	active=false;
-	mutex=NULL;
-	dac = memnew( RtAudio );
+	active = false;
+	mutex = Mutex::create(true);
+	dac = memnew(RtAudio);
 
 	ERR_EXPLAIN("Cannot initialize RtAudio audio driver: No devices present.")
-	ERR_FAIL_COND_V( dac->getDeviceCount() < 1, ERR_UNAVAILABLE );
+	ERR_FAIL_COND_V(dac->getDeviceCount() < 1, ERR_UNAVAILABLE);
 
+	// FIXME: Adapt to the OutputFormat -> SpeakerMode change
+	/*
 	String channels = GLOBAL_DEF("audio/output","stereo");
 
 	if (channels=="5.1")
@@ -74,75 +97,63 @@ Error AudioDriverRtAudio::init() {
 		output_format=OUTPUT_MONO;
 	else
 		output_format=OUTPUT_STEREO;
-
+	*/
 
 	RtAudio::StreamParameters parameters;
 	parameters.deviceId = dac->getDefaultOutputDevice();
 	RtAudio::StreamOptions options;
-//	options.
-//	RtAudioStreamFlags flags;      /*!< A bit-mask of stream flags (RTAUDIO_NONINTERLEAVED, RTAUDIO_MINIMIZE_LATENCY, RTAUDIO_HOG_DEVICE). *///
-//	unsigned int numberOfBuffers;  /*!< Number of stream buffers. */
-//	std::string streamName;        /*!< A stream name (currently used only in Jack). */
-//	int priority;                  /*!< Scheduling priority of callback thread (only used with flag RTAUDIO_SCHEDULE_REALTIME). */
 
+	// set the desired numberOfBuffers
+	options.numberOfBuffers = 4;
 
 	parameters.firstChannel = 0;
-	mix_rate = GLOBAL_DEF("audio/mix_rate",44100);
+	mix_rate = GLOBAL_DEF("audio/mix_rate", DEFAULT_MIX_RATE);
 
-	int latency = GLOBAL_DEF("audio/output_latency",25);
-	unsigned int buffer_size = nearest_power_of_2( latency * mix_rate / 1000 );
+	int latency = GLOBAL_DEF("audio/output_latency", DEFAULT_OUTPUT_LATENCY);
+	unsigned int buffer_frames = closest_power_of_2(latency * mix_rate / 1000);
+
 	if (OS::get_singleton()->is_stdout_verbose()) {
-		print_line("audio buffer size: "+itos(buffer_size));
+		print_line("audio buffer frames: " + itos(buffer_frames) + " calculated latency: " + itos(buffer_frames * 1000 / mix_rate) + "ms");
 	}
 
-//	bool success=false;
+	short int tries = 2;
 
-	while( true) {
-
-		switch(output_format) {
-
-			case OUTPUT_MONO: parameters.nChannels = 1; break;
-			case OUTPUT_STEREO: parameters.nChannels = 2; break;
-			case OUTPUT_QUAD: parameters.nChannels = 4; break;
-			case OUTPUT_5_1: parameters.nChannels = 6; break;
+	while (tries >= 0) {
+		switch (speaker_mode) {
+			case SPEAKER_MODE_STEREO: parameters.nChannels = 2; break;
+			case SPEAKER_SURROUND_51: parameters.nChannels = 6; break;
+			case SPEAKER_SURROUND_71: parameters.nChannels = 8; break;
 		};
 
-
 		try {
-			dac->openStream( &parameters, NULL, RTAUDIO_SINT32,
-			    mix_rate, &buffer_size, &callback, this,&options );
-			mutex = Mutex::create(true);
-			active=true;
+			dac->openStream(&parameters, NULL, RTAUDIO_SINT32, mix_rate, &buffer_frames, &callback, this, &options);
+			active = true;
 
 			break;
-        } catch ( RtAudioError& e ) {
+		} catch (RtAudioError &e) {
 			// try with less channels
-
 			ERR_PRINT("Unable to open audio, retrying with fewer channels..");
 
-			switch(output_format) {
+			switch (speaker_mode) {
+				case SPEAKER_SURROUND_51: speaker_mode = SPEAKER_MODE_STEREO; break;
+				case SPEAKER_SURROUND_71: speaker_mode = SPEAKER_SURROUND_51; break;
+			}
 
-				case OUTPUT_MONO: ERR_EXPLAIN("Unable to open audio."); ERR_FAIL_V( ERR_UNAVAILABLE ); break;
-				case OUTPUT_STEREO: output_format=OUTPUT_MONO; break;
-				case OUTPUT_QUAD: output_format=OUTPUT_STEREO; break;
-				case OUTPUT_5_1: output_format=OUTPUT_QUAD; break;
-			};
+			tries--;
 		}
 	}
 
-
-	return OK;
+	return active ? OK : ERR_UNAVAILABLE;
 }
-
 
 int AudioDriverRtAudio::get_mix_rate() const {
 
 	return mix_rate;
 }
 
-AudioDriverSW::OutputFormat AudioDriverRtAudio::get_output_format() const {
+AudioDriver::SpeakerMode AudioDriverRtAudio::get_speaker_mode() const {
 
-	return output_format;
+	return speaker_mode;
 }
 
 void AudioDriverRtAudio::start() {
@@ -165,24 +176,30 @@ void AudioDriverRtAudio::unlock() {
 
 void AudioDriverRtAudio::finish() {
 
+	lock();
+	if (active && dac->isStreamOpen()) {
+		dac->closeStream();
+		active = false;
+	}
+	unlock();
 
-	 if ( active && dac->isStreamOpen() )
-		 dac->closeStream();
-	 if (mutex)
-		 memdelete(mutex);
-	 if (dac)
-		 memdelete(dac);
+	if (mutex) {
+		memdelete(mutex);
+		mutex = NULL;
+	}
+	if (dac) {
+		memdelete(dac);
+		dac = NULL;
+	}
 }
 
+AudioDriverRtAudio::AudioDriverRtAudio() {
 
-
-AudioDriverRtAudio::AudioDriverRtAudio()
-{
-	mutex=NULL;
-	mix_rate=44100;
-	output_format=OUTPUT_STEREO;
+	active = false;
+	mutex = NULL;
+	dac = NULL;
+	mix_rate = DEFAULT_MIX_RATE;
+	speaker_mode = SPEAKER_MODE_STEREO;
 }
-
-
 
 #endif

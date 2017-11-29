@@ -3,9 +3,10 @@
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
-/*                    http://www.godotengine.org                         */
+/*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2015 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2007-2017 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2017 Godot Engine contributors (cf. AUTHORS.md)    */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -31,28 +32,27 @@
 
 #include "scene/3d/spatial.h"
 
-
 /**
 	@author Juan Linietsky <reduzio@gmail.com>
 */
 
+class WorldEnvironment : public Node {
 
-class WorldEnvironment : public Spatial {
-
-	OBJ_TYPE(WorldEnvironment,Spatial );
+	GDCLASS(WorldEnvironment, Node);
 
 	Ref<Environment> environment;
 
 protected:
-
 	void _notification(int p_what);
 	static void _bind_methods();
+
 public:
-	void set_environment(const Ref<Environment>& p_environment);
+	void set_environment(const Ref<Environment> &p_environment);
 	Ref<Environment> get_environment() const;
 
-	WorldEnvironment();
+	String get_configuration_warning() const;
 
+	WorldEnvironment();
 };
 
 #endif

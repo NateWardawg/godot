@@ -3,9 +3,10 @@
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
-/*                    http://www.godotengine.org                         */
+/*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2015 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2007-2017 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2017 Godot Engine contributors (cf. AUTHORS.md)    */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -29,18 +30,17 @@
 #ifndef HTTP_CLIENT_H
 #define HTTP_CLIENT_H
 
+#include "io/ip.h"
 #include "io/stream_peer.h"
 #include "io/stream_peer_tcp.h"
-#include "io/ip.h"
 #include "reference.h"
-
 
 class HTTPClient : public Reference {
 
-	OBJ_TYPE(HTTPClient,Reference);
-public:
+	GDCLASS(HTTPClient, Reference);
 
-	enum RespondeCode {
+public:
+	enum ResponseCode {
 
 		// 1xx informational
 		RESPONSE_CONTINUE = 100,
@@ -131,7 +131,7 @@ public:
 	};
 
 private:
-
+#ifndef JAVASCRIPT_ENABLED
 	Status status;
 	IP::ResolverID resolving;
 	int conn_port;
@@ -153,25 +153,28 @@ private:
 
 	int response_num;
 	Vector<String> response_headers;
-
-	static void _bind_methods();
-	StringArray _get_response_headers();
-	Dictionary _get_response_headers_as_dictionary();
 	int read_chunk_size;
 
-	Error _get_http_data(uint8_t* p_buffer, int p_bytes,int &r_received);
+	Error _get_http_data(uint8_t *p_buffer, int p_bytes, int &r_received);
+
+#else
+#include "platform/javascript/http_client.h.inc"
+#endif
+
+	PoolStringArray _get_response_headers();
+	Dictionary _get_response_headers_as_dictionary();
+
+	static void _bind_methods();
 
 public:
+	//Error connect_and_get(const String& p_url,bool p_verify_host=true); //connects to a full url and perform request
+	Error connect_to_host(const String &p_host, int p_port, bool p_ssl = false, bool p_verify_host = true);
 
+	void set_connection(const Ref<StreamPeer> &p_connection);
+	Ref<StreamPeer> get_connection() const;
 
-	Error connect_url(const String& p_url); //connects to a full url and perform request
-	Error connect(const String &p_host,int p_port,bool p_ssl=false,bool p_verify_host=true);
-
-	void set_connection(const Ref<StreamPeer>& p_connection);
-
-	Error request( Method p_method, const String& p_url, const Vector<String>& p_headers,const String& p_body=String());
-	Error send_body_text(const String& p_body);
-	Error send_body_data(const ByteArray& p_body);
+	Error request_raw(Method p_method, const String &p_url, const Vector<String> &p_headers, const PoolVector<uint8_t> &p_body);
+	Error request(Method p_method, const String &p_url, const Vector<String> &p_headers, const String &p_body = String());
 
 	void close();
 
@@ -183,7 +186,7 @@ public:
 	Error get_response_headers(List<String> *r_response);
 	int get_response_body_length() const;
 
-	ByteArray read_response_body_chunk(); // can't get body as partial text because of most encodings UTF8, gzip, etc.
+	PoolByteArray read_response_body_chunk(); // can't get body as partial text because of most encodings UTF8, gzip, etc.
 
 	void set_blocking_mode(bool p_enable); //useful mostly if running in a thread
 	bool is_blocking_mode_enabled() const;
@@ -192,10 +195,14 @@ public:
 
 	Error poll();
 
+	String query_string_from_dict(const Dictionary &p_dict);
+
 	HTTPClient();
 	~HTTPClient();
 };
 
+VARIANT_ENUM_CAST(HTTPClient::ResponseCode)
 VARIANT_ENUM_CAST(HTTPClient::Method);
+VARIANT_ENUM_CAST(HTTPClient::Status);
 
 #endif // HTTP_CLIENT_H

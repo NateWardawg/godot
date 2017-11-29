@@ -3,9 +3,10 @@
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
-/*                    http://www.godotengine.org                         */
+/*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2015 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2007-2017 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2017 Godot Engine contributors (cf. AUTHORS.md)    */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -28,45 +29,53 @@
 /*************************************************************************/
 #include "check_button.h"
 
-#include "servers/visual_server.h"
 #include "print_string.h"
+#include "servers/visual_server.h"
 
+Size2 CheckButton::get_minimum_size() const {
+
+	Size2 minsize = Button::get_minimum_size();
+
+	Ref<Texture> on = Control::get_icon("on");
+	Ref<Texture> off = Control::get_icon("off");
+	Size2 tex_size = Size2(0, 0);
+	if (!on.is_null())
+		tex_size = Size2(on->get_width(), on->get_height());
+	if (!off.is_null())
+		tex_size = Size2(MAX(tex_size.width, off->get_width()), MAX(tex_size.height, off->get_height()));
+	minsize += Size2(tex_size.width + get_constant("hseparation"), 0);
+	minsize.height = MAX(minsize.height, tex_size.height);
+
+	return get_stylebox("normal")->get_minimum_size() + minsize;
+}
 
 void CheckButton::_notification(int p_what) {
-	
-	if (p_what==NOTIFICATION_DRAW) {
-		
+
+	if (p_what == NOTIFICATION_DRAW) {
+
 		RID ci = get_canvas_item();
 
-		Ref<Texture> on=Control::get_icon("on");
-		Ref<Texture> off=Control::get_icon("off");
+		Ref<Texture> on = Control::get_icon("on");
+		Ref<Texture> off = Control::get_icon("off");
 
+		Ref<StyleBox> sb = get_stylebox("normal");
+		Size2 sb_ofs = Size2(sb->get_margin(MARGIN_RIGHT), sb->get_margin(MARGIN_TOP));
 		Vector2 ofs;
-		ofs.x = get_size().width - on->get_width();
-		ofs.y = int((get_size().height - on->get_height())/2);
+		ofs.x = get_minimum_size().width - (on->get_width() + sb_ofs.width);
+		ofs.y = sb_ofs.height;
 
 		if (is_pressed())
-			on->draw(ci,ofs);
+			on->draw(ci, ofs);
 		else
-			off->draw(ci,ofs);
-
-	
+			off->draw(ci, ofs);
 	}
 }
 
-
 CheckButton::CheckButton() {
-	
+
 	set_toggle_mode(true);
 	set_text_align(ALIGN_LEFT);
-
-	
 }
 
-
-CheckButton::~CheckButton()
-{
+CheckButton::~CheckButton() {
 }
-
-
-

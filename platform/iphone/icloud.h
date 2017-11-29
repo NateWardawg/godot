@@ -1,11 +1,12 @@
 /*************************************************************************/
-/*  icloud.h                                                        */
+/*  icloud.h                                                             */
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
-/*                    http://www.godotengine.org                         */
+/*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2015 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2007-2017 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2017 Godot Engine contributors (cf. AUTHORS.md)    */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -33,33 +34,30 @@
 
 #include "core/object.h"
 
-
 class ICloud : public Object {
 
-	OBJ_TYPE(ICloud, Object);
+	GDCLASS(ICloud, Object);
 
-	static ICloud* instance;
+	static ICloud *instance;
 	static void _bind_methods();
 
 	List<Variant> pending_events;
 
 public:
-	
 	Error remove_key(Variant p_param);
 	Variant set_key_values(Variant p_param);
 	Variant get_key_value(Variant p_param);
 	Error synchronize_key_values();
 	Variant get_all_key_values();
-	
+
 	int get_pending_event_count();
 	Variant pop_pending_event();
 
-	static ICloud* get_singleton();
+	static ICloud *get_singleton();
 
 	ICloud();
 	~ICloud();
 };
-
 
 #endif
 

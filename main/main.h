@@ -3,9 +3,10 @@
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
-/*                    http://www.godotengine.org                         */
+/*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2015 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2007-2017 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2017 Godot Engine contributors (cf. AUTHORS.md)    */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -33,23 +34,23 @@
 	@author Juan Linietsky <reduzio@gmail.com>
 */
 
+#include "core/os/thread.h"
 #include "error_list.h"
 #include "typedefs.h"
 
-
 class Main {
 
-	static void print_help(const char* p_binary);
+	static void print_help(const char *p_binary);
 	static uint64_t last_ticks;
 	static uint64_t target_ticks;
 	static float time_accum;
 	static uint32_t frames;
 	static uint32_t frame;
 	static bool force_redraw_requested;
-public:
 
-	static Error setup(const char *execpath,int argc, char *argv[],bool p_second_phase=true);
-	static Error setup2();
+public:
+	static Error setup(const char *execpath, int argc, char *argv[], bool p_second_phase = true);
+	static Error setup2(Thread::ID p_main_tid_override = 0);
 	static bool start();
 	static bool iteration();
 	static void cleanup();

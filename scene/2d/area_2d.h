@@ -3,9 +3,10 @@
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
-/*                    http://www.godotengine.org                         */
+/*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2015 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2007-2017 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2017 Godot Engine contributors (cf. AUTHORS.md)    */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -34,17 +35,18 @@
 
 class Area2D : public CollisionObject2D {
 
-	OBJ_TYPE( Area2D, CollisionObject2D );
-public:
+	GDCLASS(Area2D, CollisionObject2D);
 
+public:
 	enum SpaceOverride {
 		SPACE_OVERRIDE_DISABLED,
 		SPACE_OVERRIDE_COMBINE,
-		SPACE_OVERRIDE_REPLACE
+		SPACE_OVERRIDE_COMBINE_REPLACE,
+		SPACE_OVERRIDE_REPLACE,
+		SPACE_OVERRIDE_REPLACE_COMBINE
 	};
+
 private:
-
-
 	SpaceOverride space_override;
 	Vector2 gravity_vec;
 	real_t gravity;
@@ -53,13 +55,13 @@ private:
 	real_t linear_damp;
 	real_t angular_damp;
 	uint32_t collision_mask;
-	uint32_t layer_mask;
+	uint32_t collision_layer;
 	int priority;
 	bool monitoring;
 	bool monitorable;
 	bool locked;
 
-	void _body_inout(int p_status,const RID& p_body, int p_instance, int p_body_shape,int p_area_shape);
+	void _body_inout(int p_status, const RID &p_body, int p_instance, int p_body_shape, int p_area_shape);
 
 	void _body_enter_tree(ObjectID p_id);
 	void _body_exit_tree(ObjectID p_id);
@@ -68,15 +70,18 @@ private:
 
 		int body_shape;
 		int area_shape;
-		bool operator<(const ShapePair& p_sp) const {
-			if (body_shape==p_sp.body_shape)
+		bool operator<(const ShapePair &p_sp) const {
+			if (body_shape == p_sp.body_shape)
 				return area_shape < p_sp.area_shape;
 			else
 				return body_shape < p_sp.body_shape;
 		}
 
 		ShapePair() {}
-		ShapePair(int p_bs, int p_as) { body_shape=p_bs; area_shape=p_as; }
+		ShapePair(int p_bs, int p_as) {
+			body_shape = p_bs;
+			area_shape = p_as;
+		}
 	};
 
 	struct BodyState {
@@ -86,11 +91,9 @@ private:
 		VSet<ShapePair> shapes;
 	};
 
-	Map<ObjectID,BodyState> body_map;
+	Map<ObjectID, BodyState> body_map;
 
-
-
-	void _area_inout(int p_status,const RID& p_area, int p_instance, int p_area_shape,int p_self_shape);
+	void _area_inout(int p_status, const RID &p_area, int p_instance, int p_area_shape, int p_self_shape);
 
 	void _area_enter_tree(ObjectID p_id);
 	void _area_exit_tree(ObjectID p_id);
@@ -99,15 +102,18 @@ private:
 
 		int area_shape;
 		int self_shape;
-		bool operator<(const AreaShapePair& p_sp) const {
-			if (area_shape==p_sp.area_shape)
+		bool operator<(const AreaShapePair &p_sp) const {
+			if (area_shape == p_sp.area_shape)
 				return self_shape < p_sp.self_shape;
 			else
 				return area_shape < p_sp.area_shape;
 		}
 
 		AreaShapePair() {}
-		AreaShapePair(int p_bs, int p_as) { area_shape=p_bs; self_shape=p_as; }
+		AreaShapePair(int p_bs, int p_as) {
+			area_shape = p_bs;
+			self_shape = p_as;
+		}
 	};
 
 	struct AreaState {
@@ -117,16 +123,18 @@ private:
 		VSet<AreaShapePair> shapes;
 	};
 
-	Map<ObjectID,AreaState> area_map;
+	Map<ObjectID, AreaState> area_map;
 	void _clear_monitoring();
 
+	bool audio_bus_override;
+	StringName audio_bus;
 
 protected:
-
 	void _notification(int p_what);
 	static void _bind_methods();
-public:
+	void _validate_property(PropertyInfo &property) const;
 
+public:
 	void set_space_override_mode(SpaceOverride p_mode);
 	SpaceOverride get_space_override_mode() const;
 
@@ -136,7 +144,7 @@ public:
 	void set_gravity_distance_scale(real_t p_scale);
 	real_t get_gravity_distance_scale() const;
 
-	void set_gravity_vector(const Vector2& p_vec);
+	void set_gravity_vector(const Vector2 &p_vec);
 	Vector2 get_gravity_vector() const;
 
 	void set_gravity(real_t p_gravity);
@@ -151,8 +159,8 @@ public:
 	void set_priority(real_t p_priority);
 	real_t get_priority() const;
 
-	void set_enable_monitoring(bool p_enable);
-	bool is_monitoring_enabled() const;
+	void set_monitoring(bool p_enable);
+	bool is_monitoring() const;
 
 	void set_monitorable(bool p_enable);
 	bool is_monitorable() const;
@@ -160,20 +168,26 @@ public:
 	void set_collision_mask(uint32_t p_mask);
 	uint32_t get_collision_mask() const;
 
-	void set_layer_mask(uint32_t p_mask);
-	uint32_t get_layer_mask() const;
+	void set_collision_layer(uint32_t p_layer);
+	uint32_t get_collision_layer() const;
 
 	void set_collision_mask_bit(int p_bit, bool p_value);
 	bool get_collision_mask_bit(int p_bit) const;
 
-	void set_layer_mask_bit(int p_bit, bool p_value);
-	bool get_layer_mask_bit(int p_bit) const;
+	void set_collision_layer_bit(int p_bit, bool p_value);
+	bool get_collision_layer_bit(int p_bit) const;
 
 	Array get_overlapping_bodies() const; //function for script
 	Array get_overlapping_areas() const; //function for script
 
-	bool overlaps_area(Node* p_area) const;
-	bool overlaps_body(Node* p_body) const;
+	bool overlaps_area(Node *p_area) const;
+	bool overlaps_body(Node *p_body) const;
+
+	void set_audio_bus_override(bool p_override);
+	bool is_overriding_audio_bus() const;
+
+	void set_audio_bus_name(const StringName &p_audio_bus);
+	StringName get_audio_bus_name() const;
 
 	Area2D();
 	~Area2D();
