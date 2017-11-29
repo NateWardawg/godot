@@ -21,9 +21,9 @@ void BTAgent3D::_notification(int p_what) {
 
 
 void BTAgent3D::_bind_methods() {
-	ObjectTypeDB::bind_method(_MD("update_behavior_tree"),&BTAgent3D::update_behavior_tree);
-	ObjectTypeDB::bind_method(_MD("set_target"),&BTAgent3D::set_target);
-	ObjectTypeDB::bind_method(_MD("get_target"),&BTAgent3D::get_target);
+	ClassDB::bind_method(D_METHOD("update_behavior_tree"),&BTAgent3D::update_behavior_tree);
+	ClassDB::bind_method(D_METHOD("set_target"),&BTAgent3D::set_target);
+	ClassDB::bind_method(D_METHOD("get_target"),&BTAgent3D::get_target);
 
 	BIND_VMETHOD( MethodInfo("_target_changed", PropertyInfo(Variant::OBJECT,"target",PROPERTY_HINT_RESOURCE_TYPE,"Spatial")) )
 }

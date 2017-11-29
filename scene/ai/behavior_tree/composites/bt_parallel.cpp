@@ -12,17 +12,17 @@ BTParallel::BTParallel() {
 
 
 void BTParallel::_bind_methods() {
-	ObjectTypeDB::bind_method(_MD("get_success_condition"),&BTParallel::get_success_condition);
-	ObjectTypeDB::bind_method(_MD("set_success_condition","condition"),&BTParallel::set_success_condition);
-	ObjectTypeDB::bind_method(_MD("get_failure_condition"),&BTParallel::get_failure_condition);
-	ObjectTypeDB::bind_method(_MD("set_failure_condition","condition"),&BTParallel::set_failure_condition);
+	ClassDB::bind_method(D_METHOD("get_success_condition"),&BTParallel::get_success_condition);
+	ClassDB::bind_method(D_METHOD("set_success_condition","condition"),&BTParallel::set_success_condition);
+	ClassDB::bind_method(D_METHOD("get_failure_condition"),&BTParallel::get_failure_condition);
+	ClassDB::bind_method(D_METHOD("set_failure_condition","condition"),&BTParallel::set_failure_condition);
 
 	BIND_CONSTANT( FIRST_CHILD );
 	BIND_CONSTANT( ANY_CHILD );
 	BIND_CONSTANT( ALL_CHILDREN );
 
-	ADD_PROPERTYNZ( PropertyInfo( Variant::INT, "success_condition",PROPERTY_HINT_ENUM,"First Child,Any Child,All Children" ), _SCS("set_success_condition"),_SCS("get_success_condition" ) );
-	ADD_PROPERTYNZ( PropertyInfo( Variant::INT, "failure_condition",PROPERTY_HINT_ENUM,"First Child,Any Child,All Children" ), _SCS("set_failure_condition"),_SCS("get_failure_condition" ) );
+	ADD_PROPERTYNZ( PropertyInfo( Variant::INT, "success_condition",PROPERTY_HINT_ENUM,"First Child,Any Child,All Children" ), "set_success_condition", "get_success_condition" );
+	ADD_PROPERTYNZ( PropertyInfo( Variant::INT, "failure_condition",PROPERTY_HINT_ENUM,"First Child,Any Child,All Children" ), "set_failure_condition", "get_failure_condition" );
 }
 
 

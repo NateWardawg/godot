@@ -9,7 +9,7 @@
 
 class BTDistance : public BTCondition {
 
-	OBJ_TYPE( BTDistance, BTCondition )
+	GDCLASS( BTDistance, BTCondition )
 	OBJ_CATEGORY("AI")
 
 	int check_distances();
@@ -30,7 +30,7 @@ public:
 	real_t get_distance() { return distance; }
 	void set_distance(real_t p_distance) { distance = p_distance; }
 
-	const String get_target_group() { return target_group; }
+	String get_target_group() const { return target_group; }
 	void set_target_group(String p_group) { target_group = p_group; }
 
 	void add_target(Node* target);

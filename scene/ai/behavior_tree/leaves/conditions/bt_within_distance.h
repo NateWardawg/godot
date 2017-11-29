@@ -8,7 +8,7 @@
 class BTWithinDistance : public BTDistance
 {
 
-	OBJ_TYPE( BTWithinDistance, BTDistance )
+	GDCLASS( BTWithinDistance, BTDistance )
 	OBJ_CATEGORY("AI")
 
 protected:

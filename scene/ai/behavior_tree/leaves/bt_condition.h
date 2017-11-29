@@ -7,7 +7,7 @@
 
 class BTCondition : public BTLeaf {
 
-	OBJ_TYPE( BTCondition, BTLeaf )
+	GDCLASS( BTCondition, BTLeaf )
 	OBJ_CATEGORY("AI")
 
 };

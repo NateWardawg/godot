@@ -7,7 +7,7 @@
 class BTLoop : public BTDecorator
 {
 
-	OBJ_TYPE( BTLoop, BTDecorator )
+	GDCLASS( BTLoop, BTDecorator )
 	OBJ_CATEGORY("AI")
 
 protected:

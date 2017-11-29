@@ -10,7 +10,7 @@ class BehaviorTree;
 
 class BehaviorTreeNode : public AI {
 
-	OBJ_TYPE( BehaviorTreeNode, AI )
+	GDCLASS( BehaviorTreeNode, AI )
 	OBJ_CATEGORY("AI")
 
 	void _execute_calls(int result);
@@ -20,6 +20,8 @@ protected:
 	BehaviorTree *behavior_tree;
 	int status;
 	virtual void execute() = 0;
+
+	static void _bind_methods();
 
 public:
 
@@ -31,12 +33,10 @@ public:
 
 	int process_logic();
 
-	static void _bind_methods();
-
 	void set_behavior_tree(BehaviorTree *p_behavior_tree) { behavior_tree = p_behavior_tree; }
 	BehaviorTree* get_behavior_tree() { return behavior_tree; }
 
-	const Node* get_agent();
+	Node* get_agent() const;
 
 	virtual void update_child_nodes() {}
 	virtual void reset_node();

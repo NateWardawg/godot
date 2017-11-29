@@ -8,16 +8,16 @@ BTDistance::BTDistance() {
 
 
 void BTDistance::_bind_methods() {
-	ObjectTypeDB::bind_method(_MD("get_distance"),&BTDistance::get_distance);
-	ObjectTypeDB::bind_method(_MD("set_distance"),&BTDistance::set_distance);
-	ObjectTypeDB::bind_method(_MD("get_target_group"),&BTDistance::get_target_group);
-	ObjectTypeDB::bind_method(_MD("set_target_group"),&BTDistance::set_target_group);
-	ObjectTypeDB::bind_method(_MD("add_target"),&BTDistance::add_target);
-	ObjectTypeDB::bind_method(_MD("remove_target"),&BTDistance::remove_target);
-	ObjectTypeDB::bind_method(_MD("find_target"),&BTDistance::find_target);
+	ClassDB::bind_method(D_METHOD("get_distance"),&BTDistance::get_distance);
+	ClassDB::bind_method(D_METHOD("set_distance"),&BTDistance::set_distance);
+	ClassDB::bind_method(D_METHOD("get_target_group"),&BTDistance::get_target_group);
+	ClassDB::bind_method(D_METHOD("set_target_group"),&BTDistance::set_target_group);
+	ClassDB::bind_method(D_METHOD("add_target"),&BTDistance::add_target);
+	ClassDB::bind_method(D_METHOD("remove_target"),&BTDistance::remove_target);
+	ClassDB::bind_method(D_METHOD("find_target"),&BTDistance::find_target);
 
-	ADD_PROPERTY( PropertyInfo(Variant::REAL,"distance"), _SCS("set_distance"), _SCS("get_distance") );
-	ADD_PROPERTY( PropertyInfo(Variant::STRING,"target_group"), _SCS("set_target_group"), _SCS("get_target_group") );
+	ADD_PROPERTY( PropertyInfo(Variant::REAL,"distance"), "set_distance", "get_distance" );
+	ADD_PROPERTY( PropertyInfo(Variant::STRING,"target_group"), "set_target_group", "get_target_group" );
 }
 
 

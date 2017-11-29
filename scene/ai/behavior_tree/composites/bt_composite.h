@@ -7,7 +7,7 @@
 
 class BTComposite : public BehaviorTreeNode {
 
-	OBJ_TYPE( BTComposite, BehaviorTreeNode )
+	GDCLASS( BTComposite, BehaviorTreeNode )
 	OBJ_CATEGORY("AI")
 
 protected:

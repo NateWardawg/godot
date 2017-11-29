@@ -7,7 +7,7 @@
 
 class BTAction : public BTLeaf {
 
-	OBJ_TYPE( BTAction, BTLeaf )
+	GDCLASS( BTAction, BTLeaf )
 	OBJ_CATEGORY("AI")
 
 };

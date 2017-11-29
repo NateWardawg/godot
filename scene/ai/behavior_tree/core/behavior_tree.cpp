@@ -12,7 +12,7 @@ void BehaviorTree::set_agent_node(Node *p_agent_node) {
 }
 
 
-const Node* BehaviorTree::get_agent_node() {
+Node* BehaviorTree::get_agent_node() const {
 	return agent_node;
 }
 

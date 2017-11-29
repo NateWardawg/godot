@@ -7,7 +7,7 @@
 class BTSeek : public BTAction
 {
 
-	OBJ_TYPE( BTSeek, BTAction )
+	GDCLASS( BTSeek, BTAction )
 	OBJ_CATEGORY("AI")
 
 protected:

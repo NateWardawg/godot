@@ -8,7 +8,7 @@
 class BTSelector : public BTSequence
 {
 
-	OBJ_TYPE( BTSelector, BTSequence )
+	GDCLASS( BTSelector, BTSequence )
 	OBJ_CATEGORY("AI")
 
 protected:

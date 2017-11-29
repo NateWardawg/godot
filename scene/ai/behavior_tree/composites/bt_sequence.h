@@ -8,7 +8,7 @@
 class BTSequence : public BTComposite
 {
 
-	OBJ_TYPE( BTSequence, BTComposite )
+	GDCLASS( BTSequence, BTComposite )
 	OBJ_CATEGORY("AI")
 
 private:

@@ -9,7 +9,7 @@
 class BTPatrol : public BTAction
 {
 
-	OBJ_TYPE( BTPatrol, BTAction )
+	GDCLASS( BTPatrol, BTAction )
 	OBJ_CATEGORY("AI")
 
 	int current_patrol_index;
@@ -30,7 +30,7 @@ protected:
 	virtual void notify_target_changed(Node* new_target) = 0;
 	virtual bool is_correct_agent(Node* node) = 0;
 
-	const Node* _get_navigator() { return navigator; }
+	Node* _get_navigator() const { return navigator; }
 
 	template<class T>
 	void _set_navigator(Node* p_navigator) {
@@ -80,7 +80,7 @@ public:
 
 	virtual void reset_node();
 
-	virtual const Node* get_navigator() = 0;
+	virtual Node* get_navigator() const = 0;
 	virtual void set_navigator(Node* p_navigator) = 0;
 
 	real_t get_waypoint_threshold() { return waypoint_threshold; }

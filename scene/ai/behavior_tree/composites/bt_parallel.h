@@ -6,7 +6,7 @@
 
 class BTParallel : public BTComposite {
 
-	OBJ_TYPE( BTParallel, BTComposite )
+	GDCLASS( BTParallel, BTComposite )
 	OBJ_CATEGORY("AI")
 
 public:

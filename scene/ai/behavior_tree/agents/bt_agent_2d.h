@@ -7,14 +7,13 @@
 
 class BTAgent2D : public Node2D {
 
-	OBJ_TYPE( BTAgent2D, Node2D )
+	GDCLASS( BTAgent2D, Node2D )
 	OBJ_CATEGORY("AI")
 
 private:
 	BehaviorTree *behaviorTree;
 
 protected:
-	static void _bind_methods();
 	void _notification(int p_what);
 
 public:

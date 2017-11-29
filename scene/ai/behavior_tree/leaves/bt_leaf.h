@@ -8,7 +8,7 @@
 
 class BTLeaf : public BehaviorTreeNode {
 
-	OBJ_TYPE( BTLeaf, BehaviorTreeNode )
+	GDCLASS( BTLeaf, BehaviorTreeNode )
 	OBJ_CATEGORY("AI")
 
 protected:

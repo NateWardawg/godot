@@ -6,7 +6,7 @@
 class BTInverter : public BTDecorator
 {
 
-	OBJ_TYPE( BTInverter, BTDecorator )
+	GDCLASS( BTInverter, BTDecorator )
 	OBJ_CATEGORY("AI")
 
 protected:

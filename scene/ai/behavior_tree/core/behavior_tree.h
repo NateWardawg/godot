@@ -22,7 +22,7 @@ private:
 public:
 
 	void set_agent_node(Node *p_agent_node);
-	const Node *get_agent_node();
+	Node *get_agent_node() const;
 
 	void set_root_node(BehaviorTreeNode *p_root_node);
 	BehaviorTreeNode *get_root_node();

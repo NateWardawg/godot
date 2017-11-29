@@ -12,13 +12,13 @@ void BTWait::_notification(int p_what) {
 
 
 void BTWait::_bind_methods() {
-	ObjectTypeDB::bind_method(_MD("get_wait_time"),&BTWait::get_wait_time);
-	ObjectTypeDB::bind_method(_MD("set_wait_time", "duration"),&BTWait::set_wait_time);
-	ObjectTypeDB::bind_method(_MD("set_time_remaining"),&BTWait::set_time_remaining);
-	ObjectTypeDB::bind_method(_MD("get_time_remaining"),&BTWait::get_time_remaining);
-	ObjectTypeDB::bind_method(_MD("reset_timer"),&BTWait::reset_timer);
+	ClassDB::bind_method(D_METHOD("get_wait_time"),&BTWait::get_wait_time);
+	ClassDB::bind_method(D_METHOD("set_wait_time", "duration"),&BTWait::set_wait_time);
+	ClassDB::bind_method(D_METHOD("set_time_remaining"),&BTWait::set_time_remaining);
+	ClassDB::bind_method(D_METHOD("get_time_remaining"),&BTWait::get_time_remaining);
+	ClassDB::bind_method(D_METHOD("reset_timer"),&BTWait::reset_timer);
 
-	ADD_PROPERTY( PropertyInfo(Variant::REAL,"wait_time"), _SCS("set_wait_time"), _SCS("get_wait_time") );
+	ADD_PROPERTY( PropertyInfo(Variant::REAL,"wait_time"), "set_wait_time", "get_wait_time" );
 }
 
 

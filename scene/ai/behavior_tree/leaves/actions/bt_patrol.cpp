@@ -15,27 +15,27 @@ BTPatrol::BTPatrol() {
 
 
 void BTPatrol::_bind_methods() {
-	ObjectTypeDB::bind_method(_MD("get_navigator"),&BTPatrol::get_navigator);
-	ObjectTypeDB::bind_method(_MD("set_navigator","agent"),&BTPatrol::set_navigator);
-	ObjectTypeDB::bind_method(_MD("get_waypoint_threshold"),&BTPatrol::get_waypoint_threshold);
-	ObjectTypeDB::bind_method(_MD("set_waypoint_threshold","distance"),&BTPatrol::set_waypoint_threshold);
-	ObjectTypeDB::bind_method(_MD("add_target", "node"),&BTPatrol::add_target);
-	ObjectTypeDB::bind_method(_MD("remove_target"),&BTPatrol::remove_target);
-	ObjectTypeDB::bind_method(_MD("find_target"),&BTPatrol::find_target);
-	ObjectTypeDB::bind_method(_MD("get_target_count"),&BTPatrol::get_target_count);
-	ObjectTypeDB::bind_method(_MD("get_targets"),&BTPatrol::get_targets);
-	ObjectTypeDB::bind_method(_MD("get_target", "index"),&BTPatrol::get_target);
-	ObjectTypeDB::bind_method(_MD("get_current_target"),&BTPatrol::get_current_target);
-	ObjectTypeDB::bind_method(_MD("get_current_target_index"),&BTPatrol::get_current_target_index);
-	ObjectTypeDB::bind_method(_MD("set_current_target_index", "index"),&BTPatrol::set_current_target_index);
-	ObjectTypeDB::bind_method(_MD("get_patrol_end_mode"),&BTPatrol::get_patrol_end_mode);
-	ObjectTypeDB::bind_method(_MD("set_patrol_end_mode", "mode"),&BTPatrol::set_patrol_end_mode);
+	ClassDB::bind_method(D_METHOD("get_navigator"),&BTPatrol::get_navigator);
+	ClassDB::bind_method(D_METHOD("set_navigator","agent"),&BTPatrol::set_navigator);
+	ClassDB::bind_method(D_METHOD("get_waypoint_threshold"),&BTPatrol::get_waypoint_threshold);
+	ClassDB::bind_method(D_METHOD("set_waypoint_threshold","distance"),&BTPatrol::set_waypoint_threshold);
+	ClassDB::bind_method(D_METHOD("add_target", "node"),&BTPatrol::add_target);
+	ClassDB::bind_method(D_METHOD("remove_target"),&BTPatrol::remove_target);
+	ClassDB::bind_method(D_METHOD("find_target"),&BTPatrol::find_target);
+	ClassDB::bind_method(D_METHOD("get_target_count"),&BTPatrol::get_target_count);
+	ClassDB::bind_method(D_METHOD("get_targets"),&BTPatrol::get_targets);
+	ClassDB::bind_method(D_METHOD("get_target", "index"),&BTPatrol::get_target);
+	ClassDB::bind_method(D_METHOD("get_current_target"),&BTPatrol::get_current_target);
+	ClassDB::bind_method(D_METHOD("get_current_target_index"),&BTPatrol::get_current_target_index);
+	ClassDB::bind_method(D_METHOD("set_current_target_index", "index"),&BTPatrol::set_current_target_index);
+	ClassDB::bind_method(D_METHOD("get_patrol_end_mode"),&BTPatrol::get_patrol_end_mode);
+	ClassDB::bind_method(D_METHOD("set_patrol_end_mode", "mode"),&BTPatrol::set_patrol_end_mode);
 
 	BIND_CONSTANT( LOOP );
 	BIND_CONSTANT( PING_PONG );
 
-	ADD_PROPERTY( PropertyInfo(Variant::REAL,"waypoint_threshold"), _SCS("set_waypoint_threshold"), _SCS("get_waypoint_threshold") );
-	ADD_PROPERTYNZ( PropertyInfo(Variant::INT,"patrol_end_mode",PROPERTY_HINT_ENUM,"Loop,Ping Pong" ), _SCS("set_patrol_end_mode"),_SCS("get_patrol_end_mode" ) );
+	ADD_PROPERTY( PropertyInfo(Variant::REAL,"waypoint_threshold"), "set_waypoint_threshold", "get_waypoint_threshold" );
+	ADD_PROPERTYNZ( PropertyInfo(Variant::INT,"patrol_end_mode",PROPERTY_HINT_ENUM,"Loop,Ping Pong" ), "set_patrol_end_mode", "get_patrol_end_mode" );
 }
 
 

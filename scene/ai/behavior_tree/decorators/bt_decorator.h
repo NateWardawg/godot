@@ -9,7 +9,7 @@
 
 class BTDecorator : public BehaviorTreeNode {
 
-	OBJ_TYPE( BTDecorator, BehaviorTreeNode )
+	GDCLASS( BTDecorator, BehaviorTreeNode )
 	OBJ_CATEGORY("AI")
 
 protected:

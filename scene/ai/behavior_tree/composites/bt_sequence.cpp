@@ -3,7 +3,7 @@
 
 
 void BTSequence::_bind_methods() {
-	ObjectTypeDB::bind_method(_MD("get_current_leaf_index"),&BTSequence::get_current_leaf_index);
+	ClassDB::bind_method(D_METHOD("get_current_leaf_index"),&BTSequence::get_current_leaf_index);
 }
 
 

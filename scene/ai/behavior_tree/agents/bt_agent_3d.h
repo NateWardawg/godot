@@ -7,7 +7,7 @@
 
 class BTAgent3D : public Spatial {
 
-	OBJ_TYPE( BTAgent3D, Spatial )
+	GDCLASS( BTAgent3D, Spatial )
 	OBJ_CATEGORY("AI")
 
 private:

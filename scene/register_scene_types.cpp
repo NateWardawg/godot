@@ -399,19 +399,19 @@ void register_scene_types() {
 
 	/* Behavior Tree */
 
-	ObjectTypeDB::register_type<BTAgent2D>();
-	ObjectTypeDB::register_type<BTAgent3D>();
-	ObjectTypeDB::register_type<BTSequence>();
-	ObjectTypeDB::register_type<BTSelector>();
-	ObjectTypeDB::register_type<BTParallel>();
-	ObjectTypeDB::register_type<BTCustom>();
-	ObjectTypeDB::register_type<BTLoop>();
-	ObjectTypeDB::register_type<BTInverter>();
-	ObjectTypeDB::register_type<BTWithinDistance>();
-	ObjectTypeDB::register_type<BTBeyondDistance>();
-	ObjectTypeDB::register_type<BTPatrol3D>();
-	ObjectTypeDB::register_type<BTWait>();
-	ObjectTypeDB::register_type<BTSeek>();
+	ClassDB::register_class<BTAgent2D>();
+	ClassDB::register_class<BTAgent3D>();
+	ClassDB::register_class<BTSequence>();
+	ClassDB::register_class<BTSelector>();
+	ClassDB::register_class<BTParallel>();
+	ClassDB::register_class<BTCustom>();
+	ClassDB::register_class<BTLoop>();
+	ClassDB::register_class<BTInverter>();
+	ClassDB::register_class<BTWithinDistance>();
+	ClassDB::register_class<BTBeyondDistance>();
+	ClassDB::register_class<BTPatrol3D>();
+	ClassDB::register_class<BTWait>();
+	ClassDB::register_class<BTSeek>();
 
 	OS::get_singleton()->yield(); //may take time to init
 

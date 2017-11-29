@@ -7,7 +7,7 @@
 class BTBeyondDistance : public BTDistance
 {
 
-	OBJ_TYPE( BTBeyondDistance, BTDistance )
+	GDCLASS( BTBeyondDistance, BTDistance )
 	OBJ_CATEGORY("AI")
 
 protected:

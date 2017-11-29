@@ -2,16 +2,16 @@
 
 
 void BTLoop::_bind_methods() {
-	ObjectTypeDB::bind_method(_MD("get_iterations"),&BTLoop::get_iterations);
-	ObjectTypeDB::bind_method(_MD("set_iterations"),&BTLoop::set_iterations);
-	ObjectTypeDB::bind_method(_MD("get_infinite"),&BTLoop::get_infinite);
-	ObjectTypeDB::bind_method(_MD("set_infinite"),&BTLoop::set_infinite);
-	ObjectTypeDB::bind_method(_MD("get_continue_on_fail"),&BTLoop::get_continue_on_fail);
-	ObjectTypeDB::bind_method(_MD("set_continue_on_fail"),&BTLoop::set_continue_on_fail);
+	ClassDB::bind_method(D_METHOD("get_iterations"),&BTLoop::get_iterations);
+	ClassDB::bind_method(D_METHOD("set_iterations"),&BTLoop::set_iterations);
+	ClassDB::bind_method(D_METHOD("get_infinite"),&BTLoop::get_infinite);
+	ClassDB::bind_method(D_METHOD("set_infinite"),&BTLoop::set_infinite);
+	ClassDB::bind_method(D_METHOD("get_continue_on_fail"),&BTLoop::get_continue_on_fail);
+	ClassDB::bind_method(D_METHOD("set_continue_on_fail"),&BTLoop::set_continue_on_fail);
 
-	ADD_PROPERTY( PropertyInfo(Variant::INT,"iterations"), _SCS("set_iterations"), _SCS("get_iterations") );
-	ADD_PROPERTY( PropertyInfo(Variant::BOOL,"infinite"), _SCS("set_infinite"), _SCS("get_infinite") );
-	ADD_PROPERTY( PropertyInfo(Variant::BOOL,"continue_on_fail"), _SCS("set_continue_on_fail"), _SCS("get_continue_on_fail") );
+	ADD_PROPERTY( PropertyInfo(Variant::INT,"iterations"), "set_iterations", "get_iterations" );
+	ADD_PROPERTY( PropertyInfo(Variant::BOOL,"infinite"), "set_infinite", "get_infinite" );
+	ADD_PROPERTY( PropertyInfo(Variant::BOOL,"continue_on_fail"), "set_continue_on_fail", "get_continue_on_fail" );
 }
 
 

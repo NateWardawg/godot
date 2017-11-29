@@ -8,7 +8,7 @@
 class BTWait : public BTAction
 {
 
-	OBJ_TYPE( BTWait, BTAction )
+	GDCLASS( BTWait, BTAction )
 	OBJ_CATEGORY("AI")
 
 	real_t wait_time;

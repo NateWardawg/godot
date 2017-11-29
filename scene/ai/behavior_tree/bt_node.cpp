@@ -7,9 +7,9 @@ BehaviorTreeNode::BehaviorTreeNode() {
 
 
 void BehaviorTreeNode::_bind_methods() {
-	ObjectTypeDB::bind_method(_MD("get_agent"),&BehaviorTreeNode::get_agent);
-	ObjectTypeDB::bind_method(_MD("get_status"),&BehaviorTreeNode::get_status);
-	ObjectTypeDB::bind_method(_MD("set_status", "status"),&BehaviorTreeNode::set_status);
+	ClassDB::bind_method(D_METHOD("get_agent"), &BehaviorTreeNode::get_agent);
+	ClassDB::bind_method(D_METHOD("get_status"), &BehaviorTreeNode::get_status);
+	ClassDB::bind_method(D_METHOD("set_status", "status"), &BehaviorTreeNode::set_status);
 
 	BIND_VMETHOD( MethodInfo("_success") );
 	BIND_VMETHOD( MethodInfo("_running") );
@@ -25,7 +25,7 @@ void BehaviorTreeNode::_bind_methods() {
 }
 
 
-const Node* BehaviorTreeNode::get_agent() {
+Node* BehaviorTreeNode::get_agent() const {
 	return behavior_tree->get_agent_node();
 }
 

@@ -7,7 +7,7 @@
 class BTCustom : public BehaviorTreeNode
 {
 
-	OBJ_TYPE( BTCustom, BehaviorTreeNode )
+	GDCLASS( BTCustom, BehaviorTreeNode )
 	OBJ_CATEGORY("AI")
 
 	virtual void execute();

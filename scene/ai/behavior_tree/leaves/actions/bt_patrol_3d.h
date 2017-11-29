@@ -8,7 +8,7 @@
 
 class BTPatrol3D : public BTPatrol {
 
-	OBJ_TYPE( BTPatrol3D, BTPatrol )
+	GDCLASS( BTPatrol3D, BTPatrol )
 	OBJ_CATEGORY("AI")
 
 protected:
@@ -19,7 +19,7 @@ protected:
 
 public:
 
-	virtual const Node* get_navigator() { return _get_navigator(); }
+	virtual Node* get_navigator() const { return _get_navigator(); }
 	virtual void set_navigator(Node* p_navigator) { _set_navigator<BTAgent3D>(p_navigator); }
 	virtual bool is_node_valid_patrol_point(Node* node);
 	virtual void notify_target_changed(Node* new_target);
